@@ -1,0 +1,16 @@
+<component name="ProjectRunConfigurationManager">
+  <configuration default="false" factoryName="Application" name="Minecraft Client" type="Application">
+    <option name="MAIN_CLASS_NAME" value="dev.architectury.transformer.TransformerRuntime"/>
+    <module name="Fabric.main"/>
+    <option name="PROGRAM_PARAMETERS" value=""/>
+    <option name="VM_PARAMETERS" value="-Dfabric.dli.config=C:\Users\Colin\Downloads\cobblemon-mdks-374103f7501ebcebd28d6aa850475d0ec4c64580-fabric-java\fabric-java\.gradle\loom-cache\launch.cfg -Dfabric.dli.env=client -Dfabric.dli.main=net.fabricmc.loader.impl.launch.knot.KnotClient -Darchitectury.main.class=C:\Users\Colin\Downloads\cobblemon-mdks-374103f7501ebcebd28d6aa850475d0ec4c64580-fabric-java\fabric-java\.gradle\architectury\.main_class -Darchitectury.runtime.transformer=C:\Users\Colin\Downloads\cobblemon-mdks-374103f7501ebcebd28d6aa850475d0ec4c64580-fabric-java\fabric-java\.gradle\architectury\.transforms -Darchitectury.properties=C:\Users\Colin\Downloads\cobblemon-mdks-374103f7501ebcebd28d6aa850475d0ec4c64580-fabric-java\fabric-java\.gradle\architectury\.properties -Djdk.attach.allowAttachSelf=true -javaagent:C:\Users\Colin\Downloads\cobblemon-mdks-374103f7501ebcebd28d6aa850475d0ec4c64580-fabric-java\fabric-java\.gradle\architectury\architectury-transformer-agent.jar"/>
+    <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$/run/"/>
+    <method v="2">
+      <option enabled="true" name="Make"/>
+    </method>
+    <envs>
+      
+    </envs>
+    <shortenClasspath name="ARGS_FILE"/>
+  <classpathModifications/></configuration>
+</component>
