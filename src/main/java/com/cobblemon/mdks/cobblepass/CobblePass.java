@@ -1,6 +1,7 @@
 package com.cobblemon.mdks.fabric;
 
 import com.cobblemon.mdks.fabric.battlepass.BattlePass;
+import com.cobblemon.mdks.fabric.command.BattlePassCommand;
 import com.cobblemon.mdks.fabric.config.Config;
 import com.cobblemon.mdks.fabric.util.CommandsRegistry;
 import com.cobblemon.mdks.fabric.util.Permissions;
@@ -28,7 +29,10 @@ public class CobblePass implements ModInitializer {
         battlePass = new BattlePass();
         battlePass.loadTiers();
 
-        // Register commands
+        // Add commands to registry
+        CommandsRegistry.addCommand(new BattlePassCommand());
+
+        // Register commands with Fabric
         net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback.EVENT.register(
             (dispatcher, registryAccess, environment) -> CommandsRegistry.registerCommands(dispatcher)
         );

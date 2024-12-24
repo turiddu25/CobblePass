@@ -23,7 +23,7 @@ public class ReloadCommand extends Subcommand {
                                (!source.isPlayer() || 
                                 CobblePass.permissions.hasPermission(
                                     source.getPlayer(),
-                                    CobblePass.permissions.getPermission("BattlePassAdmin")
+                                    "cobblepass.admin.reload"
                                 ));
                     }
                     return source.hasPermission(2);

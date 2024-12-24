@@ -26,7 +26,7 @@ public class AddXPCommand extends Subcommand {
                                (!source.isPlayer() || 
                                 CobblePass.permissions.hasPermission(
                                     source.getPlayer(),
-                                    CobblePass.permissions.getPermission("BattlePassAdmin")
+                                    "cobblepass.admin.addxp"
                                 ));
                     }
                     return source.hasPermission(2);
