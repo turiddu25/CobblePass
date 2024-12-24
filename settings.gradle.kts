@@ -1,4 +1,4 @@
-rootProject.name = "Fabric"
+rootProject.name = "CobblePass"
 
 pluginManagement {
     repositories {

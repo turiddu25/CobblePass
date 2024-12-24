@@ -1,4 +1,4 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
 import org.apache.logging.log4j.LogManager;
 

@@ -1,10 +1,9 @@
-package com.cobblemon.mdks.fabric.battlepass;
+package com.cobblemon.mdks.cobblepass.battlepass;
 
-import com.cobblemon.mdks.fabric.CobblePass;
-import com.cobblemon.mdks.fabric.util.Constants;
+import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
 import java.util.HashSet;

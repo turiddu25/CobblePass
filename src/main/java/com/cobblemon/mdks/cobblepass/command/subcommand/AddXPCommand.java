@@ -1,7 +1,7 @@
-package com.cobblemon.mdks.fabric.command.subcommand;
+package com.cobblemon.mdks.cobblepass.command.subcommand;
 
-import com.cobblemon.mdks.fabric.CobblePass;
-import com.cobblemon.mdks.fabric.util.Subcommand;
+import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;

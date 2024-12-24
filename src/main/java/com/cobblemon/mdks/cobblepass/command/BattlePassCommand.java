@@ -1,9 +1,9 @@
-package com.cobblemon.mdks.fabric.command;
+package com.cobblemon.mdks.cobblepass.command;
 
-import com.cobblemon.mdks.fabric.command.subcommand.*;
-import com.cobblemon.mdks.fabric.util.BaseCommand;
-import com.cobblemon.mdks.fabric.util.Constants;
-import com.cobblemon.mdks.fabric.util.Permissions;
+import com.cobblemon.mdks.cobblepass.command.subcommand.*;
+import com.cobblemon.mdks.cobblepass.util.BaseCommand;
+import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.Permissions;
 import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.network.chat.Component;

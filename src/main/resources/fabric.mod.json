@@ -1,11 +1,11 @@
 {
   "schemaVersion": 1,
-  "id": "cobblemon_fabric_mdk",
+  "id": "cobblepass_fabric",
   "version": "1.0.0",
-  "name": "Cobblemon Fabric MDK",
-  "description": "A MDK useful for Fabric Development",
+  "name": "CobblePass",
+  "description": "A Cobblemon Battle Pass mod",
   "authors": [
-    "The Cobblemon Team"
+    "Turiddu25"
   ],
   "license": "MPL-2.0",
   "environment": "*",

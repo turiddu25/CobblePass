@@ -1,4 +1,4 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
 import com.cobblemon.mod.common.Cobblemon;
 import com.cobblemon.mod.common.api.permission.CobblemonPermission;

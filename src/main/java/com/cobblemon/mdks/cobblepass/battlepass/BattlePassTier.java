@@ -1,10 +1,7 @@
-package com.cobblemon.mdks.fabric.battlepass;
+package com.cobblemon.mdks.cobblepass.battlepass;
 
-import net.minecraft.core.HolderLookup;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.item.ItemStack;
-
-import java.util.stream.Stream;
 
 public class BattlePassTier {
     private final int level;

@@ -1,4 +1,4 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;

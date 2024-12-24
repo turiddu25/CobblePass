@@ -1,6 +1,6 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
-import com.cobblemon.mdks.fabric.CobblePass;
+import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import net.minecraft.network.chat.Component;

@@ -1,10 +1,10 @@
-package com.cobblemon.mdks.fabric;
+package com.cobblemon.mdks.cobblepass;
 
-import com.cobblemon.mdks.fabric.battlepass.BattlePass;
-import com.cobblemon.mdks.fabric.command.BattlePassCommand;
-import com.cobblemon.mdks.fabric.config.Config;
-import com.cobblemon.mdks.fabric.util.CommandsRegistry;
-import com.cobblemon.mdks.fabric.util.Permissions;
+import com.cobblemon.mdks.cobblepass.battlepass.BattlePass;
+import com.cobblemon.mdks.cobblepass.command.BattlePassCommand;
+import com.cobblemon.mdks.cobblepass.config.Config;
+import com.cobblemon.mdks.cobblepass.util.CommandsRegistry;
+import com.cobblemon.mdks.cobblepass.util.Permissions;
 import net.fabricmc.api.ModInitializer;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.LoggerFactory;

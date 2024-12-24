@@ -1,6 +1,6 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
-import com.cobblemon.mdks.fabric.CobblePass;
+import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mod.common.api.permission.CobblemonPermission;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;

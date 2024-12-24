@@ -1,11 +1,11 @@
-package com.cobblemon.mdks.fabric.command.subcommand;
+package com.cobblemon.mdks.cobblepass.command.subcommand;
 
-import com.cobblemon.mdks.fabric.CobblePass;
-import com.cobblemon.mdks.fabric.battlepass.BattlePassTier;
-import com.cobblemon.mdks.fabric.battlepass.PlayerBattlePass;
-import com.cobblemon.mdks.fabric.util.Constants;
-import com.cobblemon.mdks.fabric.util.Subcommand;
-import com.cobblemon.mdks.fabric.util.Utils;
+import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.battlepass.BattlePassTier;
+import com.cobblemon.mdks.cobblepass.battlepass.PlayerBattlePass;
+import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.Subcommand;
+import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.CommandNode;
 import net.minecraft.commands.CommandSourceStack;

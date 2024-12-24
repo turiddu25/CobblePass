@@ -1,4 +1,4 @@
-package com.cobblemon.mdks.fabric.util;
+package com.cobblemon.mdks.cobblepass.util;
 
 import java.util.Arrays;
 import java.util.List;
