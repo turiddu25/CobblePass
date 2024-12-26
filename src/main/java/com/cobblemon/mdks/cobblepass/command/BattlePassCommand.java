@@ -1,6 +1,10 @@
 package com.cobblemon.mdks.cobblepass.command;
 
-import com.cobblemon.mdks.cobblepass.command.subcommand.*;
+import com.cobblemon.mdks.cobblepass.command.subcommand.AddLevelsCommand;
+import com.cobblemon.mdks.cobblepass.command.subcommand.ClaimCommand;
+import com.cobblemon.mdks.cobblepass.command.subcommand.PremiumCommand;
+import com.cobblemon.mdks.cobblepass.command.subcommand.ReloadCommand;
+import com.cobblemon.mdks.cobblepass.command.subcommand.ViewCommand;
 import com.cobblemon.mdks.cobblepass.util.BaseCommand;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
@@ -19,7 +23,7 @@ public class BattlePassCommand extends BaseCommand {
                 Arrays.asList(
                         new ViewCommand(),
                         new ClaimCommand(),
-                        new AddXPCommand(),
+                        new AddLevelsCommand(),
                         new PremiumCommand(),
                         new ReloadCommand()
                 )
