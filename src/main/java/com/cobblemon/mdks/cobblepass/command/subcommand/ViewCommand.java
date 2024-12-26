@@ -33,6 +33,38 @@ import java.util.Arrays;
 import java.util.List;
 
 public class ViewCommand extends Subcommand {
+    // Reward configuration for easy editing
+    private static class TierReward {
+        final ItemStack item;
+        final boolean isPremium;
+
+        TierReward(ItemStack item, boolean isPremium) {
+            this.item = item;
+            this.isPremium = isPremium;
+        }
+    }
+
+    // Helper method to get reward for a tier
+    private static TierReward getRewardForTier(int level) {
+        // Easy to edit rewards for all tiers here
+        return switch (level) {
+            // Premium tiers
+            case 20 -> new TierReward(new ItemStack(Items.DIAMOND), true);
+            case 30 -> new TierReward(new ItemStack(Items.NETHERITE_INGOT), true);
+            
+            // Regular tiers
+            case 1 -> new TierReward(new ItemStack(Items.DIRT), false);
+            case 2 -> new TierReward(new ItemStack(Items.STONE), false);
+            case 3 -> new TierReward(new ItemStack(Items.COAL), false);
+            case 4 -> new TierReward(new ItemStack(Items.IRON_INGOT), false);
+            case 5 -> new TierReward(new ItemStack(Items.GOLD_INGOT), false);
+            // Add more tiers here...
+            
+            // Default reward for unspecified tiers
+            default -> new TierReward(new ItemStack(Items.DIRT), false);
+        };
+    }
+
     public ViewCommand() {
         super("§9Usage: §3/battlepass view");
     }
@@ -102,89 +134,181 @@ public class ViewCommand extends Subcommand {
             })
             .build();
 
-        // Create template for tier display with placeholders
+        // Create empty background button
+        Button background = new PlaceholderButton();
+
+        // Create base template
         ChestTemplate baseTemplate = ChestTemplate.builder(6)
+            .fill(background) // Fill entire GUI with background
             .set(0, 4, infoButton)
             .set(0, 8, premiumButton)
-            .fill(new PlaceholderButton()) // Fill with placeholders
             .build();
 
-        // Create tier buttons
-        List<Button> tierButtons = new ArrayList<>();
-        for (BattlePassTier tier : CobblePass.battlePass.getTiers()) {
-            List<Component> lore = new ArrayList<>();
-            
-            // Free reward
-            if (tier.hasFreeReward(player.level().registryAccess())) {
-                ItemStack freeReward = tier.getFreeRewardItem(player.level().registryAccess());
-                String freeStatus = pass.hasClaimedFreeReward(tier.getLevel()) ? "§7[Claimed]" : "§a[Click to Claim]";
-                lore.add(Component.literal("§fFree: " + freeReward.getDisplayName().getString() + " " + freeStatus));
-            }
-
-            // Premium reward
-            if (tier.hasPremiumReward(player.level().registryAccess())) {
-                ItemStack premiumReward = tier.getPremiumRewardItem(player.level().registryAccess());
-                String premiumStatus;
-                if (!pass.isPremium()) {
-                    premiumStatus = "§c[Premium Only]";
-                } else if (pass.hasClaimedPremiumReward(tier.getLevel())) {
-                    premiumStatus = "§7[Claimed]";
-                } else {
-                    premiumStatus = "§6[Click to Claim]";
+        // Create tier pairs (reward + status) for all 100 tiers
+        List<Button> rewardButtons = new ArrayList<>();
+        List<Button> statusButtons = new ArrayList<>();
+        int totalTiers = 100;
+        
+        for (int i = 1; i <= totalTiers; i++) {
+            final int level = i;
+            BattlePassTier tier = null;
+            // Find existing tier if available
+            for (BattlePassTier t : CobblePass.battlePass.getTiers()) {
+                if (t.getLevel() == level) {
+                    tier = t;
+                    break;
                 }
-                lore.add(Component.literal("§6Premium: " + premiumReward.getDisplayName().getString() + " " + premiumStatus));
             }
-
-            ItemStack display = tier.getLevel() <= pass.getLevel() ? new ItemStack(Items.CHEST) : new ItemStack(Items.BARRIER);
             
-            GooeyButton tierButton = GooeyButton.builder()
-                .display(display)
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§3Level " + tier.getLevel()))
-                .with(DataComponents.LORE, new ItemLore(lore))
+            final BattlePassTier finalTier = tier;
+            
+            // Get tier reward
+            TierReward reward = getRewardForTier(level);
+            boolean isPremiumTier = reward.isPremium;
+
+            // Create reward button with tier-specific item
+            Button rewardButton = GooeyButton.builder()
+                .display(reward.item)
+                .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + reward.item.getDisplayName().getString()))
+                .with(DataComponents.LORE, new ItemLore(Arrays.asList()))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
-                    if (tier.getLevel() <= pass.getLevel()) {
-                        player.sendSystemMessage(Component.literal("§7Use §f/battlepass claim " + tier.getLevel() + " §7to claim rewards"));
+                    if (finalTier == null) {
+                        player.sendSystemMessage(Component.literal("§cNo reward configured for level " + level));
+                        return;
+                    }
+                    if (level > pass.getLevel()) {
+                        player.sendSystemMessage(Component.literal("§cReach level " + level + " to unlock these rewards!"));
+                        return;
+                    }
+
+                    boolean claimed = false;
+                    if (finalTier.hasFreeReward(player.level().registryAccess()) && !pass.hasClaimedFreeReward(level)) {
+                        claimed = pass.claimReward(level, false, finalTier, player.level().registryAccess());
+                    }
+                    if (finalTier.hasPremiumReward(player.level().registryAccess()) && pass.isPremium() && !pass.hasClaimedPremiumReward(level)) {
+                        claimed = claimed || pass.claimReward(level, true, finalTier, player.level().registryAccess());
+                    }
+
+                    if (claimed) {
+                        player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
+                        showBattlePassInfo(player); // Refresh UI
                     } else {
-                        player.sendSystemMessage(Component.literal("§cReach level " + tier.getLevel() + " to unlock these rewards!"));
+                        player.sendSystemMessage(Component.literal("§cNo available rewards to claim for level " + level + "!"));
                     }
                 })
                 .build();
 
-            tierButtons.add(tierButton);
+            // Create status indicator with level number and status
+            ItemStack statusGlass;
+            List<Component> statusLore = new ArrayList<>();
+            
+            if (level > pass.getLevel()) {
+                statusGlass = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+                statusLore.add(Component.literal("§7Not Reached"));
+            } else if (isPremiumTier && !pass.isPremium()) {
+                statusGlass = new ItemStack(Items.RED_STAINED_GLASS_PANE);
+                statusLore.add(Component.literal("§cPremium Only"));
+            } else {
+                statusGlass = new ItemStack(Items.GREEN_STAINED_GLASS_PANE);
+                statusLore.add(Component.literal("§aAvailable"));
+            }
+
+            Button statusButton = GooeyButton.builder()
+                .display(statusGlass)
+                .with(DataComponents.CUSTOM_NAME, Component.literal("§3Level " + level))
+                .with(DataComponents.LORE, new ItemLore(statusLore))
+                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                .build();
+
+            // Update click handler for premium tiers
+            if (isPremiumTier) {
+                final Button finalRewardButton = rewardButton;
+                rewardButton = GooeyButton.builder()
+                    .display(reward.item)
+                    .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + reward.item.getDisplayName().getString()))
+                    .with(DataComponents.LORE, new ItemLore(Arrays.asList()))
+                    .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                    .onClick(action -> {
+                        if (!pass.isPremium()) {
+                            player.sendSystemMessage(Component.literal("§cThis is a premium reward! Use §f/battlepass premium §cto unlock."));
+                            return;
+                        }
+                        finalRewardButton.onClick(action); // Use original click handler
+                    })
+                    .build();
+            }
+
+            rewardButtons.add(rewardButton);
+            statusButtons.add(statusButton);
         }
 
-        // Create paginated display
-        LinkedPage firstPage = PaginationHelper.createPagesFromPlaceholders(baseTemplate, tierButtons, null);
-        firstPage.setTitle("§3Battle Pass");
+        // Create pages with proper button placement
+        List<LinkedPage> pages = new ArrayList<>();
+        int buttonsPerPage = 9;
+        int totalPages = (int) Math.ceil((double) totalTiers / buttonsPerPage);
 
-        // Add navigation buttons to all pages
-        LinkedPage current = firstPage;
-        while (current != null) {
-            if (current.getNext() != null) {
-                LinkedPageButton nextBtn = LinkedPageButton.builder()
-                    .display(new ItemStack(Items.ARROW))
-                    .with(DataComponents.CUSTOM_NAME, Component.literal("§fNext Page"))
-                    .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-                    .linkType(LinkType.Next)
-                    .build();
-                ((ChestTemplate) current.getTemplate()).set(5, 8, nextBtn);
+        for (int pageNum = 0; pageNum < totalPages; pageNum++) {
+            ChestTemplate template = ChestTemplate.builder(6)
+                .fill(background)
+                .set(0, 4, infoButton)
+                .set(0, 8, premiumButton)
+                .build();
+
+            int startIdx = pageNum * buttonsPerPage;
+            int endIdx = Math.min(startIdx + buttonsPerPage, totalTiers);
+
+            // Place reward buttons in row 2
+            for (int i = startIdx; i < endIdx; i++) {
+                template.set(1, i - startIdx, rewardButtons.get(i));
             }
-            
+
+            // Place status buttons in row 3 (directly below rewards)
+            for (int i = startIdx; i < endIdx; i++) {
+                template.set(2, i - startIdx, statusButtons.get(i));
+            }
+
+            LinkedPage page = LinkedPage.builder()
+                .template(template)
+                .title("§3Battle Pass")
+                .build();
+
+            pages.add(page);
+        }
+
+        // Link pages together
+        for (int i = 0; i < pages.size(); i++) {
+            LinkedPage current = pages.get(i);
+            if (i > 0) {
+                current.setPrevious(pages.get(i - 1));
+            }
+            if (i < pages.size() - 1) {
+                current.setNext(pages.get(i + 1));
+            }
+
+            // Add navigation buttons
+            ChestTemplate template = (ChestTemplate) current.getTemplate();
             if (current.getPrevious() != null) {
-                LinkedPageButton prevBtn = LinkedPageButton.builder()
+                Button prevBtn = LinkedPageButton.builder()
                     .display(new ItemStack(Items.ARROW))
-                    .with(DataComponents.CUSTOM_NAME, Component.literal("§fPrevious Page"))
+                    .with(DataComponents.CUSTOM_NAME, Component.literal("§f← Previous Page"))
                     .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                     .linkType(LinkType.Previous)
                     .build();
-                ((ChestTemplate) current.getTemplate()).set(5, 0, prevBtn);
+                template.set(5, 0, prevBtn);
             }
-            
-            current = (LinkedPage) current.getNext();
+            if (current.getNext() != null) {
+                Button nextBtn = LinkedPageButton.builder()
+                    .display(new ItemStack(Items.ARROW))
+                    .with(DataComponents.CUSTOM_NAME, Component.literal("§fNext Page →"))
+                    .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                    .linkType(LinkType.Next)
+                    .build();
+                template.set(5, 8, nextBtn);
+            }
         }
 
-        // Open the UI
-        UIManager.openUIForcefully(player, firstPage);
+        // Open the first page
+        UIManager.openUIForcefully(player, pages.get(0));
     }
 }
