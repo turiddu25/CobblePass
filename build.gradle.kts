@@ -1,12 +1,11 @@
 plugins {
     id("java")
-    id("dev.architectury.loom") version("1.7-SNAPSHOT")
-    id("architectury-plugin") version("3.4-SNAPSHOT")
+    id("fabric-loom") version("1.8.10")
     kotlin("jvm") version ("1.9.23")
 }
 
 group = "org.example"
-version = "1.4.9"
+version = "1.5.0"
 
 java {
     toolchain {
@@ -14,14 +13,7 @@ java {
     }
 }
 
-architectury {
-    platformSetupLoomIde()
-    fabric()
-}
-
 loom {
-    silentMojangMappingsLicense()
-
     mixin {
         defaultRefmapName.set("mixins.${project.name}.refmap.json")
     }
@@ -49,6 +41,10 @@ dependencies {
 
     // Impactor Economy API
     modImplementation("net.impactdev.impactor.api:economy:5.3.0")
+
+    // GooeyLibs
+    modImplementation("ca.landonjw.gooeylibs:api:3.1.0-1.21.1-SNAPSHOT")
+    modRuntimeOnly("ca.landonjw.gooeylibs:fabric:3.1.0-1.21.1-SNAPSHOT")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")
