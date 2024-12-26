@@ -69,7 +69,7 @@ public class ClaimCommand extends Subcommand {
                 return 1;
             }
 
-            ItemStack reward = tier.getPremiumRewardItem();
+            ItemStack reward = tier.getPremiumRewardItem(player.level().registryAccess());
             if (reward.isEmpty()) {
                 player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
                 return 1;
@@ -91,7 +91,7 @@ public class ClaimCommand extends Subcommand {
             return 1;
         }
 
-        ItemStack reward = tier.getFreeRewardItem();
+        ItemStack reward = tier.getFreeRewardItem(player.level().registryAccess());
         if (reward.isEmpty()) {
             player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
             return 1;

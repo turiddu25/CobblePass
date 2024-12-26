@@ -1,16 +1,16 @@
 plugins {
     id("java")
-    id("dev.architectury.loom") version("1.2-SNAPSHOT")
+    id("dev.architectury.loom") version("1.7-SNAPSHOT")
     id("architectury-plugin") version("3.4-SNAPSHOT")
-    kotlin("jvm") version ("1.8.10")
+    kotlin("jvm") version ("1.9.23")
 }
 
 group = "org.example"
-version = "1.4.6-SNAPSHOT"
+version = "1.4.9"
 
 java {
     toolchain {
-        languageVersion.set(JavaLanguageVersion.of(17))
+        languageVersion.set(JavaLanguageVersion.of(21))
     }
 }
 
@@ -35,20 +35,20 @@ repositories {
 }
 
 dependencies {
-    minecraft("net.minecraft:minecraft:1.20.1")
+    minecraft("net.minecraft:minecraft:1.21.1")
     mappings(loom.officialMojangMappings())
-    modImplementation("net.fabricmc:fabric-loader:0.15.0")
+    modImplementation("net.fabricmc:fabric-loader:0.16.5")
 
     // Fabric API
-    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.89.3+1.20.1")
-    modImplementation(fabricApi.module("fabric-command-api-v2", "0.89.3+1.20.1"))
-    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.89.3+1.20.1"))
+    modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.104.0+1.21.1")
+    modImplementation(fabricApi.module("fabric-command-api-v2", "0.104.0+1.21.1"))
+    modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.104.0+1.21.1"))
 
     // Cobblemon
-    modImplementation("com.cobblemon:fabric:1.5.0+1.20.1-SNAPSHOT")
+    modImplementation("com.cobblemon:fabric:1.6.0+1.21.1")
 
     // Impactor Economy API
-    modImplementation("net.impactdev.impactor.api:economy:5.2.0-SNAPSHOT")
+    modImplementation("net.impactdev.impactor.api:economy:5.3.0")
 
     // Testing
     testImplementation("org.junit.jupiter:junit-jupiter-api:5.10.0")

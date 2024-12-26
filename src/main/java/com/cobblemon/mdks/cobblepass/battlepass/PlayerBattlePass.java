@@ -5,6 +5,7 @@ import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.RegistryAccess;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -51,7 +52,7 @@ public class PlayerBattlePass {
         return (int)(CobblePass.config.getXpPerLevel() * Math.pow(Constants.XP_MULTIPLIER, level - 1));
     }
 
-    public boolean claimReward(int level, boolean premium, BattlePassTier tier) {
+    public boolean claimReward(int level, boolean premium, BattlePassTier tier, RegistryAccess registryAccess) {
         if (this.level < level) {
             return false;
         }
@@ -60,7 +61,7 @@ public class PlayerBattlePass {
             if (!isPremium || hasClaimedPremiumReward(level)) {
                 return false;
             }
-            ItemStack reward = tier.getPremiumRewardItem();
+            ItemStack reward = tier.getPremiumRewardItem(registryAccess);
             if (reward.isEmpty()) {
                 return false;
             }
@@ -70,7 +71,7 @@ public class PlayerBattlePass {
             if (hasClaimedFreeReward(level)) {
                 return false;
             }
-            ItemStack reward = tier.getFreeRewardItem();
+            ItemStack reward = tier.getFreeRewardItem(registryAccess);
             if (reward.isEmpty()) {
                 return false;
             }

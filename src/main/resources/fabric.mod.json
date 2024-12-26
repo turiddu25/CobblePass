@@ -1,7 +1,7 @@
 {
   "schemaVersion": 1,
   "id": "cobblepass_fabric",
-  "version": "1.0.0",
+  "version": "${version}",
   "name": "CobblePass",
   "description": "A Cobblemon Battle Pass mod",
   "authors": [
@@ -11,14 +11,14 @@
   "environment": "*",
   "entrypoints": {
     "main": [
-      "com.cobblemon.mdks.fabric.CobblePass"
+      "com.cobblemon.mdks.cobblepass.CobblePass"
     ]
   },
   "depends": {
     "java": ">=17",
-    "minecraft": ">=1.20.1",
+    "minecraft": "1.21.1",
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
-    "cobblemon": ">=1.4.0"
+    "cobblemon": ">=1.6.0"
   }
 }

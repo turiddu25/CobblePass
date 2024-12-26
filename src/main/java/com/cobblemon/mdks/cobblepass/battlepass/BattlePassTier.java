@@ -1,7 +1,9 @@
 package com.cobblemon.mdks.cobblepass.battlepass;
 
+import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
 import net.minecraft.world.item.ItemStack;
+import net.minecraft.core.RegistryAccess;
 
 public class BattlePassTier {
     private final int level;
@@ -26,27 +28,29 @@ public class BattlePassTier {
         return premiumReward;
     }
 
-    public ItemStack getFreeRewardItem() {
+    public ItemStack getFreeRewardItem(RegistryAccess registryAccess) {
         try {
-            return ItemStack.of(TagParser.parseTag(freeReward));
+            CompoundTag tag = TagParser.parseTag(freeReward);
+            return ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
         } catch (Exception e) {
             return ItemStack.EMPTY;
         }
     }
 
-    public ItemStack getPremiumRewardItem() {
+    public ItemStack getPremiumRewardItem(RegistryAccess registryAccess) {
         try {
-            return ItemStack.of(TagParser.parseTag(premiumReward));
+            CompoundTag tag = TagParser.parseTag(premiumReward);
+            return ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
         } catch (Exception e) {
             return ItemStack.EMPTY;
         }
     }
 
-    public boolean hasFreeReward() {
-        return !getFreeRewardItem().isEmpty();
+    public boolean hasFreeReward(RegistryAccess registryAccess) {
+        return !getFreeRewardItem(registryAccess).isEmpty();
     }
 
-    public boolean hasPremiumReward() {
-        return !getPremiumRewardItem().isEmpty();
+    public boolean hasPremiumReward(RegistryAccess registryAccess) {
+        return !getPremiumRewardItem(registryAccess).isEmpty();
     }
 }

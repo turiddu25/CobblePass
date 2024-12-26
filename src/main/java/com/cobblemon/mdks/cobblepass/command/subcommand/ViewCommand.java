@@ -76,17 +76,17 @@ public class ViewCommand extends Subcommand {
             StringBuilder rewardInfo = new StringBuilder("§3Level " + tier.getLevel() + ": ");
 
             // Free reward
-            if (tier.hasFreeReward()) {
+            if (tier.hasFreeReward(player.level().registryAccess())) {
                 if (pass.hasClaimedFreeReward(tier.getLevel())) {
                     rewardInfo.append("§7[Claimed] ");
                 } else {
                     rewardInfo.append("§a[Unclaimed] ");
                 }
-                rewardInfo.append("§f").append(tier.getFreeRewardItem().getDisplayName().getString());
+                rewardInfo.append("§f").append(tier.getFreeRewardItem(player.level().registryAccess()).getDisplayName().getString());
             }
 
             // Premium reward
-            if (tier.hasPremiumReward()) {
+            if (tier.hasPremiumReward(player.level().registryAccess())) {
                 rewardInfo.append(" §7| ");
                 if (!pass.isPremium()) {
                     rewardInfo.append("§c[Premium Only] ");
@@ -95,7 +95,7 @@ public class ViewCommand extends Subcommand {
                 } else {
                     rewardInfo.append("§6[Premium Unclaimed] ");
                 }
-                rewardInfo.append("§f").append(tier.getPremiumRewardItem().getDisplayName().getString());
+                rewardInfo.append("§f").append(tier.getPremiumRewardItem(player.level().registryAccess()).getDisplayName().getString());
             }
 
             player.sendSystemMessage(Component.literal(rewardInfo.toString()));

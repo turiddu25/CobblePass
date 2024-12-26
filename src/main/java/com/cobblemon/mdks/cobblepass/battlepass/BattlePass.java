@@ -135,7 +135,7 @@ public class BattlePass {
             return false;
         }
 
-        boolean claimed = pass.claimReward(level, premium, tier);
+        boolean claimed = pass.claimReward(level, premium, tier, player.level().registryAccess());
         if (claimed) {
             // Save after claiming reward
             String filename = player.getUUID() + ".json";
