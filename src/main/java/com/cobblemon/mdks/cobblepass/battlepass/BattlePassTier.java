@@ -7,6 +7,11 @@ import net.minecraft.world.item.ItemStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.TagParser;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
+import com.cobblemon.mod.common.pokemon.Species;
+import com.cobblemon.mod.common.api.pokemon.PokemonSpecies;
+import com.cobblemon.mod.common.item.PokemonItem;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 public class BattlePassTier {
     private final int level;
@@ -48,10 +53,29 @@ public class BattlePassTier {
         
         if (freeReward.getType() == RewardType.POKEMON) {
             try {
-                // Use Poké Ball as display item for Pokemon rewards
-                return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"cobblemon:poke_ball\",Count:1}")).orElse(ItemStack.EMPTY);
-            } catch (CommandSyntaxException e) {
-                return ItemStack.EMPTY;
+                // Parse Pokemon data to get species
+                JsonObject pokemonData = JsonParser.parseString(freeReward.getData()).getAsJsonObject();
+                String speciesName = pokemonData.get("species").getAsString();
+                
+                // Create Pokemon instance
+                Species species = PokemonSpecies.INSTANCE.getByName(speciesName);
+                if (species != null) {
+                    var pokemon = species.create(1);
+                    if (pokemonData.has("shiny") && pokemonData.get("shiny").getAsBoolean()) {
+                        pokemon.setShiny(true);
+                    }
+                    if (pokemonData.has("level")) {
+                        pokemon.setLevel(pokemonData.get("level").getAsInt());
+                    }
+                    return PokemonItem.from(pokemon, 1);
+                }
+            } catch (Exception e) {
+                // Fallback to Poké Ball if parsing fails
+                try {
+                    return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"cobblemon:poke_ball\",Count:1}")).orElse(ItemStack.EMPTY);
+                } catch (CommandSyntaxException ex) {
+                    return ItemStack.EMPTY;
+                }
             }
         }
         
@@ -63,10 +87,29 @@ public class BattlePassTier {
         
         if (premiumReward.getType() == RewardType.POKEMON) {
             try {
-                // Use Master Ball as display item for premium Pokemon rewards
-                return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"cobblemon:master_ball\",Count:1}")).orElse(ItemStack.EMPTY);
-            } catch (CommandSyntaxException e) {
-                return ItemStack.EMPTY;
+                // Parse Pokemon data to get species
+                JsonObject pokemonData = JsonParser.parseString(premiumReward.getData()).getAsJsonObject();
+                String speciesName = pokemonData.get("species").getAsString();
+                
+                // Create Pokemon instance
+                Species species = PokemonSpecies.INSTANCE.getByName(speciesName);
+                if (species != null) {
+                    var pokemon = species.create(1);
+                    if (pokemonData.has("shiny") && pokemonData.get("shiny").getAsBoolean()) {
+                        pokemon.setShiny(true);
+                    }
+                    if (pokemonData.has("level")) {
+                        pokemon.setLevel(pokemonData.get("level").getAsInt());
+                    }
+                    return PokemonItem.from(pokemon, 1);
+                }
+            } catch (Exception e) {
+                // Fallback to Master Ball if parsing fails
+                try {
+                    return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"cobblemon:master_ball\",Count:1}")).orElse(ItemStack.EMPTY);
+                } catch (CommandSyntaxException ex) {
+                    return ItemStack.EMPTY;
+                }
             }
         }
         
