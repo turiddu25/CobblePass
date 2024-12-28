@@ -2,85 +2,75 @@
   "tiers": [
     {
       "level": 1,
-      "reward": {
-        "type": "item",
-        "data": "minecraft:iron_block"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:poke_ball\",Count:5}"
+      }
     },
     {
       "level": 2,
-      "reward": {
-        "type": "item",
-        "data": "cobblemon:poke_ball"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:great_ball\",Count:3}"
+      }
     },
     {
       "level": 3,
-      "reward": {
-        "type": "item",
-        "data": "minecraft:iron_block"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:ultra_ball\",Count:2}"
+      }
     },
     {
       "level": 4,
-      "reward": {
-        "type": "item",
-        "data": "cobblemon:great_ball"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:rare_candy\",Count:1}"
+      }
     },
     {
       "level": 5,
-      "reward": {
-        "type": "pokemon",
-        "data": "Charmander",
-        "command": "pokegive %player% charmander level=5"
-      },
-      "isPremium": true
+      "premiumReward": {
+        "type": "POKEMON",
+        "data": "{species:\"pikachu\",level:15}",
+        "command": "pokegive %player% pikachu level=15"
+      }
     },
     {
       "level": 6,
-      "reward": {
-        "type": "item",
-        "data": "minecraft:iron_block"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:exp_candy_l\",Count:2}"
+      }
     },
     {
       "level": 7,
-      "reward": {
-        "type": "item",
-        "data": "cobblemon:ultra_ball"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:master_ball\",Count:1}"
+      }
     },
     {
       "level": 8,
-      "reward": {
-        "type": "item",
-        "data": "minecraft:iron_block"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:rare_candy\",Count:2}"
+      }
     },
     {
       "level": 9,
-      "reward": {
-        "type": "item",
-        "data": "cobblemon:master_ball"
-      },
-      "isPremium": false
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{id:\"cobblemon:exp_candy_xl\",Count:1}"
+      }
     },
     {
       "level": 10,
-      "reward": {
-        "type": "pokemon",
-        "data": "Pikachu",
-        "command": "pokegive %player% pikachu level=10 shiny=true"
-      },
-      "isPremium": true
+      "premiumReward": {
+        "type": "POKEMON",
+        "data": "{species:\"charmander\",level:20,shiny:true}",
+        "command": "pokegive %player% charmander level=20 shiny"
+      }
     }
   ]
 }

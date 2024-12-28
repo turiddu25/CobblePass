@@ -4,8 +4,6 @@ import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.google.gson.JsonArray;
 import com.google.gson.JsonObject;
-import net.minecraft.world.item.ItemStack;
-import net.minecraft.core.RegistryAccess;
 
 import java.util.HashSet;
 import java.util.Set;
@@ -52,31 +50,15 @@ public class PlayerBattlePass {
         return (int)(CobblePass.config.getXpPerLevel() * Math.pow(Constants.XP_MULTIPLIER, level - 1));
     }
 
-    public ItemStack claimReward(int level, boolean premium, BattlePassTier tier, RegistryAccess registryAccess) {
-        if (this.level < level) {
-            return ItemStack.EMPTY;
-        }
-
-        if (premium) {
-            if (!isPremium || hasClaimedPremiumReward(level)) {
-                return ItemStack.EMPTY;
-            }
-            ItemStack reward = tier.getPremiumRewardItem(registryAccess);
-            if (reward.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
-            claimedPremiumRewards.add(level);
-            return reward;
-        } else {
-            if (hasClaimedFreeReward(level)) {
-                return ItemStack.EMPTY;
-            }
-            ItemStack reward = tier.getFreeRewardItem(registryAccess);
-            if (reward.isEmpty()) {
-                return ItemStack.EMPTY;
-            }
+    public void claimFreeReward(int level) {
+        if (this.level >= level && !hasClaimedFreeReward(level)) {
             claimedFreeRewards.add(level);
-            return reward;
+        }
+    }
+
+    public void claimPremiumReward(int level) {
+        if (this.level >= level && isPremium() && !hasClaimedPremiumReward(level)) {
+            claimedPremiumRewards.add(level);
         }
     }
 

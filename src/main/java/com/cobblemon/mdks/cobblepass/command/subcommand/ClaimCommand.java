@@ -69,12 +69,13 @@ public class ClaimCommand extends Subcommand {
                 return 1;
             }
 
-            ItemStack reward = CobblePass.battlePass.claimReward(player, level, true);
-            if (reward.isEmpty()) {
+            if (!tier.hasPremiumReward()) {
                 player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
                 return 1;
             }
-            player.getInventory().add(reward);
+
+            tier.grantPremiumReward(player);
+            pass.claimPremiumReward(level);
             player.sendSystemMessage(Component.literal(String.format(
                 Constants.MSG_REWARD_CLAIM,
                 level
@@ -88,12 +89,13 @@ public class ClaimCommand extends Subcommand {
             return 1;
         }
 
-        ItemStack reward = CobblePass.battlePass.claimReward(player, level, false);
-        if (reward.isEmpty()) {
+        if (!tier.hasFreeReward()) {
             player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
             return 1;
         }
-        player.getInventory().add(reward);
+
+        tier.grantFreeReward(player);
+        pass.claimFreeReward(level);
         player.sendSystemMessage(Component.literal(String.format(
             Constants.MSG_REWARD_CLAIM,
             level

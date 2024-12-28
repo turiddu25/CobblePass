@@ -2,6 +2,8 @@ package com.cobblemon.mdks.cobblepass.config;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.battlepass.BattlePassTier;
+import com.cobblemon.mdks.cobblepass.data.Reward;
+import com.cobblemon.mdks.cobblepass.data.RewardType;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.google.gson.JsonArray;
@@ -14,8 +16,8 @@ import java.util.HashMap;
 import java.util.Map;
 
 public class TierConfig {
-    private static final String TIERS_FILE = "tiers.json";
-    private static final String TIERS_PATH = "config/cobblepass";
+    private static final String TIERS_FILE = Constants.TIERS_FILE;
+    private static final String TIERS_PATH = Constants.CONFIG_DIR;
     
     private final Map<Integer, BattlePassTier> tiers = new HashMap<>();
 
@@ -24,22 +26,21 @@ public class TierConfig {
     }
 
     public void load() {
-        Utils.readFileAsync(TIERS_PATH, TIERS_FILE, content -> {
-            if (content == null || content.isEmpty()) {
-                generateDefaultTiers();
-                save();
-                return;
-            }
+        String content = Utils.readFileSync(TIERS_PATH, TIERS_FILE);
+        if (content == null || content.isEmpty()) {
+            generateDefaultTiers();
+            save();
+            return;
+        }
 
-            try {
-                JsonObject json = JsonParser.parseString(content).getAsJsonObject();
-                loadFromJson(json);
-            } catch (Exception e) {
-                CobblePass.LOGGER.error("Failed to load tier config", e);
-                generateDefaultTiers();
-                save();
-            }
-        });
+        try {
+            JsonObject json = JsonParser.parseString(content).getAsJsonObject();
+            loadFromJson(json);
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to load tier config", e);
+            generateDefaultTiers();
+            save();
+        }
     }
 
     private void loadFromJson(JsonObject json) {
@@ -50,23 +51,36 @@ public class TierConfig {
             JsonObject tierObj = element.getAsJsonObject();
             int level = tierObj.get("level").getAsInt();
             
-            String displayItem = tierObj.get("displayItem").getAsString();
-            String redeemableItem = tierObj.get("redeemableItem").getAsString();
-            boolean isPremium = tierObj.get("isPremium").getAsBoolean();
+            // Load rewards
+            Reward freeReward = null;
+            Reward premiumReward = null;
+
+            if (tierObj.has("freeReward")) {
+                JsonObject freeRewardObj = tierObj.getAsJsonObject("freeReward");
+                freeReward = Reward.fromJson(freeRewardObj);
+            }
+
+            if (tierObj.has("premiumReward")) {
+                JsonObject premiumRewardObj = tierObj.getAsJsonObject("premiumReward");
+                premiumReward = Reward.fromJson(premiumRewardObj);
+            }
+
+            // Backwards compatibility for old format
+            if (freeReward == null && premiumReward == null) {
+                String displayItem = tierObj.get("displayItem").getAsString();
+                String redeemableItem = tierObj.get("redeemableItem").getAsString();
+                boolean isPremium = tierObj.get("isPremium").getAsBoolean();
+                
+                String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemableItem);
+                
+                if (isPremium) {
+                    premiumReward = Reward.minecraftItem(redeemNbt);
+                } else {
+                    freeReward = Reward.minecraftItem(redeemNbt);
+                }
+            }
             
-            // Convert display item to NBT format
-            String displayNbt = String.format("{id:\"%s\",Count:1}", displayItem);
-            
-            // Convert redeemable item to NBT format
-            String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemableItem);
-            
-            // Set free reward as redeemable item for non-premium tiers
-            // For premium tiers, set both free and premium rewards
-            tiers.put(level, new BattlePassTier(
-                level,
-                isPremium ? null : redeemNbt,  // free reward
-                isPremium ? redeemNbt : null    // premium reward
-            ));
+            tiers.put(level, new BattlePassTier(level, freeReward, premiumReward));
         }
     }
 
@@ -78,14 +92,12 @@ public class TierConfig {
             String redeemItem = getDefaultRedeemItem(i);
             boolean isPremium = i % 5 == 0; // Every 5th tier is premium by default
             
-            String displayNbt = String.format("{id:\"%s\",Count:1}", displayItem);
             String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemItem);
             
-            tiers.put(i, new BattlePassTier(
-                i,
-                isPremium ? null : redeemNbt,  // free reward
-                isPremium ? redeemNbt : null    // premium reward
-            ));
+            Reward freeReward = isPremium ? null : Reward.minecraftItem(redeemNbt);
+            Reward premiumReward = isPremium ? Reward.minecraftItem(redeemNbt) : null;
+            
+            tiers.put(i, new BattlePassTier(i, freeReward, premiumReward));
         }
     }
 
@@ -111,21 +123,19 @@ public class TierConfig {
             JsonObject tierObj = new JsonObject();
             tierObj.addProperty("level", tier.getLevel());
             
-            // Extract item IDs from NBT strings
-            String displayItem = extractItemId(tier.getFreeReward());
-            String redeemableItem = tier.getPremiumReward() != null ? 
-                extractItemId(tier.getPremiumReward()) : 
-                extractItemId(tier.getFreeReward());
+            if (tier.getFreeReward() != null) {
+                tierObj.add("freeReward", tier.getFreeReward().toJson());
+            }
             
-            tierObj.addProperty("displayItem", displayItem);
-            tierObj.addProperty("redeemableItem", redeemableItem);
-            tierObj.addProperty("isPremium", tier.getPremiumReward() != null);
+            if (tier.getPremiumReward() != null) {
+                tierObj.add("premiumReward", tier.getPremiumReward().toJson());
+            }
             
             tiersArray.add(tierObj);
         }
         
         json.add("tiers", tiersArray);
-        Utils.writeFileAsync(TIERS_PATH, TIERS_FILE, Utils.newGson().toJson(json));
+        Utils.writeFileSync(TIERS_PATH, TIERS_FILE, Utils.newGson().toJson(json));
     }
 
     private String extractItemId(String nbtString) {

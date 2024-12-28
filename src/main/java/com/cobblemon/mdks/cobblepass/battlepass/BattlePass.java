@@ -16,7 +16,7 @@ import java.util.UUID;
 
 public class BattlePass {
     private final Map<UUID, PlayerBattlePass> playerPasses = new HashMap<>();
-    private final TierConfig tierConfig;
+    private TierConfig tierConfig;
 
     public BattlePass() {
         this.tierConfig = new TierConfig();
@@ -50,6 +50,11 @@ public class BattlePass {
         });
     }
 
+    public void reload() {
+        this.tierConfig = new TierConfig();
+        init();
+    }
+
     public void save() {
         for (PlayerBattlePass pass : playerPasses.values()) {
             String filename = pass.getPlayerId() + ".json";
@@ -74,22 +79,27 @@ public class BattlePass {
                 Utils.newGson().toJson(pass.toJson()));
     }
 
-    public ItemStack claimReward(ServerPlayer player, int level, boolean premium) {
+    public void claimReward(ServerPlayer player, int level, boolean premium) {
         PlayerBattlePass pass = getPlayerPass(player);
         BattlePassTier tier = getTier(level);
 
         if (tier == null) {
-            return ItemStack.EMPTY;
+            return;
         }
 
-        ItemStack reward = pass.claimReward(level, premium, tier, player.level().registryAccess());
-        if (!reward.isEmpty()) {
-            // Save after claiming reward
-            String filename = player.getUUID() + ".json";
-            Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
-                    Utils.newGson().toJson(pass.toJson()));
+        // Grant reward and save progress
+        if (premium) {
+            tier.grantPremiumReward(player);
+            pass.claimPremiumReward(level);
+        } else {
+            tier.grantFreeReward(player);
+            pass.claimFreeReward(level);
         }
-        return reward;
+
+        // Save after claiming reward
+        String filename = player.getUUID() + ".json";
+        Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
+                Utils.newGson().toJson(pass.toJson()));
     }
 
     public BattlePassTier getTier(int level) {

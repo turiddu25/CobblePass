@@ -42,7 +42,11 @@ public class CobblePass implements ModInitializer {
     public static void reload() {
         config.load();
         permissions = new Permissions();
-        battlePass = new BattlePass(); // This will reload tiers through TierConfig
+        if (battlePass == null) {
+            battlePass = new BattlePass();
+        } else {
+            battlePass.reload(); // Use the reload method instead of creating new instance
+        }
         LOGGER.info("CobblePass reloaded");
     }
 }

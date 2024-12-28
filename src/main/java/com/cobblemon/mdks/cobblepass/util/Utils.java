@@ -128,7 +128,7 @@ public class Utils {
     public static CompletableFuture<Boolean> readFileAsync(String directory, String filename, Consumer<String> callback) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Path path = Paths.get(new File("").getAbsolutePath() + directory, filename);
+                Path path = Paths.get(new File("").getAbsolutePath() + "/" + directory, filename);
                 File file = path.toFile();
 
                 if (!file.exists()) {
@@ -145,6 +145,48 @@ public class Utils {
                 return false;
             }
         });
+    }
+
+    /**
+     * Read a file synchronously
+     */
+    public static String readFileSync(String directory, String filename) {
+        try {
+            // Ensure directory exists
+            File dir = checkForDirectory("/" + directory);
+            Path path = Paths.get(dir.getAbsolutePath(), filename);
+            File file = path.toFile();
+
+            if (!file.exists()) {
+                return "";
+            }
+
+            return new String(Files.readAllBytes(path), StandardCharsets.UTF_8);
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to read file: " + filename, e);
+            return "";
+        }
+    }
+
+    /**
+     * Write to a file synchronously
+     */
+    public static boolean writeFileSync(String directory, String filename, String data) {
+        try {
+            // Ensure directory exists
+            File dir = checkForDirectory("/" + directory);
+            Path path = Paths.get(dir.getAbsolutePath(), filename);
+
+            // Write file
+            try (FileWriter writer = new FileWriter(path.toFile())) {
+                writer.write(data);
+            }
+            CobblePass.LOGGER.info("Wrote file: " + path.toAbsolutePath());
+            return true;
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to write file: " + filename, e);
+            return false;
+        }
     }
 
     /**

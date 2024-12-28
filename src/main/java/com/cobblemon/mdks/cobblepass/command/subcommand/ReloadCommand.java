@@ -18,17 +18,7 @@ public class ReloadCommand extends Subcommand {
     @Override
     public LiteralCommandNode<CommandSourceStack> build() {
         return Commands.literal("reload")
-                .requires(source -> {
-                    if (CobblePass.config.isEnablePermissionNodes()) {
-                        return source.hasPermission(2) && // Op level 2 minimum
-                               (!source.isPlayer() || 
-                                CobblePass.permissions.hasPermission(
-                                    source.getPlayer(),
-                                    "cobblepass.admin.reload"
-                                ));
-                    }
-                    return source.hasPermission(2);
-                })
+                .requires(source -> true)
                 .executes(this::run)
                 .build();
     }
