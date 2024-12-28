@@ -3,32 +3,25 @@ package com.cobblemon.mdks.cobblepass.battlepass;
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.Utils;
-import com.google.gson.JsonArray;
-import com.google.gson.JsonElement;
+import com.cobblemon.mdks.cobblepass.config.TierConfig;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.io.File;
-import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 import java.util.UUID;
 
 public class BattlePass {
-    private final Map<UUID, PlayerBattlePass> playerPasses;
-    private final List<BattlePassTier> tiers;
+    private final Map<UUID, PlayerBattlePass> playerPasses = new HashMap<>();
+    private final TierConfig tierConfig;
 
     public BattlePass() {
-        this.playerPasses = new HashMap<>();
-        this.tiers = new ArrayList<>();
+        this.tierConfig = new TierConfig();
     }
 
     public void init() {
-        // Load tiers
-        loadTiers();
-
         // Load player data
         File playerDir = new File(Constants.PLAYER_DATA_DIR);
         if (playerDir.exists() && playerDir.isDirectory()) {
@@ -38,53 +31,6 @@ public class BattlePass {
                 }
             }
         }
-    }
-
-    public void loadTiers() {
-        Utils.readFileAsync(Constants.CONFIG_DIR, "tiers.json", content -> {
-            if (content == null || content.isEmpty()) {
-                createDefaultTiers();
-                saveTiers();
-                return;
-            }
-
-            try {
-                JsonArray tiersArray = JsonParser.parseString(content).getAsJsonArray();
-                tiers.clear();
-                for (JsonElement element : tiersArray) {
-                    JsonObject tierObj = element.getAsJsonObject();
-                    tiers.add(new BattlePassTier(
-                            tierObj.get("level").getAsInt(),
-                            tierObj.get("freeReward").getAsString(),
-                            tierObj.get("premiumReward").getAsString()
-                    ));
-                }
-            } catch (Exception e) {
-                CobblePass.LOGGER.error("Failed to load tiers", e);
-                createDefaultTiers();
-                saveTiers();
-            }
-        });
-    }
-
-    private void createDefaultTiers() {
-        tiers.clear();
-        // Add some default tiers
-        tiers.add(new BattlePassTier(1, "minecraft:diamond", "minecraft:diamond_block"));
-        tiers.add(new BattlePassTier(2, "minecraft:iron_ingot{Count:5}", "minecraft:iron_block"));
-        tiers.add(new BattlePassTier(3, "cobblemon:poke_ball{Count:3}", "cobblemon:ultra_ball{Count:3}"));
-    }
-
-    public void saveTiers() {
-        JsonArray tiersArray = new JsonArray();
-        for (BattlePassTier tier : tiers) {
-            JsonObject tierObj = new JsonObject();
-            tierObj.addProperty("level", tier.getLevel());
-            tierObj.addProperty("freeReward", tier.getFreeReward());
-            tierObj.addProperty("premiumReward", tier.getPremiumReward());
-            tiersArray.add(tierObj);
-        }
-        Utils.writeFileAsync(Constants.CONFIG_DIR, "tiers.json", Utils.newGson().toJson(tiersArray));
     }
 
     private void loadPlayerPass(String uuid) {
@@ -109,7 +55,7 @@ public class BattlePass {
             Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
                     Utils.newGson().toJson(pass.toJson()));
         }
-        saveTiers();
+        tierConfig.save();
     }
 
     public PlayerBattlePass getPlayerPass(ServerPlayer player) {
@@ -146,13 +92,10 @@ public class BattlePass {
     }
 
     public BattlePassTier getTier(int level) {
-        return tiers.stream()
-                .filter(tier -> tier.getLevel() == level)
-                .findFirst()
-                .orElse(null);
+        return tierConfig.getTier(level);
     }
 
-    public List<BattlePassTier> getTiers() {
-        return new ArrayList<>(tiers);
+    public Map<Integer, BattlePassTier> getTiers() {
+        return tierConfig.getAllTiers();
     }
 }

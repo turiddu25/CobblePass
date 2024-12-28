@@ -31,40 +31,9 @@ import net.minecraft.util.Unit;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
+import java.util.Map;
 
 public class ViewCommand extends Subcommand {
-    // Reward configuration for easy editing
-    private static class TierReward {
-        final ItemStack item;
-        final boolean isPremium;
-
-        TierReward(ItemStack item, boolean isPremium) {
-            this.item = item;
-            this.isPremium = isPremium;
-        }
-    }
-
-    // Helper method to get reward for a tier
-    private static TierReward getRewardForTier(int level) {
-        // Easy to edit rewards for all tiers here
-        return switch (level) {
-            // Premium tiers
-            case 20 -> new TierReward(new ItemStack(Items.DIAMOND), true);
-            case 30 -> new TierReward(new ItemStack(Items.NETHERITE_INGOT), true);
-            
-            // Regular tiers
-            case 1 -> new TierReward(new ItemStack(Items.DIRT), false);
-            case 2 -> new TierReward(new ItemStack(Items.STONE), false);
-            case 3 -> new TierReward(new ItemStack(Items.COAL), false);
-            case 4 -> new TierReward(new ItemStack(Items.IRON_INGOT), false);
-            case 5 -> new TierReward(new ItemStack(Items.GOLD_INGOT), false);
-            // Add more tiers here...
-            
-            // Default reward for unspecified tiers
-            default -> new TierReward(new ItemStack(Items.DIRT), false);
-        };
-    }
-
     public ViewCommand() {
         super("§9Usage: §3/battlepass view");
     }
@@ -144,57 +113,37 @@ public class ViewCommand extends Subcommand {
             .set(0, 8, premiumButton)
             .build();
 
-        // Create tier pairs (reward + status) for all 100 tiers
+        // Create tier pairs (reward + status) for all tiers
         List<Button> rewardButtons = new ArrayList<>();
         List<Button> statusButtons = new ArrayList<>();
-        int totalTiers = 100;
+        Map<Integer, BattlePassTier> tiers = CobblePass.battlePass.getTiers();
+        int totalTiers = tiers.size();
         
         for (int i = 1; i <= totalTiers; i++) {
             final int level = i;
-            BattlePassTier tier = null;
-            // Find existing tier if available
-            for (BattlePassTier t : CobblePass.battlePass.getTiers()) {
-                if (t.getLevel() == level) {
-                    tier = t;
-                    break;
-                }
-            }
+            BattlePassTier tier = tiers.get(level);
+            if (tier == null) continue;
             
-            final BattlePassTier finalTier = tier;
-            
-            // Get tier reward
-            TierReward reward = getRewardForTier(level);
-            boolean isPremiumTier = reward.isPremium;
+            // Get display item for the tier
+            ItemStack displayItem = tier.getFreeRewardItem(player.level().registryAccess());
+            boolean isPremiumTier = tier.hasPremiumReward(player.level().registryAccess());
 
             // Create reward button with tier-specific item
             Button rewardButton = GooeyButton.builder()
-                .display(reward.item)
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + reward.item.getDisplayName().getString()))
+                .display(displayItem)
+                .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + displayItem.getDisplayName().getString()))
                 .with(DataComponents.LORE, new ItemLore(Arrays.asList()))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
-                    if (finalTier == null) {
-                        player.sendSystemMessage(Component.literal("§cNo reward configured for level " + level));
-                        return;
-                    }
                     if (level > pass.getLevel()) {
                         player.sendSystemMessage(Component.literal("§cReach level " + level + " to unlock these rewards!"));
                         return;
                     }
 
-                    boolean claimed = false;
-                    if (finalTier.hasFreeReward(player.level().registryAccess()) && !pass.hasClaimedFreeReward(level)) {
-                        claimed = pass.claimReward(level, false, finalTier, player.level().registryAccess());
-                    }
-                    if (finalTier.hasPremiumReward(player.level().registryAccess()) && pass.isPremium() && !pass.hasClaimedPremiumReward(level)) {
-                        claimed = claimed || pass.claimReward(level, true, finalTier, player.level().registryAccess());
-                    }
-
-                    if (claimed) {
+                    // Try to claim rewards
+                    if (CobblePass.battlePass.claimReward(player, level, isPremiumTier)) {
                         player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
                         showBattlePassInfo(player); // Refresh UI
-                    } else {
-                        player.sendSystemMessage(Component.literal("§cNo available rewards to claim for level " + level + "!"));
                     }
                 })
                 .build();
@@ -221,20 +170,25 @@ public class ViewCommand extends Subcommand {
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .build();
 
-            // Update click handler for premium tiers
+            // Add premium check for premium tiers
             if (isPremiumTier) {
-                final Button finalRewardButton = rewardButton;
                 rewardButton = GooeyButton.builder()
-                    .display(reward.item)
-                    .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + reward.item.getDisplayName().getString()))
-                    .with(DataComponents.LORE, new ItemLore(Arrays.asList()))
+                    .display(displayItem)
+                    .with(DataComponents.CUSTOM_NAME, Component.literal("§f" + displayItem.getDisplayName().getString()))
+                    .with(DataComponents.LORE, new ItemLore(Arrays.asList(
+                        Component.literal("§6Premium Reward")
+                    )))
                     .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                     .onClick(action -> {
                         if (!pass.isPremium()) {
                             player.sendSystemMessage(Component.literal("§cThis is a premium reward! Use §f/battlepass premium §cto unlock."));
                             return;
                         }
-                        finalRewardButton.onClick(action); // Use original click handler
+                        // Try to claim premium reward
+                        if (CobblePass.battlePass.claimReward(player, level, true)) {
+                            player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
+                            showBattlePassInfo(player); // Refresh UI
+                        }
                     })
                     .build();
             }

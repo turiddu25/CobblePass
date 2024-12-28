@@ -25,9 +25,8 @@ public class CobblePass implements ModInitializer {
         // Initialize permissions
         permissions = new Permissions();
 
-        // Initialize battle pass
+        // Initialize battle pass (tiers are loaded in constructor)
         battlePass = new BattlePass();
-        battlePass.loadTiers();
 
         // Add commands to registry
         CommandsRegistry.addCommand(new BattlePassCommand());
@@ -43,7 +42,7 @@ public class CobblePass implements ModInitializer {
     public static void reload() {
         config.load();
         permissions = new Permissions();
-        battlePass.loadTiers();
+        battlePass = new BattlePass(); // This will reload tiers through TierConfig
         LOGGER.info("CobblePass reloaded");
     }
 }

@@ -1,0 +1,124 @@
+{
+  "tiers": [
+    {
+      "level": 1,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 2,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 3,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 4,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 5,
+      "displayItem": "minecraft:gold_ingot",
+      "redeemableItem": "minecraft:gold_block",
+      "isPremium": true
+    },
+    {
+      "level": 6,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 7,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 8,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 9,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 10,
+      "displayItem": "minecraft:diamond",
+      "redeemableItem": "minecraft:diamond_block",
+      "isPremium": true
+    },
+    {
+      "level": 11,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 12,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 13,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 14,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 15,
+      "displayItem": "minecraft:gold_ingot",
+      "redeemableItem": "minecraft:gold_block",
+      "isPremium": true
+    },
+    {
+      "level": 16,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 17,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 18,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 19,
+      "displayItem": "minecraft:iron_ingot",
+      "redeemableItem": "minecraft:iron_block",
+      "isPremium": false
+    },
+    {
+      "level": 20,
+      "displayItem": "minecraft:diamond",
+      "redeemableItem": "minecraft:diamond_block",
+      "isPremium": true
+    }
+  ]
+}

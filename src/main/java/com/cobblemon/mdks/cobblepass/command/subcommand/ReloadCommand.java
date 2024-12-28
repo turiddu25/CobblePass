@@ -1,6 +1,7 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.battlepass.BattlePass;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -39,7 +40,7 @@ public class ReloadCommand extends Subcommand {
             CobblePass.reload();
             
             // Reload battle pass data
-            CobblePass.battlePass.loadTiers();
+            CobblePass.battlePass = new BattlePass(); // This will reload tiers through TierConfig
 
             context.getSource().sendSystemMessage(Component.literal(
                 "§aBattle Pass configuration reloaded successfully!"
