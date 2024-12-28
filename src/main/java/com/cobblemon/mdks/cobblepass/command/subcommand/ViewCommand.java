@@ -125,8 +125,10 @@ public class ViewCommand extends Subcommand {
             if (tier == null) continue;
             
             // Get display item for the tier
-            ItemStack displayItem = tier.getFreeRewardItem(player.level().registryAccess());
             boolean isPremiumTier = tier.hasPremiumReward(player.level().registryAccess());
+            ItemStack displayItem = isPremiumTier ? 
+                tier.getPremiumRewardItem(player.level().registryAccess()) : 
+                tier.getFreeRewardItem(player.level().registryAccess());
 
             // Create reward button with tier-specific item
             Button rewardButton = GooeyButton.builder()
@@ -141,9 +143,13 @@ public class ViewCommand extends Subcommand {
                     }
 
                     // Try to claim rewards
-                    if (CobblePass.battlePass.claimReward(player, level, isPremiumTier)) {
+                    ItemStack reward = CobblePass.battlePass.claimReward(player, level, isPremiumTier);
+                    if (!reward.isEmpty()) {
+                        player.getInventory().add(reward);
                         player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
                         showBattlePassInfo(player); // Refresh UI
+                    } else {
+                        player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
                     }
                 })
                 .build();
@@ -158,6 +164,10 @@ public class ViewCommand extends Subcommand {
             } else if (isPremiumTier && !pass.isPremium()) {
                 statusGlass = new ItemStack(Items.RED_STAINED_GLASS_PANE);
                 statusLore.add(Component.literal("§cPremium Only"));
+            } else if ((isPremiumTier && pass.hasClaimedPremiumReward(level)) || 
+                      (!isPremiumTier && pass.hasClaimedFreeReward(level))) {
+                statusGlass = new ItemStack(Items.ORANGE_STAINED_GLASS_PANE);
+                statusLore.add(Component.literal("§6Claimed"));
             } else {
                 statusGlass = new ItemStack(Items.GREEN_STAINED_GLASS_PANE);
                 statusLore.add(Component.literal("§aAvailable"));
@@ -185,9 +195,13 @@ public class ViewCommand extends Subcommand {
                             return;
                         }
                         // Try to claim premium reward
-                        if (CobblePass.battlePass.claimReward(player, level, true)) {
+                        ItemStack reward = CobblePass.battlePass.claimReward(player, level, true);
+                        if (!reward.isEmpty()) {
+                            player.getInventory().add(reward);
                             player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
                             showBattlePassInfo(player); // Refresh UI
+                        } else {
+                            player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
                         }
                     })
                     .build();

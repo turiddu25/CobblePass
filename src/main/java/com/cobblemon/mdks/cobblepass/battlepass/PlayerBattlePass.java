@@ -52,31 +52,31 @@ public class PlayerBattlePass {
         return (int)(CobblePass.config.getXpPerLevel() * Math.pow(Constants.XP_MULTIPLIER, level - 1));
     }
 
-    public boolean claimReward(int level, boolean premium, BattlePassTier tier, RegistryAccess registryAccess) {
+    public ItemStack claimReward(int level, boolean premium, BattlePassTier tier, RegistryAccess registryAccess) {
         if (this.level < level) {
-            return false;
+            return ItemStack.EMPTY;
         }
 
         if (premium) {
             if (!isPremium || hasClaimedPremiumReward(level)) {
-                return false;
+                return ItemStack.EMPTY;
             }
             ItemStack reward = tier.getPremiumRewardItem(registryAccess);
             if (reward.isEmpty()) {
-                return false;
+                return ItemStack.EMPTY;
             }
             claimedPremiumRewards.add(level);
-            return true;
+            return reward;
         } else {
             if (hasClaimedFreeReward(level)) {
-                return false;
+                return ItemStack.EMPTY;
             }
             ItemStack reward = tier.getFreeRewardItem(registryAccess);
             if (reward.isEmpty()) {
-                return false;
+                return ItemStack.EMPTY;
             }
             claimedFreeRewards.add(level);
-            return true;
+            return reward;
         }
     }
 

@@ -60,11 +60,12 @@ public class TierConfig {
             // Convert redeemable item to NBT format
             String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemableItem);
             
-            // Premium rewards are null if tier is not premium
+            // Set free reward as redeemable item for non-premium tiers
+            // For premium tiers, set both free and premium rewards
             tiers.put(level, new BattlePassTier(
                 level,
-                displayNbt,
-                isPremium ? redeemNbt : null
+                isPremium ? null : redeemNbt,  // free reward
+                isPremium ? redeemNbt : null    // premium reward
             ));
         }
     }
@@ -82,8 +83,8 @@ public class TierConfig {
             
             tiers.put(i, new BattlePassTier(
                 i,
-                displayNbt,
-                isPremium ? redeemNbt : null
+                isPremium ? null : redeemNbt,  // free reward
+                isPremium ? redeemNbt : null    // premium reward
             ));
         }
     }

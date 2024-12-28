@@ -7,6 +7,7 @@ import com.cobblemon.mdks.cobblepass.config.TierConfig;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.world.item.ItemStack;
 
 import java.io.File;
 import java.util.HashMap;
@@ -73,22 +74,22 @@ public class BattlePass {
                 Utils.newGson().toJson(pass.toJson()));
     }
 
-    public boolean claimReward(ServerPlayer player, int level, boolean premium) {
+    public ItemStack claimReward(ServerPlayer player, int level, boolean premium) {
         PlayerBattlePass pass = getPlayerPass(player);
         BattlePassTier tier = getTier(level);
 
         if (tier == null) {
-            return false;
+            return ItemStack.EMPTY;
         }
 
-        boolean claimed = pass.claimReward(level, premium, tier, player.level().registryAccess());
-        if (claimed) {
+        ItemStack reward = pass.claimReward(level, premium, tier, player.level().registryAccess());
+        if (!reward.isEmpty()) {
             // Save after claiming reward
             String filename = player.getUUID() + ".json";
             Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
                     Utils.newGson().toJson(pass.toJson()));
         }
-        return claimed;
+        return reward;
     }
 
     public BattlePassTier getTier(int level) {
