@@ -49,15 +49,13 @@ public class PlayerBattlePass {
     }
 
     public void claimFreeReward(int level) {
-        if (this.level >= level && !hasClaimedFreeReward(level)) {
-            claimedFreeRewards.add(level);
-        }
+        // Always record the claim since checks are done in ClaimCommand
+        claimedFreeRewards.add(level);
     }
 
     public void claimPremiumReward(int level) {
-        if (this.level >= level && isPremium() && !hasClaimedPremiumReward(level)) {
-            claimedPremiumRewards.add(level);
-        }
+        // Always record the claim since checks are done in ClaimCommand
+        claimedPremiumRewards.add(level);
     }
 
     public void setPremium(boolean premium) {

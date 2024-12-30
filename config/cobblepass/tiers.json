@@ -32,8 +32,7 @@
       "level": 5,
       "premiumReward": {
         "type": "POKEMON",
-        "data": "{species:\"pikachu\",level:15}",
-        "command": "pokegive %player% pikachu level=15"
+        "data": "{species:\"pikachu\",level:15}"
       }
     },
     {
@@ -68,8 +67,7 @@
       "level": 10,
       "premiumReward": {
         "type": "POKEMON",
-        "data": "{species:\"charmander\",level:20,shiny:true}",
-        "command": "pokegive %player% charmander level=20 shiny"
+        "data": "{species:\"charmander\",level:20,shiny:true}"
       }
     }
   ]

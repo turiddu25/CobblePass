@@ -58,6 +58,7 @@ public class Constants {
     public static final String MSG_PREMIUM_UNLOCKED = SUCCESS_PREFIX + "You unlocked the Premium Battle Pass!";
     public static final String MSG_NO_REWARD = ERROR_PREFIX + "No reward available at level §e%d§f!";
     public static final String MSG_ALREADY_CLAIMED = ERROR_PREFIX + "You already claimed this reward!";
+    public static final String MSG_ALREADY_CLAIMED_LEVEL = ERROR_PREFIX + "You already claimed the reward for level §e%d§f!";
     public static final String MSG_NOT_PREMIUM = ERROR_PREFIX + "This is a premium reward! Use §e/battlepass premium§f to unlock.";
     public static final String MSG_CONFIG_RELOADED = SUCCESS_PREFIX + "Configuration reloaded!";
     

@@ -6,6 +6,7 @@ import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.cobblemon.mdks.cobblepass.config.TierConfig;
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.world.item.ItemStack;
 
@@ -36,23 +37,28 @@ public class BattlePass {
 
     private void loadPlayerPass(String uuid) {
         String filename = uuid + ".json";
-        Utils.readFileAsync(Constants.PLAYER_DATA_DIR, filename, content -> {
-            if (content == null || content.isEmpty()) return;
+        String content = Utils.readFileSync(Constants.PLAYER_DATA_DIR, filename);
+        
+        if (content == null || content.isEmpty()) return;
 
-            try {
-                JsonObject json = JsonParser.parseString(content).getAsJsonObject();
-                PlayerBattlePass pass = new PlayerBattlePass(UUID.fromString(uuid));
-                pass.fromJson(json);
-                playerPasses.put(UUID.fromString(uuid), pass);
-            } catch (Exception e) {
-                CobblePass.LOGGER.error("Failed to load battle pass for " + uuid, e);
-            }
-        });
+        try {
+            JsonObject json = JsonParser.parseString(content).getAsJsonObject();
+            PlayerBattlePass pass = new PlayerBattlePass(UUID.fromString(uuid));
+            pass.fromJson(json);
+            playerPasses.put(UUID.fromString(uuid), pass);
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to load battle pass for " + uuid, e);
+        }
     }
 
     public void reload() {
         this.tierConfig = new TierConfig();
         init();
+    }
+
+    public void reloadTiers() {
+        // Only reload tier configuration without touching player data
+        this.tierConfig = new TierConfig();
     }
 
     public void save() {
@@ -73,9 +79,9 @@ public class BattlePass {
         PlayerBattlePass pass = getPlayerPass(player);
         pass.addXP(amount);
 
-        // Save after XP change
+        // Save after XP change - use sync to ensure level progression is saved immediately
         String filename = player.getUUID() + ".json";
-        Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
+        Utils.writeFileSync(Constants.PLAYER_DATA_DIR, filename,
                 Utils.newGson().toJson(pass.toJson()));
     }
 
@@ -87,19 +93,39 @@ public class BattlePass {
             return;
         }
 
-        // Grant reward and save progress
+        // Check if already claimed
+        if (premium && pass.hasClaimedPremiumReward(level)) {
+            player.sendSystemMessage(Component.literal(String.format(
+                Constants.MSG_ALREADY_CLAIMED_LEVEL,
+                level
+            )));
+            return;
+        } else if (!premium && pass.hasClaimedFreeReward(level)) {
+            player.sendSystemMessage(Component.literal(String.format(
+                Constants.MSG_ALREADY_CLAIMED_LEVEL,
+                level
+            )));
+            return;
+        }
+
+        // Mark as claimed first
         if (premium) {
-            tier.grantPremiumReward(player);
             pass.claimPremiumReward(level);
         } else {
-            tier.grantFreeReward(player);
             pass.claimFreeReward(level);
         }
 
-        // Save after claiming reward
+        // Save claim state immediately
         String filename = player.getUUID() + ".json";
-        Utils.writeFileAsync(Constants.PLAYER_DATA_DIR, filename,
+        Utils.writeFileSync(Constants.PLAYER_DATA_DIR, filename,
                 Utils.newGson().toJson(pass.toJson()));
+
+        // Grant reward after saving claim state
+        if (premium) {
+            tier.grantPremiumReward(player);
+        } else {
+            tier.grantFreeReward(player);
+        }
     }
 
     public BattlePassTier getTier(int level) {

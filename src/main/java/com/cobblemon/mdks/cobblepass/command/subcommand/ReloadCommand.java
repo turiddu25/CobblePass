@@ -26,11 +26,11 @@ public class ReloadCommand extends Subcommand {
     @Override
     public int run(CommandContext<CommandSourceStack> context) {
         try {
-            // Reload configuration
+            // Only reload configuration files
             CobblePass.reload();
             
-            // Reload battle pass data
-            CobblePass.battlePass = new BattlePass(); // This will reload tiers through TierConfig
+            // Reload tier configuration without resetting player data
+            CobblePass.battlePass.reloadTiers();
 
             context.getSource().sendSystemMessage(Component.literal(
                 "§aBattle Pass configuration reloaded successfully!"

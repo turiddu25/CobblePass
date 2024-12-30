@@ -1,6 +1,8 @@
 package com.cobblemon.mdks.cobblepass.data;
 
+import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -54,6 +56,34 @@ public class Reward {
                 }
                 break;
             case POKEMON:
+                if (data != null && !data.isEmpty()) {
+                    try {
+                        // Parse Pokemon data
+                        JsonObject pokemonData = JsonParser.parseString(data).getAsJsonObject();
+                        String species = pokemonData.get("species").getAsString();
+                        
+                        // Build command with attributes
+                        StringBuilder cmd = new StringBuilder();
+                        cmd.append("givepokemonother ").append(player.getName().getString()).append(" ").append(species);
+                        
+                        if (pokemonData.has("shiny") && pokemonData.get("shiny").getAsBoolean()) {
+                            cmd.append(" shiny");
+                        }
+                        if (pokemonData.has("level")) {
+                            cmd.append(" level=").append(pokemonData.get("level").getAsInt());
+                        }
+                        if (pokemonData.has("ability")) {
+                            cmd.append(" ability=").append(pokemonData.get("ability").getAsString());
+                        }
+                        
+                        // Execute command as server
+                        CommandSourceStack source = player.getServer().createCommandSourceStack();
+                        player.getServer().getCommands().performPrefixedCommand(source, cmd.toString());
+                    } catch (Exception e) {
+                        CobblePass.LOGGER.error("Failed to grant Pokemon reward: " + e.getMessage());
+                    }
+                }
+                break;
             case COMMAND:
                 if (command != null && !command.isEmpty()) {
                     // Replace placeholders in command
@@ -61,15 +91,9 @@ public class Reward {
                         .replace("%player%", player.getName().getString())
                         .replace("%uuid%", player.getUUID().toString());
                     
-                    // Execute command as player for Pokemon rewards, as server for others
-                    CommandSourceStack source = type == RewardType.POKEMON ? 
-                        player.createCommandSourceStack() : 
-                        player.getServer().createCommandSourceStack();
-                    
-                    player.getServer().getCommands().performPrefixedCommand(
-                        source,
-                        finalCommand
-                    );
+                    // Always execute commands as server to ensure proper permissions
+                    CommandSourceStack source = player.getServer().createCommandSourceStack();
+                    player.getServer().getCommands().performPrefixedCommand(source, finalCommand);
                 }
                 break;
         }

@@ -45,7 +45,7 @@ public class CobblePass implements ModInitializer {
         if (battlePass == null) {
             battlePass = new BattlePass();
         } else {
-            battlePass.reload(); // Use the reload method instead of creating new instance
+            battlePass.reloadTiers(); // Only reload tier configuration without affecting player data
         }
         LOGGER.info("CobblePass reloaded");
     }

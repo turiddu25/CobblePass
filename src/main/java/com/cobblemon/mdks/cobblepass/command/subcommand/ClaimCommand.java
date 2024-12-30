@@ -52,8 +52,8 @@ public class ClaimCommand extends Subcommand {
         }
 
         // Check if player has reached this level
-        if (pass.getLevel() < level) {
-            player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached this level yet!"));
+        if (level > pass.getLevel()) {
+            player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
             return 1;
         }
 
