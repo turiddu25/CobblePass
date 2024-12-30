@@ -15,7 +15,6 @@ public class PlayerBattlePass {
     private int level;
     private int xp;
     private boolean isPremium;
-    private long premiumExpiry;
     private final Set<Integer> claimedFreeRewards;
     private final Set<Integer> claimedPremiumRewards;
 
@@ -25,7 +24,6 @@ public class PlayerBattlePass {
         this.level = 1;
         this.xp = 0;
         this.isPremium = false;
-        this.premiumExpiry = -1;
         this.claimedFreeRewards = new HashSet<>();
         this.claimedPremiumRewards = new HashSet<>();
     }
@@ -62,16 +60,8 @@ public class PlayerBattlePass {
         }
     }
 
-    public void setPremium(boolean premium, long duration) {
+    public void setPremium(boolean premium) {
         this.isPremium = premium;
-        this.premiumExpiry = duration > 0 ? System.currentTimeMillis() + duration : -1;
-    }
-
-    public void checkPremiumExpiry() {
-        if (premiumExpiry > 0 && System.currentTimeMillis() > premiumExpiry) {
-            isPremium = false;
-            premiumExpiry = -1;
-        }
     }
 
     public boolean hasClaimedFreeReward(int level) {
@@ -88,7 +78,6 @@ public class PlayerBattlePass {
         json.addProperty("level", level);
         json.addProperty("xp", xp);
         json.addProperty("isPremium", isPremium);
-        json.addProperty("premiumExpiry", premiumExpiry);
 
         JsonArray freeRewards = new JsonArray();
         claimedFreeRewards.forEach(freeRewards::add);
@@ -106,7 +95,6 @@ public class PlayerBattlePass {
         level = json.get("level").getAsInt();
         xp = json.get("xp").getAsInt();
         isPremium = json.get("isPremium").getAsBoolean();
-        premiumExpiry = json.get("premiumExpiry").getAsLong();
 
         claimedFreeRewards.clear();
         json.get("claimedFreeRewards").getAsJsonArray()
@@ -116,7 +104,6 @@ public class PlayerBattlePass {
         json.get("claimedPremiumRewards").getAsJsonArray()
                 .forEach(e -> claimedPremiumRewards.add(e.getAsInt()));
 
-        checkPremiumExpiry();
     }
 
     // Getters
@@ -125,10 +112,8 @@ public class PlayerBattlePass {
     public int getLevel() { return level; }
     public int getXP() { return xp; }
     public boolean isPremium() {
-        checkPremiumExpiry();
-        return isPremium;
+        return isPremium && CobblePass.config.isSeasonActive();
     }
-    public long getPremiumExpiry() { return premiumExpiry; }
     public Set<Integer> getClaimedFreeRewards() { return new HashSet<>(claimedFreeRewards); }
     public Set<Integer> getClaimedPremiumRewards() { return new HashSet<>(claimedPremiumRewards); }
     public boolean hasPremium() { return isPremium(); }

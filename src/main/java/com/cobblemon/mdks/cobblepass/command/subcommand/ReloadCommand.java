@@ -18,7 +18,7 @@ public class ReloadCommand extends Subcommand {
     @Override
     public LiteralCommandNode<CommandSourceStack> build() {
         return Commands.literal("reload")
-                .requires(source -> true)
+                .requires(source -> source.hasPermission(4)) // Requires operator permission level
                 .executes(this::run)
                 .build();
     }

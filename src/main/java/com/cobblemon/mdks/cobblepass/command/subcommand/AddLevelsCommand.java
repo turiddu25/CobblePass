@@ -21,6 +21,7 @@ public class AddLevelsCommand extends Subcommand {
     @Override
     public LiteralCommandNode<CommandSourceStack> build() {
         return Commands.literal("addlevels")
+                .requires(source -> source.hasPermission(4)) // Requires operator permission level
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("levels", IntegerArgumentType.integer(1, 100))
                         .executes(this::run)))

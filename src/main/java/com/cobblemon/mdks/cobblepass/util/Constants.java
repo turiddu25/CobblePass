@@ -20,6 +20,7 @@ public class Constants {
     public static final String PERM_COMMAND_BASE = "battlepass.command";
     public static final String PERM_COMMAND_ADMIN = "battlepass.admin";
     public static final String PERM_COMMAND_RELOAD = "battlepass.reload";
+    public static final String PERM_COMMAND_START_SEASON = "battlepass.season.start";
     
     // Config Paths
     public static final String CONFIG_DIR = "config/cobblepass";
@@ -42,7 +43,6 @@ public class Constants {
     public static final int DEFAULT_MAX_LEVEL = 100;
     public static final int DEFAULT_XP_PER_LEVEL = 1000;
     public static final long DEFAULT_PREMIUM_COST = 1000;
-    public static final long DEFAULT_PREMIUM_DURATION = 30 * 24 * 60 * 60 * 1000L; // 30 days in milliseconds
     public static final boolean DEFAULT_ENABLE_PERMISSION_NODES = true;
     
     // Time Constants
@@ -60,4 +60,10 @@ public class Constants {
     public static final String MSG_ALREADY_CLAIMED = ERROR_PREFIX + "You already claimed this reward!";
     public static final String MSG_NOT_PREMIUM = ERROR_PREFIX + "This is a premium reward! Use §e/battlepass premium§f to unlock.";
     public static final String MSG_CONFIG_RELOADED = SUCCESS_PREFIX + "Configuration reloaded!";
+    
+    // Season Messages
+    public static final String MSG_SEASON_STARTED = SUCCESS_PREFIX + "Battle Pass Season %d has begun!";
+    public static final String MSG_SEASON_ALREADY_ACTIVE = ERROR_PREFIX + "A battle pass season is already active! (Season %d)";
+    public static final String MSG_NO_ACTIVE_SEASON = ERROR_PREFIX + "No battle pass season is currently active!";
+    public static final String MSG_SEASON_TIME_REMAINING = PREFIX + "Season %d ends in %s";
 }

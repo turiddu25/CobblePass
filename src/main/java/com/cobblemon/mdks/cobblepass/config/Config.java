@@ -12,7 +12,8 @@ public class Config {
     private int maxLevel;
     private int xpPerLevel;
     private long premiumCost;
-    private long premiumDuration;
+    private long seasonStartTime;
+    private int currentSeason;
     private boolean enablePermissionNodes;
 
     public Config() {
@@ -24,7 +25,9 @@ public class Config {
         this.maxLevel = Constants.DEFAULT_MAX_LEVEL;
         this.xpPerLevel = Constants.DEFAULT_XP_PER_LEVEL;
         this.premiumCost = Constants.DEFAULT_PREMIUM_COST;
-        this.premiumDuration = Constants.DEFAULT_PREMIUM_DURATION;
+        // Season duration is fixed at 60 days
+        this.seasonStartTime = -1L; // -1 means no active season
+        this.currentSeason = 0; // 0 means no season has started
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
     }
 
@@ -51,7 +54,8 @@ public class Config {
         maxLevel = getOrDefault(json, "maxLevel", Constants.DEFAULT_MAX_LEVEL);
         xpPerLevel = getOrDefault(json, "xpPerLevel", Constants.DEFAULT_XP_PER_LEVEL);
         premiumCost = getOrDefault(json, "premiumCost", Constants.DEFAULT_PREMIUM_COST);
-        premiumDuration = getOrDefault(json, "premiumDuration", Constants.DEFAULT_PREMIUM_DURATION);
+        seasonStartTime = getOrDefault(json, "seasonStartTime", -1L);
+        currentSeason = getOrDefault(json, "currentSeason", 0);
         enablePermissionNodes = getOrDefault(json, "enablePermissionNodes", Constants.DEFAULT_ENABLE_PERMISSION_NODES);
 
         // Version check and upgrade if needed
@@ -84,7 +88,8 @@ public class Config {
         json.addProperty("maxLevel", maxLevel);
         json.addProperty("xpPerLevel", xpPerLevel);
         json.addProperty("premiumCost", premiumCost);
-        json.addProperty("premiumDuration", premiumDuration);
+        json.addProperty("seasonStartTime", seasonStartTime);
+        json.addProperty("currentSeason", currentSeason);
         json.addProperty("enablePermissionNodes", enablePermissionNodes);
 
         Utils.writeFileAsync(Constants.CONFIG_PATH, Constants.CONFIG_FILE,
@@ -96,6 +101,15 @@ public class Config {
     public int getMaxLevel() { return maxLevel; }
     public int getXpPerLevel() { return xpPerLevel; }
     public long getPremiumCost() { return premiumCost; }
-    public long getPremiumDuration() { return premiumDuration; }
+    public long getSeasonStartTime() { return seasonStartTime; }
+    public int getCurrentSeason() { return currentSeason; }
+    public long getSeasonEndTime() { return seasonStartTime + (1000L * 60 * 60 * 24 * 60); } // Fixed 60 days
+    public boolean isSeasonActive() { return seasonStartTime > 0 && System.currentTimeMillis() < getSeasonEndTime(); }
+    
+    public void startNewSeason() {
+        currentSeason++;
+        seasonStartTime = System.currentTimeMillis();
+        save();
+    }
     public boolean isEnablePermissionNodes() { return enablePermissionNodes; }
 }

@@ -60,6 +60,17 @@ public class ViewCommand extends Subcommand {
         return 1;
     }
 
+    private static String formatTimeRemaining(long milliseconds) {
+        long seconds = milliseconds / 1000;
+        long days = seconds / (24 * 3600);
+        seconds %= (24 * 3600);
+        long hours = seconds / 3600;
+        seconds %= 3600;
+        long minutes = seconds / 60;
+        
+        return String.format("%d days, %d hours, %d minutes", days, hours, minutes);
+    }
+
     private static List<Component> getRewardLore(BattlePassTier tier, boolean isPremium) {
         List<Component> lore = new ArrayList<>();
         if (isPremium) {
@@ -136,12 +147,14 @@ public class ViewCommand extends Subcommand {
         ItemStack premiumDisplay = pass.isPremium() ? new ItemStack(Items.GOLDEN_APPLE) : new ItemStack(Items.APPLE);
         List<Component> premiumLore = new ArrayList<>();
         if (pass.isPremium()) {
-            if (pass.getPremiumExpiry() > 0) {
-                long timeLeft = pass.getPremiumExpiry() - System.currentTimeMillis();
-                premiumLore.add(Component.literal("§aActive"));
-                premiumLore.add(Component.literal("§7Expires in: " + Utils.formatDuration(timeLeft)));
+            if (CobblePass.config.isSeasonActive()) {
+                long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
+                if (timeLeft > 0) {
+                    premiumLore.add(Component.literal("§3Season " + CobblePass.config.getCurrentSeason()));
+                    premiumLore.add(Component.literal("§3Time Remaining: §b" + formatTimeRemaining(timeLeft)));
+                }
             } else {
-                premiumLore.add(Component.literal("§aActive §7(Permanent)"));
+                premiumLore.add(Component.literal("§cNo active season"));
             }
         } else {
             premiumLore.add(Component.literal("§cInactive"));

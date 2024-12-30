@@ -1,10 +1,6 @@
 package com.cobblemon.mdks.cobblepass.command;
 
-import com.cobblemon.mdks.cobblepass.command.subcommand.AddLevelsCommand;
-import com.cobblemon.mdks.cobblepass.command.subcommand.ClaimCommand;
-import com.cobblemon.mdks.cobblepass.command.subcommand.PremiumCommand;
-import com.cobblemon.mdks.cobblepass.command.subcommand.ReloadCommand;
-import com.cobblemon.mdks.cobblepass.command.subcommand.ViewCommand;
+import com.cobblemon.mdks.cobblepass.command.subcommand.*;
 import com.cobblemon.mdks.cobblepass.util.BaseCommand;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
@@ -14,18 +10,20 @@ import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 
 import java.util.Arrays;
+import java.util.List;
 
 public class BattlePassCommand extends BaseCommand {
     public BattlePassCommand() {
         super("battlepass",
                 Constants.COMMAND_ALIASES,
                 new Permissions().getPermission(Constants.PERM_COMMAND_BASE),
-                Arrays.asList(
+                List.of(
                         new ViewCommand(),
                         new ClaimCommand(),
                         new AddLevelsCommand(),
                         new PremiumCommand(),
-                        new ReloadCommand()
+                        new ReloadCommand(),
+                        new StartCommand()
                 )
         );
     }
