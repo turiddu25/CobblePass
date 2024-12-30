@@ -11,6 +11,8 @@ public class Config {
     private String version;
     private int maxLevel;
     private int xpPerLevel;
+    private int catchXP;
+    private int defeatXP;
     private long premiumCost;
     private long seasonStartTime;
     private int currentSeason;
@@ -87,6 +89,8 @@ public class Config {
         json.addProperty("version", version);
         json.addProperty("maxLevel", maxLevel);
         json.addProperty("xpPerLevel", xpPerLevel);
+        json.addProperty("catchXP", catchXP);
+        json.addProperty("defeatXP", defeatXP);
         json.addProperty("premiumCost", premiumCost);
         json.addProperty("seasonStartTime", seasonStartTime);
         json.addProperty("currentSeason", currentSeason);
@@ -100,6 +104,8 @@ public class Config {
     public String getVersion() { return version; }
     public int getMaxLevel() { return maxLevel; }
     public int getXpPerLevel() { return xpPerLevel; }
+    public int getCatchXP() { return catchXP; }
+    public int getDefeatXP() { return defeatXP; }
     public long getPremiumCost() { return premiumCost; }
     public long getSeasonStartTime() { return seasonStartTime; }
     public int getCurrentSeason() { return currentSeason; }

@@ -6,6 +6,10 @@ import com.cobblemon.mdks.cobblepass.config.Config;
 import com.cobblemon.mdks.cobblepass.util.CommandsRegistry;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
 import net.fabricmc.api.ModInitializer;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
+import com.cobblemon.mdks.cobblepass.listeners.CatchPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.DefeatPokemonListener;
+import com.cobblemon.mod.common.api.Priority;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.LoggerFactory;
 
@@ -37,6 +41,13 @@ public class CobblePass implements ModInitializer {
         );
 
         LOGGER.info("CobblePass initialized");
+
+        // Register event listeners
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            CobblePass.server = server;
+            CatchPokemonListener.register();
+            DefeatPokemonListener.register();
+        });
     }
 
     public static void reload() {

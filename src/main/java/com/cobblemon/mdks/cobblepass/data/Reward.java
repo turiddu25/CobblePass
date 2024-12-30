@@ -40,7 +40,11 @@ public class Reward {
 
         try {
             CompoundTag tag = TagParser.parseTag(data);
-            return ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
+            ItemStack stack = ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
+            if (tag.contains("Count")) {
+                stack.setCount(tag.getInt("Count"));
+            }
+            return stack;
         } catch (Exception e) {
             return ItemStack.EMPTY;
         }

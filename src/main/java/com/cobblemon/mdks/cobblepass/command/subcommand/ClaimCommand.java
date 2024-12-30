@@ -51,14 +51,14 @@ public class ClaimCommand extends Subcommand {
             return 1;
         }
 
-        // Check if player has reached this level
-        if (level > pass.getLevel()) {
-            player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
-            return 1;
-        }
-
         // Handle premium rewards
         if (premium) {
+            // Check if player has reached this level
+            if (level > pass.getLevel()) {
+                player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
+                return 1;
+            }
+
             if (!pass.isPremium()) {
                 player.sendSystemMessage(Component.literal(Constants.MSG_NOT_PREMIUM));
                 return 1;
@@ -84,6 +84,12 @@ public class ClaimCommand extends Subcommand {
         }
 
         // Handle free rewards
+        // Check if player has reached this level
+        if (level > pass.getLevel()) {
+            player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
+            return 1;
+        }
+
         if (pass.hasClaimedFreeReward(level)) {
             player.sendSystemMessage(Component.literal(Constants.MSG_ALREADY_CLAIMED));
             return 1;

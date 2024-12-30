@@ -4,28 +4,28 @@
       "level": 1,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:poke_ball\",Count:5}"
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":5}"
       }
     },
     {
       "level": 2,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:great_ball\",Count:3}"
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":3}"
       }
     },
     {
       "level": 3,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:ultra_ball\",Count:2}"
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":2}"
       }
     },
     {
       "level": 4,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:rare_candy\",Count:1}"
+        "data": "{\"id\":\"cobblemon:rare_candy\",\"Count\":1}"
       }
     },
     {
@@ -39,28 +39,28 @@
       "level": 6,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:exp_candy_l\",Count:2}"
+        "data": "{\"id\":\"cobblemon:exp_candy_l\",\"Count\":2}"
       }
     },
     {
       "level": 7,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:master_ball\",Count:1}"
+        "data": "{\"id\":\"cobblemon:master_ball\",\"Count\":1}"
       }
     },
     {
       "level": 8,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:rare_candy\",Count:2}"
+        "data": "{\"id\":\"cobblemon:rare_candy\",\"Count\":2}"
       }
     },
     {
       "level": 9,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{id:\"cobblemon:exp_candy_xl\",Count:1}"
+        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":1}"
       }
     },
     {

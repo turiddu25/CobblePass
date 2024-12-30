@@ -1,6 +1,8 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import ca.landonjw.gooeylibs2.api.UIManager;
+import net.minecraft.nbt.CompoundTag;
+import net.minecraft.nbt.TagParser;
 import com.cobblemon.mdks.cobblepass.data.Reward;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
@@ -83,10 +85,19 @@ public class ViewCommand extends Subcommand {
         if (reward != null) {
             switch (reward.getType()) {
                 case MINECRAFT_ITEM:
-                    lore.add(Component.literal("§7Minecraft Item"));
-                    break;
                 case COBBLEMON_ITEM:
-                    lore.add(Component.literal("§7Cobblemon Item"));
+                    try {
+                        CompoundTag tag = TagParser.parseTag(reward.getData());
+                        String itemId = tag.getString("id");
+                        int count = tag.getInt("Count");
+                        // Extract item name from ID (e.g., "minecraft:stone" -> "Stone")
+                        String[] parts = itemId.split(":");
+                        String itemName = parts[parts.length - 1];
+                        itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+                        lore.add(Component.literal("§7" + count + "x " + itemName));
+                    } catch (Exception e) {
+                        lore.add(Component.literal("§7Item"));
+                    }
                     break;
                 case POKEMON:
                     lore.add(Component.literal("§7Pokemon"));
@@ -222,9 +233,10 @@ public class ViewCommand extends Subcommand {
                     }
 
                     // Claim rewards
-                    CobblePass.battlePass.claimReward(player, level, isPremiumTier);
-                    player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
-                    showBattlePassInfo(player); // Refresh UI
+                    if (CobblePass.battlePass.claimReward(player, level, isPremiumTier)) {
+                        player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
+                        showBattlePassInfo(player); // Refresh UI
+                    }
                 })
                 .build();
 
@@ -232,12 +244,12 @@ public class ViewCommand extends Subcommand {
             ItemStack statusGlass;
             List<Component> statusLore = new ArrayList<>();
             
-            if (level > pass.getLevel()) {
-                statusGlass = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§7Not Reached"));
-            } else if (isPremiumTier && !pass.isPremium()) {
+            if (isPremiumTier && !pass.isPremium()) {
                 statusGlass = new ItemStack(Items.RED_STAINED_GLASS_PANE);
                 statusLore.add(Component.literal("§cPremium Only"));
+            } else if (level > pass.getLevel()) {
+                statusGlass = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+                statusLore.add(Component.literal("§7Not Reached"));
             } else if ((isPremiumTier && pass.hasClaimedPremiumReward(level)) || 
                       (!isPremiumTier && pass.hasClaimedFreeReward(level))) {
                 statusGlass = new ItemStack(Items.ORANGE_STAINED_GLASS_PANE);
@@ -273,9 +285,10 @@ public class ViewCommand extends Subcommand {
                             return;
                         }
                         // Claim premium reward
-                        CobblePass.battlePass.claimReward(player, level, true);
-                        player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
-                        showBattlePassInfo(player); // Refresh UI
+                        if (CobblePass.battlePass.claimReward(player, level, true)) {
+                            player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
+                            showBattlePassInfo(player); // Refresh UI
+                        }
                     })
                     .build();
             }

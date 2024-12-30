@@ -42,6 +42,8 @@ public class Constants {
     // Default Values
     public static final int DEFAULT_MAX_LEVEL = 100;
     public static final int DEFAULT_XP_PER_LEVEL = 1000;
+    public static final int DEFAULT_CATCH_XP = 100;
+    public static final int DEFAULT_DEFEAT_XP = 50;
     public static final long DEFAULT_PREMIUM_COST = 1000;
     public static final boolean DEFAULT_ENABLE_PERMISSION_NODES = true;
     

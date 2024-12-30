@@ -85,12 +85,12 @@ public class BattlePass {
                 Utils.newGson().toJson(pass.toJson()));
     }
 
-    public void claimReward(ServerPlayer player, int level, boolean premium) {
+    public boolean claimReward(ServerPlayer player, int level, boolean premium) {
         PlayerBattlePass pass = getPlayerPass(player);
         BattlePassTier tier = getTier(level);
 
         if (tier == null) {
-            return;
+            return false;
         }
 
         // Check if already claimed
@@ -99,15 +99,14 @@ public class BattlePass {
                 Constants.MSG_ALREADY_CLAIMED_LEVEL,
                 level
             )));
-            return;
+            return false;
         } else if (!premium && pass.hasClaimedFreeReward(level)) {
             player.sendSystemMessage(Component.literal(String.format(
                 Constants.MSG_ALREADY_CLAIMED_LEVEL,
                 level
             )));
-            return;
+            return false;
         }
-
         // Mark as claimed first
         if (premium) {
             pass.claimPremiumReward(level);
@@ -126,6 +125,7 @@ public class BattlePass {
         } else {
             tier.grantFreeReward(player);
         }
+        return true;
     }
 
     public BattlePassTier getTier(int level) {
