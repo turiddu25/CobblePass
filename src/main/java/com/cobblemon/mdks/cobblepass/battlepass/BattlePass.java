@@ -93,6 +93,15 @@ public class BattlePass {
             return false;
         }
 
+        // Check if player has reached required level
+        if (level > pass.getLevel()) {
+            player.sendSystemMessage(Component.literal(String.format(
+                Constants.MSG_LEVEL_NOT_REACHED,
+                level
+            )));
+            return false;
+        }
+
         // Check if already claimed
         if (premium && pass.hasClaimedPremiumReward(level)) {
             player.sendSystemMessage(Component.literal(String.format(

@@ -14,6 +14,7 @@ public class Config {
     private int catchXP;
     private int defeatXP;
     private long premiumCost;
+    private int seasonDurationDays;
     private long seasonStartTime;
     private int currentSeason;
     private boolean enablePermissionNodes;
@@ -26,8 +27,10 @@ public class Config {
         this.version = Constants.CONFIG_VERSION;
         this.maxLevel = Constants.DEFAULT_MAX_LEVEL;
         this.xpPerLevel = Constants.DEFAULT_XP_PER_LEVEL;
+        this.catchXP = Constants.DEFAULT_CATCH_XP;
+        this.defeatXP = Constants.DEFAULT_DEFEAT_XP;
         this.premiumCost = Constants.DEFAULT_PREMIUM_COST;
-        // Season duration is fixed at 60 days
+        this.seasonDurationDays = 60; // Default season duration
         this.seasonStartTime = -1L; // -1 means no active season
         this.currentSeason = 0; // 0 means no season has started
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
@@ -56,6 +59,7 @@ public class Config {
         maxLevel = getOrDefault(json, "maxLevel", Constants.DEFAULT_MAX_LEVEL);
         xpPerLevel = getOrDefault(json, "xpPerLevel", Constants.DEFAULT_XP_PER_LEVEL);
         premiumCost = getOrDefault(json, "premiumCost", Constants.DEFAULT_PREMIUM_COST);
+        seasonDurationDays = getOrDefault(json, "seasonDurationDays", 60);
         seasonStartTime = getOrDefault(json, "seasonStartTime", -1L);
         currentSeason = getOrDefault(json, "currentSeason", 0);
         enablePermissionNodes = getOrDefault(json, "enablePermissionNodes", Constants.DEFAULT_ENABLE_PERMISSION_NODES);
@@ -92,6 +96,7 @@ public class Config {
         json.addProperty("catchXP", catchXP);
         json.addProperty("defeatXP", defeatXP);
         json.addProperty("premiumCost", premiumCost);
+        json.addProperty("seasonDurationDays", seasonDurationDays);
         json.addProperty("seasonStartTime", seasonStartTime);
         json.addProperty("currentSeason", currentSeason);
         json.addProperty("enablePermissionNodes", enablePermissionNodes);
@@ -109,7 +114,9 @@ public class Config {
     public long getPremiumCost() { return premiumCost; }
     public long getSeasonStartTime() { return seasonStartTime; }
     public int getCurrentSeason() { return currentSeason; }
-    public long getSeasonEndTime() { return seasonStartTime + (1000L * 60 * 60 * 24 * 60); } // Fixed 60 days
+    public long getSeasonEndTime() { 
+        return seasonStartTime + (Constants.MILLIS_PER_DAY * seasonDurationDays); 
+    }
     public boolean isSeasonActive() { return seasonStartTime > 0 && System.currentTimeMillis() < getSeasonEndTime(); }
     
     public void startNewSeason() {

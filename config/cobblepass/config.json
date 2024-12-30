@@ -1,0 +1,12 @@
+{
+  "version": "1.0",
+  "maxLevel": 100,
+  "xpPerLevel": 1000,
+  "catchXP": 100,
+  "defeatXP": 50,
+  "premiumCost": 1000,
+  "seasonDurationDays": 60,
+  "seasonStartTime": -1,
+  "currentSeason": 0,
+  "enablePermissionNodes": true
+}
