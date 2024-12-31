@@ -54,7 +54,7 @@ public class BattlePassTier {
         if (freeReward.getType() == RewardType.POKEMON) {
             try {
                 // Parse Pokemon data to get species
-                JsonObject pokemonData = JsonParser.parseString(freeReward.getData()).getAsJsonObject();
+                JsonObject pokemonData = freeReward.getData();
                 String speciesName = pokemonData.get("species").getAsString();
                 
                 // Create Pokemon instance
@@ -88,7 +88,7 @@ public class BattlePassTier {
         if (premiumReward.getType() == RewardType.POKEMON) {
             try {
                 // Parse Pokemon data to get species
-                JsonObject pokemonData = JsonParser.parseString(premiumReward.getData()).getAsJsonObject();
+                JsonObject pokemonData = premiumReward.getData();
                 String speciesName = pokemonData.get("species").getAsString();
                 
                 // Create Pokemon instance

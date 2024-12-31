@@ -12,10 +12,10 @@ import net.minecraft.world.item.ItemStack;
 
 public class Reward {
     private final RewardType type;
-    private final String data;
+    private final JsonObject data;
     private final String command;
 
-    public Reward(RewardType type, String data, String command) {
+    public Reward(RewardType type, JsonObject data, String command) {
         this.type = type;
         this.data = data;
         this.command = command;
@@ -25,7 +25,7 @@ public class Reward {
         return type;
     }
 
-    public String getData() {
+    public JsonObject getData() {
         return data;
     }
 
@@ -39,7 +39,7 @@ public class Reward {
         }
 
         try {
-            CompoundTag tag = TagParser.parseTag(data);
+            CompoundTag tag = TagParser.parseTag(data.toString());
             ItemStack stack = ItemStack.parse(registryAccess, tag).orElse(ItemStack.EMPTY);
             if (tag.contains("Count")) {
                 stack.setCount(tag.getInt("Count"));
@@ -63,7 +63,7 @@ public class Reward {
                 if (data != null && !data.isEmpty()) {
                     try {
                         // Parse Pokemon data
-                        JsonObject pokemonData = JsonParser.parseString(data).getAsJsonObject();
+                        JsonObject pokemonData = data;
                         String species = pokemonData.get("species").getAsString();
                         
                         // Build command with attributes
@@ -106,7 +106,7 @@ public class Reward {
     public JsonObject toJson() {
         JsonObject json = new JsonObject();
         json.addProperty("type", type.name());
-        json.addProperty("data", data);
+        json.add("data", data);
         if (command != null) {
             json.addProperty("command", command);
         }
@@ -115,25 +115,25 @@ public class Reward {
 
     public static Reward fromJson(JsonObject json) {
         RewardType type = RewardType.fromString(json.get("type").getAsString());
-        String data = json.get("data").getAsString();
+        JsonObject data = json.get("data").getAsJsonObject();
         String command = json.has("command") ? json.get("command").getAsString() : null;
         return new Reward(type, data, command);
     }
 
     // Factory methods for different reward types
-    public static Reward minecraftItem(String nbtData) {
+    public static Reward minecraftItem(JsonObject nbtData) {
         return new Reward(RewardType.MINECRAFT_ITEM, nbtData, null);
     }
 
-    public static Reward cobblemonItem(String nbtData) {
+    public static Reward cobblemonItem(JsonObject nbtData) {
         return new Reward(RewardType.COBBLEMON_ITEM, nbtData, null);
     }
 
-    public static Reward pokemon(String pokemonData, String spawnCommand) {
+    public static Reward pokemon(JsonObject pokemonData, String spawnCommand) {
         return new Reward(RewardType.POKEMON, pokemonData, spawnCommand);
     }
 
     public static Reward command(String commandData) {
-        return new Reward(RewardType.COMMAND, "", commandData);
+        return new Reward(RewardType.COMMAND, new JsonObject(), commandData);
     }
 }

@@ -35,7 +35,7 @@ public class BattlePass {
         }
     }
 
-    private void loadPlayerPass(String uuid) {
+    public void loadPlayerPass(String uuid) {
         String filename = uuid + ".json";
         String content = Utils.readFileSync(Constants.PLAYER_DATA_DIR, filename);
         

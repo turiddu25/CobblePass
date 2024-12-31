@@ -1,5 +1,6 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
+import com.google.gson.JsonObject;
 import ca.landonjw.gooeylibs2.api.UIManager;
 import net.minecraft.nbt.CompoundTag;
 import net.minecraft.nbt.TagParser;
@@ -83,49 +84,33 @@ public class ViewCommand extends Subcommand {
 
         Reward reward = isPremium ? tier.getPremiumReward() : tier.getFreeReward();
         if (reward != null) {
+            JsonObject data = reward.getData();
             switch (reward.getType()) {
                 case MINECRAFT_ITEM:
                 case COBBLEMON_ITEM:
-                    try {
-                        CompoundTag tag = TagParser.parseTag(reward.getData());
-                        String itemId = tag.getString("id");
-                        int count = tag.getInt("Count");
+                    if (data != null) {
+                        String itemId = data.get("id").getAsString();
+                        int count = data.has("Count") ? data.get("Count").getAsInt() : 1;
                         // Extract item name from ID (e.g., "minecraft:stone" -> "Stone")
                         String[] parts = itemId.split(":");
                         String itemName = parts[parts.length - 1];
                         itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
                         lore.add(Component.literal("§7" + count + "x " + itemName));
-                    } catch (Exception e) {
+                    } else {
                         lore.add(Component.literal("§7Item"));
                     }
                     break;
                 case POKEMON:
                     lore.add(Component.literal("§7Pokemon"));
-                    if (reward.getData() != null) {
-                        String[] parts = reward.getData()
-                            .replace("{", "")
-                            .replace("}", "")
-                            .split(",");
-                        for (String part : parts) {
-                            String[] keyValue = part.trim().split(":");
-                            if (keyValue.length == 2) {
-                                String key = keyValue[0].trim();
-                                String value = keyValue[1].trim().replace("\"", "");
-                                
-                                switch (key) {
-                                    case "species":
-                                        lore.add(Component.literal(value));
-                                        break;
-                                    case "level":
-                                        lore.add(Component.literal("§7Level: §f" + value));
-                                        break;
-                                    case "shiny":
-                                        if (value.equals("true")) {
-                                            lore.add(Component.literal("§6✦ Shiny"));
-                                        }
-                                        break;
-                                }
-                            }
+                    if (data != null) {
+                        if (data.has("species")) {
+                            lore.add(Component.literal(data.get("species").getAsString()));
+                        }
+                        if (data.has("level")) {
+                            lore.add(Component.literal("§7Level: §f" + data.get("level").getAsInt()));
+                        }
+                        if (data.has("shiny") && data.get("shiny").getAsBoolean()) {
+                            lore.add(Component.literal("§6✦ Shiny"));
                         }
                     }
                     break;

@@ -1,8 +1,11 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.battlepass.PlayerBattlePass;
+import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.EconomyUtils;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
+import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
 import net.minecraft.commands.CommandSourceStack;
@@ -67,7 +70,14 @@ public class PremiumCommand extends Subcommand {
         }
 
         // Grant premium
-        CobblePass.battlePass.getPlayerPass(player).setPremium(true);
+        PlayerBattlePass pass = CobblePass.battlePass.getPlayerPass(player);
+        pass.setPremium(true);
+        
+        // Save immediately
+        String filename = player.getUUID() + ".json";
+        Utils.writeFileSync(Constants.PLAYER_DATA_DIR, filename,
+                Utils.newGson().toJson(pass.toJson()));
+                
         player.sendSystemMessage(Component.literal("§aSuccessfully purchased premium battle pass for Season " + 
             CobblePass.config.getCurrentSeason() + " for " + EconomyUtils.formatCurrency(cost) + "!"));
 

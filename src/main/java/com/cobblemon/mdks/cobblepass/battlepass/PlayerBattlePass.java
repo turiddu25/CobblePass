@@ -49,12 +49,10 @@ public class PlayerBattlePass {
     }
 
     public void claimFreeReward(int level) {
-        // Always record the claim since checks are done in ClaimCommand
         claimedFreeRewards.add(level);
     }
 
     public void claimPremiumReward(int level) {
-        // Always record the claim since checks are done in ClaimCommand
         claimedPremiumRewards.add(level);
     }
 
@@ -89,19 +87,22 @@ public class PlayerBattlePass {
     }
 
     public void fromJson(JsonObject json) {
-        version = json.get("version").getAsString();
-        level = json.get("level").getAsInt();
-        xp = json.get("xp").getAsInt();
-        isPremium = json.get("isPremium").getAsBoolean();
+        if (json.has("version")) version = json.get("version").getAsString();
+        if (json.has("level")) level = json.get("level").getAsInt();
+        if (json.has("xp")) xp = json.get("xp").getAsInt();
+        if (json.has("isPremium")) isPremium = json.get("isPremium").getAsBoolean();
 
         claimedFreeRewards.clear();
-        json.get("claimedFreeRewards").getAsJsonArray()
-                .forEach(e -> claimedFreeRewards.add(e.getAsInt()));
+        if (json.has("claimedFreeRewards")) {
+            json.get("claimedFreeRewards").getAsJsonArray()
+                    .forEach(e -> claimedFreeRewards.add(e.getAsInt()));
+        }
 
         claimedPremiumRewards.clear();
-        json.get("claimedPremiumRewards").getAsJsonArray()
-                .forEach(e -> claimedPremiumRewards.add(e.getAsInt()));
-
+        if (json.has("claimedPremiumRewards")) {
+            json.get("claimedPremiumRewards").getAsJsonArray()
+                    .forEach(e -> claimedPremiumRewards.add(e.getAsInt()));
+        }
     }
 
     // Getters
@@ -110,9 +111,9 @@ public class PlayerBattlePass {
     public int getLevel() { return level; }
     public int getXP() { return xp; }
     public boolean isPremium() {
-        return isPremium && CobblePass.config.isSeasonActive();
+        return isPremium;
     }
+    public boolean hasPremium() { return isPremium; }
     public Set<Integer> getClaimedFreeRewards() { return new HashSet<>(claimedFreeRewards); }
     public Set<Integer> getClaimedPremiumRewards() { return new HashSet<>(claimedPremiumRewards); }
-    public boolean hasPremium() { return isPremium(); }
 }

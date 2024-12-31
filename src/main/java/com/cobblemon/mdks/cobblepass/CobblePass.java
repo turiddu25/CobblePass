@@ -47,6 +47,13 @@ public class CobblePass implements ModInitializer {
             CobblePass.server = server;
             CatchPokemonListener.register();
             DefeatPokemonListener.register();
+            
+            // Register player join listener
+            net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents.JOIN.register((handler, sender, mcServer) -> {
+                // Load player's battle pass data when they join
+                CobblePass.battlePass.loadPlayerPass(handler.getPlayer().getUUID().toString());
+                CobblePass.LOGGER.info("Loaded battle pass data for player " + handler.getPlayer().getName().getString());
+            });
         });
     }
 

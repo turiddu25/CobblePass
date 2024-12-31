@@ -45,6 +45,16 @@ public class TierConfig {
 
     private void loadFromJson(JsonObject json) {
         tiers.clear();
+        
+        // Load templates if they exist
+        Map<String, JsonObject> templates = new HashMap<>();
+        if (json.has("templates")) {
+            JsonObject templatesObj = json.getAsJsonObject("templates");
+            for (Map.Entry<String, JsonElement> entry : templatesObj.entrySet()) {
+                templates.put(entry.getKey(), entry.getValue().getAsJsonObject());
+            }
+        }
+
         JsonArray tiersArray = json.getAsJsonArray("tiers");
         
         for (JsonElement element : tiersArray) {
@@ -52,36 +62,35 @@ public class TierConfig {
             int level = tierObj.get("level").getAsInt();
             
             // Load rewards
-            Reward freeReward = null;
-            Reward premiumReward = null;
-
-            if (tierObj.has("freeReward")) {
-                JsonObject freeRewardObj = tierObj.getAsJsonObject("freeReward");
-                freeReward = Reward.fromJson(freeRewardObj);
-            }
-
-            if (tierObj.has("premiumReward")) {
-                JsonObject premiumRewardObj = tierObj.getAsJsonObject("premiumReward");
-                premiumReward = Reward.fromJson(premiumRewardObj);
-            }
-
-            // Backwards compatibility for old format
-            if (freeReward == null && premiumReward == null) {
-                String displayItem = tierObj.get("displayItem").getAsString();
-                String redeemableItem = tierObj.get("redeemableItem").getAsString();
-                boolean isPremium = tierObj.get("isPremium").getAsBoolean();
-                
-                String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemableItem);
-                
-                if (isPremium) {
-                    premiumReward = Reward.minecraftItem(redeemNbt);
-                } else {
-                    freeReward = Reward.minecraftItem(redeemNbt);
-                }
-            }
+            Reward freeReward = loadReward(tierObj, "freeReward", templates);
+            Reward premiumReward = loadReward(tierObj, "premiumReward", templates);
             
             tiers.put(level, new BattlePassTier(level, freeReward, premiumReward));
         }
+    }
+
+    private Reward loadReward(JsonObject tierObj, String rewardKey, Map<String, JsonObject> templates) {
+        if (!tierObj.has(rewardKey)) {
+            return null;
+        }
+
+        JsonElement rewardElement = tierObj.get(rewardKey);
+        
+        // Handle template references
+        if (rewardElement.isJsonPrimitive() && rewardElement.getAsString().startsWith("@")) {
+            String templateName = rewardElement.getAsString().substring(1);
+            if (templates.containsKey(templateName)) {
+                return Reward.fromJson(templates.get(templateName));
+            }
+            return null;
+        }
+
+        // Handle direct reward definitions
+        if (rewardElement.isJsonObject()) {
+            return Reward.fromJson(rewardElement.getAsJsonObject());
+        }
+
+        return null;
     }
 
     private void generateDefaultTiers() {
@@ -92,10 +101,12 @@ public class TierConfig {
             String redeemItem = getDefaultRedeemItem(i);
             boolean isPremium = i % 5 == 0; // Every 5th tier is premium by default
             
-            String redeemNbt = String.format("{id:\"%s\",Count:1}", redeemItem);
+            JsonObject redeemData = new JsonObject();
+            redeemData.addProperty("id", redeemItem);
+            redeemData.addProperty("Count", 1);
             
-            Reward freeReward = isPremium ? null : Reward.minecraftItem(redeemNbt);
-            Reward premiumReward = isPremium ? Reward.minecraftItem(redeemNbt) : null;
+            Reward freeReward = isPremium ? null : Reward.minecraftItem(redeemData);
+            Reward premiumReward = isPremium ? Reward.minecraftItem(redeemData) : null;
             
             tiers.put(i, new BattlePassTier(i, freeReward, premiumReward));
         }

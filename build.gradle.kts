@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "1.8.6"
+version = "1.9.1"
 
 java {
     toolchain {
@@ -35,6 +35,7 @@ dependencies {
     modRuntimeOnly("net.fabricmc.fabric-api:fabric-api:0.104.0+1.21.1")
     modImplementation(fabricApi.module("fabric-command-api-v2", "0.104.0+1.21.1"))
     modImplementation(fabricApi.module("fabric-lifecycle-events-v1", "0.104.0+1.21.1"))
+    modImplementation(fabricApi.module("fabric-networking-api-v1", "0.104.0+1.21.1"))
 
     // Cobblemon
     modImplementation("com.cobblemon:fabric:1.6.0+1.21.1")

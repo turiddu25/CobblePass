@@ -64,6 +64,8 @@ public class Config {
     private void loadFromJson(JsonObject json) {
         maxLevel = getOrDefault(json, "maxLevel", Constants.DEFAULT_MAX_LEVEL);
         xpPerLevel = getOrDefault(json, "xpPerLevel", Constants.DEFAULT_XP_PER_LEVEL);
+        catchXP = getOrDefault(json, "catchXP", Constants.DEFAULT_CATCH_XP);
+        defeatXP = getOrDefault(json, "defeatXP", Constants.DEFAULT_DEFEAT_XP);
         premiumCost = getOrDefault(json, "premiumCost", Constants.DEFAULT_PREMIUM_COST);
         seasonDurationDays = getOrDefault(json, "seasonDurationDays", 60);
         currentSeason = getOrDefault(json, "currentSeason", 0);
