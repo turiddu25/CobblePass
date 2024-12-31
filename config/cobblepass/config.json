@@ -6,5 +6,6 @@
   "premiumCost": 1000,
   "seasonDurationDays": 60,
   "currentSeason": 0,
-  "enablePermissionNodes": true
+  "enablePermissionNodes": true,
+  "xpMultiplier": 1.1
 }

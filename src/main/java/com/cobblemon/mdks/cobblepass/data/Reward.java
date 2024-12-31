@@ -2,7 +2,6 @@ package com.cobblemon.mdks.cobblepass.data;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.google.gson.JsonObject;
-import com.google.gson.JsonParser;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -107,7 +106,8 @@ public class Reward {
         JsonObject json = new JsonObject();
         json.addProperty("type", type.name());
         json.add("data", data);
-        if (command != null) {
+        // Only include command for COMMAND type rewards
+        if (type == RewardType.COMMAND && command != null) {
             json.addProperty("command", command);
         }
         return json;
@@ -129,8 +129,8 @@ public class Reward {
         return new Reward(RewardType.COBBLEMON_ITEM, nbtData, null);
     }
 
-    public static Reward pokemon(JsonObject pokemonData, String spawnCommand) {
-        return new Reward(RewardType.POKEMON, pokemonData, spawnCommand);
+    public static Reward pokemon(JsonObject pokemonData) {
+        return new Reward(RewardType.POKEMON, pokemonData, null);
     }
 
     public static Reward command(String commandData) {

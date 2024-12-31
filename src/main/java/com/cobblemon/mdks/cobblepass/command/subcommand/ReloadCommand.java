@@ -29,8 +29,8 @@ public class ReloadCommand extends Subcommand {
             // Only reload configuration files
             CobblePass.reload();
             
-            // Reload tier configuration without resetting player data
-            CobblePass.battlePass.reloadTiers();
+            // Reload both configuration and player data
+            CobblePass.battlePass.reload();
 
             context.getSource().sendSystemMessage(Component.literal(
                 "§aBattle Pass configuration reloaded successfully!"

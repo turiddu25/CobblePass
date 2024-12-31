@@ -18,6 +18,7 @@ public class Config {
     private long seasonStartTime;
     private long seasonEndTime;
     private boolean enablePermissionNodes;
+    private double xpMultiplier;
 
     public Config() {
         setDefaults();
@@ -38,6 +39,7 @@ public class Config {
         this.seasonStartTime = 0;
         this.seasonEndTime = 0;
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
+        this.xpMultiplier = Constants.XP_MULTIPLIER;
     }
 
     public void load() {
@@ -72,6 +74,7 @@ public class Config {
         seasonStartTime = getOrDefault(json, "seasonStartTime", 0L);
         seasonEndTime = getOrDefault(json, "seasonEndTime", 0L);
         enablePermissionNodes = getOrDefault(json, "enablePermissionNodes", Constants.DEFAULT_ENABLE_PERMISSION_NODES);
+        xpMultiplier = getOrDefault(json, "xpMultiplier", Constants.XP_MULTIPLIER);
     }
 
     private <T> T getOrDefault(JsonObject json, String key, T defaultValue) {
@@ -105,6 +108,7 @@ public class Config {
         json.addProperty("seasonStartTime", seasonStartTime);
         json.addProperty("seasonEndTime", seasonEndTime);
         json.addProperty("enablePermissionNodes", enablePermissionNodes);
+        json.addProperty("xpMultiplier", xpMultiplier);
 
         Utils.writeFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE,
                 Utils.newGson().toJson(json));
@@ -118,6 +122,7 @@ public class Config {
     public long getPremiumCost() { return premiumCost; }
     public int getCurrentSeason() { return currentSeason; }
     public boolean isEnablePermissionNodes() { return enablePermissionNodes; }
+    public double getXpMultiplier() { return xpMultiplier; }
     
     public void startNewSeason() {
         currentSeason++;

@@ -45,7 +45,7 @@ public class PremiumCommand extends Subcommand {
 
         // Check if season is active
         if (!CobblePass.config.isSeasonActive()) {
-            player.sendSystemMessage(Component.literal("§cNo battle pass season is currently active!"));
+            player.sendSystemMessage(Component.literal(Constants.MSG_NO_ACTIVE_SEASON));
             return 1;
         }
 
@@ -101,7 +101,7 @@ public class PremiumCommand extends Subcommand {
                 (CobblePass.battlePass.getPlayerPass(player).hasPremium() ? "Premium" : "Free")));
             player.sendSystemMessage(Component.literal("§3Get premium with: §b/battlepass premium buy"));
         } else {
-            player.sendSystemMessage(Component.literal("§cNo battle pass season is currently active!"));
+            player.sendSystemMessage(Component.literal(Constants.MSG_NO_ACTIVE_SEASON));
             player.sendSystemMessage(Component.literal("§3Start a new season with: §b/battlepass start"));
         }
 
