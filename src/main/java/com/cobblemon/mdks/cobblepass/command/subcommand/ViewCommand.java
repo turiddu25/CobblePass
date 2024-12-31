@@ -141,16 +141,25 @@ public class ViewCommand extends Subcommand {
     public static void showBattlePassInfo(ServerPlayer player) {
         PlayerBattlePass pass = CobblePass.battlePass.getPlayerPass(player);
         
-        // Create info button showing level and XP
+        // Create info button showing level, XP and time remaining
         int currentXP = pass.getXP();
         int xpForNext = (int)(CobblePass.config.getXpPerLevel() * Math.pow(Constants.XP_MULTIPLIER, pass.getLevel() - 1));
+        List<Component> infoLore = new ArrayList<>(Arrays.asList(
+            Component.literal(String.format("§3Level: §f%d", pass.getLevel())),
+            Component.literal(String.format("§3XP: §f%d§7/§f%d", currentXP, xpForNext))
+        ));
+        
+        if (CobblePass.config.isSeasonActive()) {
+            long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
+            if (timeLeft > 0) {
+                infoLore.add(Component.literal("§3Time Remaining: §b" + formatTimeRemaining(timeLeft)));
+            }
+        }
+
         GooeyButton infoButton = GooeyButton.builder()
             .display(new ItemStack(Items.EXPERIENCE_BOTTLE))
             .with(DataComponents.CUSTOM_NAME, Component.literal("§bBattle Pass Progress"))
-            .with(DataComponents.LORE, new ItemLore(Arrays.asList(
-                Component.literal(String.format("§3Level: §f%d", pass.getLevel())),
-                Component.literal(String.format("§3XP: §f%d§7/§f%d", currentXP, xpForNext))
-            )))
+            .with(DataComponents.LORE, new ItemLore(infoLore))
             .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
             .build();
 
@@ -159,11 +168,7 @@ public class ViewCommand extends Subcommand {
         List<Component> premiumLore = new ArrayList<>();
         if (pass.isPremium()) {
             if (CobblePass.config.isSeasonActive()) {
-                long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
-                if (timeLeft > 0) {
-                    premiumLore.add(Component.literal("§3Season " + CobblePass.config.getCurrentSeason()));
-                    premiumLore.add(Component.literal("§3Time Remaining: §b" + formatTimeRemaining(timeLeft)));
-                }
+                premiumLore.add(Component.literal("§3Season " + CobblePass.config.getCurrentSeason()));
             } else {
                 premiumLore.add(Component.literal("§cNo active season"));
             }
@@ -228,15 +233,15 @@ public class ViewCommand extends Subcommand {
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
                     if (level > pass.getLevel()) {
-                        player.sendSystemMessage(Component.literal("§cReach level " + level + " to unlock these rewards!"));
+                        player.sendSystemMessage(Component.literal(String.format(Constants.MSG_LEVEL_NOT_REACHED, level)));
                         return;
                     }
 
                     // Claim rewards
-                    if (CobblePass.battlePass.claimReward(player, level, isPremiumTier)) {
-                        player.sendSystemMessage(Component.literal("§aRewards claimed for level " + level + "!"));
-                        showBattlePassInfo(player); // Refresh UI
-                    }
+                        if (CobblePass.battlePass.claimReward(player, level, isPremiumTier)) {
+                            player.sendSystemMessage(Component.literal(String.format(Constants.MSG_REWARD_CLAIM, level)));
+                            showBattlePassInfo(player); // Refresh UI
+                        }
                 })
                 .build();
 
@@ -276,12 +281,12 @@ public class ViewCommand extends Subcommand {
                 
                 rewardButton = GooeyButton.builder()
                     .display(premiumRewardDisplay)
-                    .with(DataComponents.CUSTOM_NAME, Component.literal("§6Premium Level " + level + " Reward"))
+                    .with(DataComponents.CUSTOM_NAME, Component.literal("§6Level " + level + " Reward"))
                     .with(DataComponents.LORE, new ItemLore(getPremiumRewardLore(tier)))
                     .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                     .onClick(action -> {
                         if (!pass.isPremium()) {
-                            player.sendSystemMessage(Component.literal("§cThis is a premium reward! Use §f/battlepass premium §cto unlock."));
+                            player.sendSystemMessage(Component.literal(Constants.MSG_NOT_PREMIUM));
                             return;
                         }
                         // Claim premium reward
