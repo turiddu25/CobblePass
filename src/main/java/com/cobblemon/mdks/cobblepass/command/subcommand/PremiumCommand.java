@@ -1,6 +1,7 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.util.EconomyUtils;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
@@ -51,10 +52,24 @@ public class PremiumCommand extends Subcommand {
             return 1;
         }
 
+        // Check balance and charge for premium
+        long cost = CobblePass.config.getPremiumCost();
+        if (!EconomyUtils.hasBalance(player.getUUID(), cost)) {
+            player.sendSystemMessage(Component.literal("§cYou need " + EconomyUtils.formatCurrency(cost) + 
+                " to purchase premium battle pass!"));
+            return 1;
+        }
+
+        // Deduct funds
+        if (!EconomyUtils.withdraw(player.getUUID(), cost)) {
+            player.sendSystemMessage(Component.literal("§cFailed to process payment!"));
+            return 1;
+        }
+
         // Grant premium
         CobblePass.battlePass.getPlayerPass(player).setPremium(true);
-        player.sendSystemMessage(Component.literal("§aSuccessfully granted premium battle pass for Season " + 
-            CobblePass.config.getCurrentSeason() + "!"));
+        player.sendSystemMessage(Component.literal("§aSuccessfully purchased premium battle pass for Season " + 
+            CobblePass.config.getCurrentSeason() + " for " + EconomyUtils.formatCurrency(cost) + "!"));
 
         return 1;
     }

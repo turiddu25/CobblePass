@@ -114,7 +114,7 @@ public class ViewCommand extends Subcommand {
                                 
                                 switch (key) {
                                     case "species":
-                                        lore.add(Component.literal("§7Species: §f" + value));
+                                        lore.add(Component.literal(value));
                                         break;
                                     case "level":
                                         lore.add(Component.literal("§7Level: §f" + value));
@@ -188,7 +188,7 @@ public class ViewCommand extends Subcommand {
         Button background = new PlaceholderButton();
 
         // Create base template
-        ChestTemplate baseTemplate = ChestTemplate.builder(6)
+        ChestTemplate baseTemplate = ChestTemplate.builder(4)
             .fill(background) // Fill entire GUI with background
             .set(0, 4, infoButton)
             .set(0, 8, premiumButton)
@@ -303,7 +303,7 @@ public class ViewCommand extends Subcommand {
         int totalPages = (int) Math.ceil((double) totalTiers / buttonsPerPage);
 
         for (int pageNum = 0; pageNum < totalPages; pageNum++) {
-            ChestTemplate template = ChestTemplate.builder(6)
+            ChestTemplate template = ChestTemplate.builder(4)
                 .fill(background)
                 .set(0, 4, infoButton)
                 .set(0, 8, premiumButton)
@@ -349,7 +349,7 @@ public class ViewCommand extends Subcommand {
                     .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                     .linkType(LinkType.Previous)
                     .build();
-                template.set(5, 0, prevBtn);
+                template.set(3, 0, prevBtn);
             }
             if (current.getNext() != null) {
                 Button nextBtn = LinkedPageButton.builder()
@@ -358,7 +358,7 @@ public class ViewCommand extends Subcommand {
                     .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                     .linkType(LinkType.Next)
                     .build();
-                template.set(5, 8, nextBtn);
+                template.set(3, 8, nextBtn);
             }
         }
 

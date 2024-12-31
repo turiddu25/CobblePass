@@ -1,5 +1,6 @@
 package com.cobblemon.mdks.cobblepass.command;
 
+import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.command.subcommand.*;
 import com.cobblemon.mdks.cobblepass.util.BaseCommand;
 import com.cobblemon.mdks.cobblepass.util.Constants;
@@ -33,6 +34,13 @@ public class BattlePassCommand extends BaseCommand {
         if (!context.getSource().isPlayer()) {
             context.getSource().sendSystemMessage(
                     Component.literal(Constants.ERROR_PREFIX + "This command must be run by a player!")
+            );
+            return 1;
+        }
+
+        if (!CobblePass.config.isSeasonActive()) {
+            context.getSource().sendSystemMessage(
+                    Component.literal(Constants.MSG_NO_ACTIVE_SEASON)
             );
             return 1;
         }

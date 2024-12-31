@@ -10,64 +10,694 @@
     {
       "level": 2,
       "freeReward": {
-        "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":3}"
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":10}"
       }
     },
     {
       "level": 3,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":2}"
+        "data": "{\"id\":\"cobblemon:basic_potion\",\"Count\":2}"
       }
     },
     {
       "level": 4,
       "freeReward": {
-        "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:rare_candy\",\"Count\":1}"
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:golden_carrot\",\"Count\":3}"
       }
     },
     {
       "level": 5,
       "premiumReward": {
-        "type": "POKEMON",
-        "data": "{species:\"pikachu\",level:15}"
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:evolution_stone\",\"Type\":\"random\",\"Count\":1}"
       }
     },
     {
       "level": 6,
       "freeReward": {
-        "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:exp_candy_l\",\"Count\":2}"
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
       }
     },
     {
       "level": 7,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:master_ball\",\"Count\":1}"
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":2}"
       }
     },
     {
       "level": 8,
       "freeReward": {
         "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:rare_candy\",\"Count\":2}"
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":1}"
       }
     },
     {
       "level": 9,
       "freeReward": {
-        "type": "COBBLEMON_ITEM",
-        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":1}"
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":4}"
       }
     },
     {
       "level": 10,
       "premiumReward": {
         "type": "POKEMON",
-        "data": "{species:\"charmander\",level:20,shiny:true}"
+        "data": "{\"species\":\"charmander\",\"level\":15,\"shiny\":false}"
+      }
+    },
+    {
+      "level": 11,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 12,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 13,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 14,
+      "premiumReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:diamond\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 15,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 16,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 17,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 18,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 19,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 20,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:eviolite\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 21,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":7}"
+      }
+    },
+    {
+      "level": 22,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":12}"
+      }
+    },
+    {
+      "level": 23,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:max_potion\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 24,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:rare_candy\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 25,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 26,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:amulet_coin\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 27,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 28,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 29,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":6}"
+      }
+    },
+    {
+      "level": 30,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 31,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 32,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 33,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 34,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:evolution_stone\",\"Type\":\"specific\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 35,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 36,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 37,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 38,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":7}"
+      }
+    },
+    {
+      "level": 39,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:max_revive\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 40,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 41,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":12}"
+      }
+    },
+    {
+      "level": 42,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":15}"
+      }
+    },
+    {
+      "level": 43,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 44,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:life_orb\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 45,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 46,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:amulet_coin\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 47,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 48,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 49,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 50,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 51,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":15}"
+      }
+    },
+    {
+      "level": 52,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:max_potion\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 53,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:protector\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 54,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 55,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":20}"
+      }
+    },
+    {
+      "level": 56,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":4}"
+      }
+    },
+    {
+      "level": 57,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 58,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 59,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 60,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 61,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":17}"
+      }
+    },
+    {
+      "level": 62,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":12}"
+      }
+    },
+    {
+      "level": 63,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:max_revive\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 64,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:rocky_helmet\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 65,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 66,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:amulet_coin\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 67,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":12}"
+      }
+    },
+    {
+      "level": 68,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":5}"
+      }
+    },
+    {
+      "level": 69,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 70,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 71,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":20}"
+      }
+    },
+    {
+      "level": 72,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":18}"
+      }
+    },
+    {
+      "level": 73,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":6}"
+      }
+    },
+    {
+      "level": 74,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:evolution_stone\",\"Type\":\"specific\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 75,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 76,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_candy_xl\",\"Count\":4}"
+      }
+    },
+    {
+      "level": 77,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":15}"
+      }
+    },
+    {
+      "level": 78,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:great_ball\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 79,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:gold_ingot\",\"Count\":6}"
+      }
+    },
+    {
+      "level": 80,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 81,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":22}"
+      }
+    },
+    {
+      "level": 82,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:max_potion\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 83,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:power_herb\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 84,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":3}"
+      }
+    },
+    {
+      "level": 85,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:amulet_coin\",\"Count\":4}"
+      }
+    },
+    {
+      "level": 86,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":25}"
+      }
+    },
+    {
+      "level": 87,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":7}"
+      }
+    },
+    {
+      "level": 88,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:redstone\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 89,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:metal_coat\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 90,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:exp_share\",\"Count\":2}"
+      }
+    },
+    {
+      "level": 91,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:poke_ball\",\"Count\":25}"
+      }
+    },
+    {
+      "level": 92,
+      "freeReward": {
+        "type": "MINECRAFT_ITEM",
+        "data": "{\"id\":\"minecraft:iron_ingot\",\"Count\":10}"
+      }
+    },
+    {
+      "level": 93,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:light_ball\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 94,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:super_potion\",\"Count\":8}"
+      }
+    },
+    {
+      "level": 95,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:weakness_policy\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 96,
+      "freeReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:ultra_ball\",\"Count\":5}"
+      }
+    },
+    {
+      "level": 97,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:evolution_stone\",\"Type\":\"legendary\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 98,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:choice_band\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 99,
+      "premiumReward": {
+        "type": "COBBLEMON_ITEM",
+        "data": "{\"id\":\"cobblemon:focus_sash\",\"Count\":1}"
+      }
+    },
+    {
+      "level": 100,
+      "freeReward": {
+        "type": "POKEMON",
+        "data": "{\"species\":\"mewtwo\",\"level\":100}"
       }
     }
   ]
