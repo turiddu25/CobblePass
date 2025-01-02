@@ -5,6 +5,7 @@ build/
 !**/src/test/**/build/
 gooeylibs-wiki.md
 cline_docs/
+.idea
 
 
 ### IntelliJ IDEA ###
