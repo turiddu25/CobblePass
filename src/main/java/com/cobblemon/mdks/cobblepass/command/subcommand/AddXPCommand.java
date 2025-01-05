@@ -20,17 +20,7 @@ public class AddXPCommand extends Subcommand {
     @Override
     public LiteralCommandNode<CommandSourceStack> build() {
         return Commands.literal("addxp")
-                .requires(source -> {
-                    if (CobblePass.config.isEnablePermissionNodes()) {
-                        return source.hasPermission(2) && // Op level 2 minimum
-                               (!source.isPlayer() || 
-                                CobblePass.permissions.hasPermission(
-                                    source.getPlayer(),
-                                    "cobblepass.admin.addxp"
-                                ));
-                    }
-                    return source.hasPermission(2);
-                })
+                .requires(source -> source.hasPermission(4)) // Requires operator permission level
                 .then(Commands.argument("player", EntityArgument.player())
                     .then(Commands.argument("amount", IntegerArgumentType.integer(1))
                         .executes(this::run)))

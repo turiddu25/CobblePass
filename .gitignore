@@ -6,7 +6,7 @@ build/
 gooeylibs-wiki.md
 cline_docs/
 .idea
-
+/cobblemon-api-helper
 
 ### IntelliJ IDEA ###
 .idea/modules.xml
@@ -51,3 +51,8 @@ commands.md
 apihelp.md
 GTSimpactor.md
 .idea/runConfigurations/Minecraft_Server.xml
+.idea/runConfigurations/Minecraft_Server.xml
+.idea/runConfigurations/Minecraft_Server.xml
+cobblemon-api-helper/package.json
+cobblemon-api-helper/package-lock.json
+cobblemon-api-helper/src/index.ts

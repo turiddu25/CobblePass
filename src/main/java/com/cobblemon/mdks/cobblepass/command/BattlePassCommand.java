@@ -24,7 +24,8 @@ public class BattlePassCommand extends BaseCommand {
                         new AddLevelsCommand(),
                         new PremiumCommand(),
                         new ReloadCommand(),
-                        new StartCommand()
+                        new StartCommand(),
+                        new AddXPCommand()
                 )
         );
     }
