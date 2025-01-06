@@ -86,8 +86,7 @@ public class ViewCommand extends Subcommand {
         if (reward != null) {
             JsonObject data = reward.getData();
             switch (reward.getType()) {
-                case MINECRAFT_ITEM:
-                case COBBLEMON_ITEM:
+                case ITEM:
                     if (data != null) {
                         String itemId = data.get("id").getAsString();
                         int count = data.has("Count") ? data.get("Count").getAsInt() : 1;
@@ -95,6 +94,11 @@ public class ViewCommand extends Subcommand {
                         String[] parts = itemId.split(":");
                         String itemName = parts[parts.length - 1];
                         itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+                        // Add mod name to lore if not minecraft
+                        if (!parts[0].equals("minecraft")) {
+                            String modName = parts[0].substring(0, 1).toUpperCase() + parts[0].substring(1);
+                            lore.add(Component.literal("§8" + modName + " Item"));
+                        }
                         lore.add(Component.literal("§7" + count + "x " + itemName));
                     } else {
                         lore.add(Component.literal("§7Item"));
@@ -111,6 +115,21 @@ public class ViewCommand extends Subcommand {
                         }
                         if (data.has("shiny") && data.get("shiny").getAsBoolean()) {
                             lore.add(Component.literal("§6✦ Shiny"));
+                        }
+                    }
+                    break;
+                case COMMAND:
+                    if (data != null) {
+                        if (data.has("display_name")) {
+                            // Use custom display name if provided
+                            lore.add(Component.literal("§7" + data.get("display_name").getAsString()));
+                        } else if (data.has("id")) {
+                            // Fall back to item ID if no display name
+                            String itemId = data.get("id").getAsString();
+                            String[] parts = itemId.split(":");
+                            String itemName = parts[parts.length - 1];
+                            itemName = itemName.substring(0, 1).toUpperCase() + itemName.substring(1);
+                            lore.add(Component.literal("§7" + itemName));
                         }
                     }
                     break;

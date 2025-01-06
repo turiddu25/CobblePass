@@ -33,7 +33,7 @@ public class Reward {
     }
 
     public ItemStack getItemStack(RegistryAccess registryAccess) {
-        if (type != RewardType.MINECRAFT_ITEM && type != RewardType.COBBLEMON_ITEM) {
+        if (type != RewardType.ITEM) {
             return ItemStack.EMPTY;
         }
 
@@ -51,8 +51,7 @@ public class Reward {
 
     public void grant(ServerPlayer player) {
         switch (type) {
-            case MINECRAFT_ITEM:
-            case COBBLEMON_ITEM:
+            case ITEM:
                 ItemStack item = getItemStack(player.level().registryAccess());
                 if (!item.isEmpty()) {
                     player.getInventory().add(item);
@@ -121,19 +120,18 @@ public class Reward {
     }
 
     // Factory methods for different reward types
-    public static Reward minecraftItem(JsonObject nbtData) {
-        return new Reward(RewardType.MINECRAFT_ITEM, nbtData, null);
-    }
-
-    public static Reward cobblemonItem(JsonObject nbtData) {
-        return new Reward(RewardType.COBBLEMON_ITEM, nbtData, null);
+    public static Reward item(JsonObject nbtData) {
+        return new Reward(RewardType.ITEM, nbtData, null);
     }
 
     public static Reward pokemon(JsonObject pokemonData) {
         return new Reward(RewardType.POKEMON, pokemonData, null);
     }
 
-    public static Reward command(String commandData) {
-        return new Reward(RewardType.COMMAND, new JsonObject(), commandData);
+    public static Reward command(String commandData, String displayId, String displayName) {
+        JsonObject data = new JsonObject();
+        data.addProperty("id", displayId); // Item to show in UI
+        data.addProperty("display_name", displayName); // Custom name to show in UI
+        return new Reward(RewardType.COMMAND, data, commandData);
     }
 }

@@ -51,7 +51,16 @@ public class BattlePassTier {
     public ItemStack getFreeRewardItem(RegistryAccess registryAccess) {
         if (freeReward == null) return ItemStack.EMPTY;
         
-        if (freeReward.getType() == RewardType.POKEMON) {
+        if (freeReward.getType() == RewardType.COMMAND) {
+            try {
+                JsonObject data = freeReward.getData();
+                if (data != null && data.has("id")) {
+                    return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"" + data.get("id").getAsString() + "\",Count:1}")).orElse(ItemStack.EMPTY);
+                }
+            } catch (CommandSyntaxException ex) {
+                return ItemStack.EMPTY;
+            }
+        } else if (freeReward.getType() == RewardType.POKEMON) {
             try {
                 // Parse Pokemon data to get species
                 JsonObject pokemonData = freeReward.getData();
@@ -85,7 +94,16 @@ public class BattlePassTier {
     public ItemStack getPremiumRewardItem(RegistryAccess registryAccess) {
         if (premiumReward == null) return ItemStack.EMPTY;
         
-        if (premiumReward.getType() == RewardType.POKEMON) {
+        if (premiumReward.getType() == RewardType.COMMAND) {
+            try {
+                JsonObject data = premiumReward.getData();
+                if (data != null && data.has("id")) {
+                    return ItemStack.parse(registryAccess, TagParser.parseTag("{id:\"" + data.get("id").getAsString() + "\",Count:1}")).orElse(ItemStack.EMPTY);
+                }
+            } catch (CommandSyntaxException ex) {
+                return ItemStack.EMPTY;
+            }
+        } else if (premiumReward.getType() == RewardType.POKEMON) {
             try {
                 // Parse Pokemon data to get species
                 JsonObject pokemonData = premiumReward.getData();
