@@ -6,8 +6,10 @@ PLEASE READ ENTIRE DESCRIPTION FOR FULL USAGE GUIDE! <3
 ## Installation and Dependencies
 
 Curseforge download
+
 [Modrinth download
 ](https://modrinth.com/mod/cobble-pass)
+
 This mod has a few dependencies:
 - [Cobblemon](https://modrinth.com/mod/cobblemon)
 - [Impactor](https://modrinth.com/mod/impactor)
