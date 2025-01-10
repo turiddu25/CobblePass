@@ -1,6 +1,20 @@
 # CobblePass
 
-A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Provides a progression and reward system with both free and premium tiers.
+A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Provides a progression and reward system with both free and premium tiers. Players gain XP by catching and defeating pokemon, allowing them to progress through highly customisable tiers of rewards!
+
+PLEASE READ ENTIRE DESCRIPTION FOR FULL USAGE GUIDE! <3
+## Installation and Dependencies
+
+Curseforge download
+[Modrinth download
+](https://modrinth.com/mod/cobble-pass)
+This mod has a few dependencies:
+- [Cobblemon](https://modrinth.com/mod/cobblemon)
+- [Impactor](https://modrinth.com/mod/impactor)
+- [GooeyLibs](https://modrinth.com/mod/gooeylibs)
+
+GooeyLibs and Impactor are only needed server-side
+
 
 ## Features
 
@@ -10,7 +24,9 @@ A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Pr
 - Dynamic reward configuration
 - Direct reward claiming
 - Server-side functionality with client UI
+- Dynamically edit tiers, general config and player data without server reboots
 
+![CobblePass](https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTU2ZTBpNWpkMXpyOTJyY3FnOWYxZHppOXRpcnhobm5veXU3bjVseCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YNbbM79OAECuE6HU5I/giphy.gif)
 ## Configuration
 
 ### config.json
@@ -32,33 +48,34 @@ A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Pr
 {
   "tiers": [
     {
-      "level": 1,
-      "freeReward": {
-        "type": "COBBLEMON_ITEM",
+      "level": 1,                                    // The tier level (required)
+      "freeReward": {                               // Free reward that all players can claim
+        "type": "ITEM",                             // ITEM type works with any mod's items
         "data": {
-          "id": "cobblemon:poke_ball",
-          "Count": 5
+          "id": "cobblemon:poke_ball",              // Item ID in format "modid:item_name"
+          "Count": 5                                // Number of items to give
         }
       }
     },
     {
-      "level": 2,
-      "freeReward": {
-        "type": "MINECRAFT_ITEM",
+      "level": 2,                                   // Each tier must have a unique level
+      "premiumReward": {                           // Premium reward only for premium pass holders
+        "type": "POKEMON",                         // POKEMON type for Pokemon rewards
         "data": {
-          "id": "minecraft:iron_ingot",
-          "Count": 10
+          "species": "charmander",                 // Pokemon species name
+          "level": 15,                             // Pokemon's level (optional)
+          "shiny": true                            // Whether Pokemon is shiny (optional)
         }
       }
     },
     {
-      "level": 10,
-      "premiumReward": {
-        "type": "POKEMON",
+      "level": 3,
+      "freeReward": {
+        "type": "COMMAND",                         // COMMAND type for custom commands
+        "command": "effect give %player% minecraft:regeneration 30 2",  // Command to execute (%player% replaced with player name)
         "data": {
-          "species": "charmander",
-          "level": 15,
-          "shiny": true
+          "id": "minecraft:potion",                // Item to show in UI
+          "display_name": "Healing Boost"          // Custom name to show in UI (optional)
         }
       }
     }
@@ -66,10 +83,25 @@ A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Pr
 }
 
 ```
+### Edit Player Data
+```
+{
+  "version": "1.0",
+  "level": 22,
+  "xp": 300,
+  "isPremium": false,
+  "claimedFreeRewards": [
+    1,
+    2,
+    9
+  ],
+  "claimedPremiumRewards": []
+}
+```
 
 ### Reward Types
-- `COBBLEMON_ITEM`: Cobblemon-specific items
-- `MINECRAFT_ITEM`: Vanilla Minecraft items
+- `ITEM`: Any type of Item
+- `COMMAND`: Command execution reward
 - `POKEMON`: Pokémon rewards
 
 ## Commands
@@ -80,20 +112,7 @@ A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Pr
 - `/battlepass premium buy` - Buy premium pass
 
 ### Admin Commands
-- `/battlepass addlevels [player] <amount>` - Add levels to a player (max 100)
+- `/battlepass start` - Starts the battlepass season
+- `/battlepass addlevels [player] <amount>` - Add levels to a player 
+- `/battlepass addxp [player] <amount>` - Add xp to a player
 - `/battlepass reload` - Reload configuration
-
-## Dependencies
-
-### Required
-- Minecraft: 1.21.1
-- Fabric Loader: 0.16.5
-- Fabric API: 0.104.0+1.21.1
-- GooeyLibs: 3.1.0-1.21.1-SNAPSHOT
-- Cobblemon: 1.6.0+1.21.1
-- Impactor Economy API: 5.3.0
-
-
-## License
-
-All rights reserved.
