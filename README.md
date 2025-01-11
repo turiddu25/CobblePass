@@ -5,7 +5,7 @@ A Battle Pass mod for Cobblemon 1.6+ running on Minecraft 1.21.1 with Fabric. Pr
 PLEASE READ ENTIRE DESCRIPTION FOR FULL USAGE GUIDE! <3
 ## Installation and Dependencies
 
-Curseforge download
+[Curseforge download](https://www.curseforge.com/minecraft/mc-mods/cobblemon-cobblepass)
 
 [Modrinth download
 ](https://modrinth.com/mod/cobble-pass)
