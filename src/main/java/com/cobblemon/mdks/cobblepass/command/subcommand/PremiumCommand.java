@@ -43,6 +43,12 @@ public class PremiumCommand extends Subcommand {
 
         ServerPlayer player = context.getSource().getPlayer();
 
+        // Check if premium mode is enabled
+        if (!CobblePass.config.isPremiumMode()) {
+            player.sendSystemMessage(Component.literal("§cPremium mode is not enabled for this season."));
+            return 1;
+        }
+
         // Check if season is active
         if (!CobblePass.config.isSeasonActive()) {
             player.sendSystemMessage(Component.literal(Constants.MSG_NO_ACTIVE_SEASON));

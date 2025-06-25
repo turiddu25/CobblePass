@@ -8,8 +8,7 @@ import com.cobblemon.mdks.cobblepass.util.Permissions;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import com.cobblemon.mdks.cobblepass.listeners.CatchPokemonListener;
-import com.cobblemon.mdks.cobblepass.listeners.DefeatPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.*;
 import com.cobblemon.mod.common.api.Priority;
 import net.minecraft.server.MinecraftServer;
 import org.slf4j.LoggerFactory;
@@ -23,16 +22,13 @@ public class CobblePass implements ModInitializer {
 
     @Override
     public void onInitialize() {
-        // Load config
         config = new Config();
         config.load();
 
-        // Initialize permissions
         permissions = new Permissions();
 
-        // Initialize battle pass and load all existing player data
         battlePass = new BattlePass();
-        battlePass.init(); // Important: Initialize battle pass data
+        battlePass.init();
 
         // Add commands to registry
         CommandsRegistry.addCommand(new BattlePassCommand());
@@ -49,6 +45,9 @@ public class CobblePass implements ModInitializer {
             CobblePass.server = server;
             CatchPokemonListener.register();
             DefeatPokemonListener.register();
+            EvolvePokemonListener.register();
+            HatchPokemonListener.register();
+            TradePokemonListener.register();
         });
 
         // Register player join event
@@ -84,5 +83,19 @@ public class CobblePass implements ModInitializer {
             battlePass.reloadTiers(); // Only reload tier configuration without affecting player data
         }
         LOGGER.info("CobblePass reloaded");
+    }
+
+    public static void resetInstance() {
+        LOGGER.info("Resetting CobblePass configuration and data in memory...");
+        
+        // Create new, empty objects to replace the old ones in memory
+        config = new Config();
+        if (battlePass != null) {
+            battlePass.resetData();
+        } else {
+            battlePass = new BattlePass();
+        }
+        
+        LOGGER.info("CobblePass has been reset. Please create a new Battle Pass to continue.");
     }
 }

@@ -93,7 +93,7 @@ public class Utils {
      * Check if a directory exists and create it if it doesn't
      */
     public static File checkForDirectory(String path) {
-        File dir = new File(new File("").getAbsolutePath() + path);
+        File dir = new File(path);
         if (!dir.exists()) {
             dir.mkdirs();
         }
@@ -128,7 +128,8 @@ public class Utils {
     public static CompletableFuture<Boolean> readFileAsync(String directory, String filename, Consumer<String> callback) {
         return CompletableFuture.supplyAsync(() -> {
             try {
-                Path path = Paths.get(new File("").getAbsolutePath() + "/" + directory, filename);
+                File dir = checkForDirectory(directory);
+                Path path = Paths.get(dir.getAbsolutePath(), filename);
                 File file = path.toFile();
 
                 if (!file.exists()) {
@@ -153,7 +154,7 @@ public class Utils {
     public static String readFileSync(String directory, String filename) {
         try {
             // Ensure directory exists
-            File dir = checkForDirectory("/" + directory);
+            File dir = checkForDirectory(directory);
             Path path = Paths.get(dir.getAbsolutePath(), filename);
             File file = path.toFile();
 
@@ -174,7 +175,7 @@ public class Utils {
     public static boolean writeFileSync(String directory, String filename, String data) {
         try {
             // Ensure directory exists
-            File dir = checkForDirectory("/" + directory);
+            File dir = checkForDirectory(directory);
             Path path = Paths.get(dir.getAbsolutePath(), filename);
 
             // Write file

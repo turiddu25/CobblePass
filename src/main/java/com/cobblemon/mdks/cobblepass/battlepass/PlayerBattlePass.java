@@ -45,7 +45,11 @@ public class PlayerBattlePass {
     }
 
     private int getXPForNextLevel() {
-        return (int)(CobblePass.config.getXpPerLevel() * Math.pow(Constants.XP_MULTIPLIER, level - 1));
+        if (CobblePass.config.getXpProgression().getMode().equalsIgnoreCase("MANUAL")) {
+            return CobblePass.config.getXpProgression().getManualXpForLevel(level + 1);
+        } else {
+            return (int)(CobblePass.config.getXpProgression().getXpPerLevel() * Math.pow(CobblePass.config.getXpProgression().getXpMultiplier(), level - 1));
+        }
     }
 
     public void claimFreeReward(int level) {

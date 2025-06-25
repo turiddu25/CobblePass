@@ -56,3 +56,6 @@ GTSimpactor.md
 cobblemon-api-helper/package.json
 cobblemon-api-helper/package-lock.json
 cobblemon-api-helper/src/index.ts
+.env
+changelog.md
+GEMINI.md

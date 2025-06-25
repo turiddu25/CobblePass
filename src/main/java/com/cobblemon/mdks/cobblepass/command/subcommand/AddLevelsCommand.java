@@ -1,7 +1,7 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
-import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.config.XpProgression;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -59,9 +59,17 @@ public class AddLevelsCommand extends Subcommand {
 
             // Calculate total XP needed for target level
             int totalXpNeeded = 0;
-            double baseXp = CobblePass.config.getXpPerLevel();
-            for (int i = 0; i < levelsToAdd; i++) {
-                totalXpNeeded += (int)(baseXp * Math.pow(Constants.XP_MULTIPLIER, currentLevel + i - 1));
+            XpProgression xpProgression = CobblePass.config.getXpProgression();
+            if (xpProgression.getMode().equalsIgnoreCase("FORMULA")) {
+                double baseXp = xpProgression.getXpPerLevel();
+                double multiplier = xpProgression.getXpMultiplier();
+                for (int i = 0; i < levelsToAdd; i++) {
+                    totalXpNeeded += (int)(baseXp * Math.pow(multiplier, currentLevel + i - 1));
+                }
+            } else { // MANUAL
+                for (int i = 0; i < levelsToAdd; i++) {
+                    totalXpNeeded += xpProgression.getManualXpForLevel(currentLevel + i + 1);
+                }
             }
 
             CobblePass.battlePass.addXP(target, totalXpNeeded);

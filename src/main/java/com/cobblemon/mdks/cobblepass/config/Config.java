@@ -9,16 +9,20 @@ import com.google.gson.JsonParser;
 
 public class Config {
     private int maxLevel;
-    private int xpPerLevel;
     private int catchXP;
     private int defeatXP;
+    private int evolveXP;
+    private int hatchXP;
+    private int tradeXP;
     private long premiumCost;
     private int seasonDurationDays;
     private int currentSeason;
     private long seasonStartTime;
     private long seasonEndTime;
     private boolean enablePermissionNodes;
-    private double xpMultiplier;
+    private XpProgression xpProgression;
+
+    private boolean premiumMode;
 
     public Config() {
         setDefaults();
@@ -30,16 +34,19 @@ public class Config {
 
     private void generateDefaultConfig() {
         this.maxLevel = Constants.DEFAULT_MAX_LEVEL;
-        this.xpPerLevel = Constants.DEFAULT_XP_PER_LEVEL;
         this.catchXP = Constants.DEFAULT_CATCH_XP;
         this.defeatXP = Constants.DEFAULT_DEFEAT_XP;
+        this.evolveXP = Constants.DEFAULT_EVOLVE_XP;
+        this.hatchXP = Constants.DEFAULT_HATCH_XP;
+        this.tradeXP = Constants.DEFAULT_TRADE_XP;
         this.premiumCost = Constants.DEFAULT_PREMIUM_COST;
         this.seasonDurationDays = 60;
         this.currentSeason = 0;
         this.seasonStartTime = 0;
         this.seasonEndTime = 0;
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
-        this.xpMultiplier = Constants.XP_MULTIPLIER;
+        this.xpProgression = new XpProgression();
+        this.premiumMode = false;
     }
 
     public void load() {
@@ -48,8 +55,6 @@ public class Config {
         
         String content = Utils.readFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE);
         if (content == null || content.isEmpty()) {
-            generateDefaultConfig();
-            save();
             return;
         }
 
@@ -58,23 +63,30 @@ public class Config {
             loadFromJson(json);
         } catch (Exception e) {
             CobblePass.LOGGER.error("Failed to load config", e);
-            setDefaults();
-            save();
         }
     }
 
     private void loadFromJson(JsonObject json) {
         maxLevel = getOrDefault(json, "maxLevel", Constants.DEFAULT_MAX_LEVEL);
-        xpPerLevel = getOrDefault(json, "xpPerLevel", Constants.DEFAULT_XP_PER_LEVEL);
         catchXP = getOrDefault(json, "catchXP", Constants.DEFAULT_CATCH_XP);
         defeatXP = getOrDefault(json, "defeatXP", Constants.DEFAULT_DEFEAT_XP);
+        evolveXP = getOrDefault(json, "evolveXP", Constants.DEFAULT_EVOLVE_XP);
+        hatchXP = getOrDefault(json, "hatchXP", Constants.DEFAULT_HATCH_XP);
+        tradeXP = getOrDefault(json, "tradeXP", Constants.DEFAULT_TRADE_XP);
         premiumCost = getOrDefault(json, "premiumCost", Constants.DEFAULT_PREMIUM_COST);
         seasonDurationDays = getOrDefault(json, "seasonDurationDays", 60);
         currentSeason = getOrDefault(json, "currentSeason", 0);
         seasonStartTime = getOrDefault(json, "seasonStartTime", 0L);
         seasonEndTime = getOrDefault(json, "seasonEndTime", 0L);
         enablePermissionNodes = getOrDefault(json, "enablePermissionNodes", Constants.DEFAULT_ENABLE_PERMISSION_NODES);
-        xpMultiplier = getOrDefault(json, "xpMultiplier", Constants.XP_MULTIPLIER);
+        premiumMode = getOrDefault(json, "premiumMode", false);
+
+        if (json.has("xpProgression") && json.get("xpProgression").isJsonObject()) {
+            this.xpProgression = new XpProgression();
+            this.xpProgression.fromJson(json.getAsJsonObject("xpProgression"));
+        } else {
+            this.xpProgression = new XpProgression();
+        }
     }
 
     private <T> T getOrDefault(JsonObject json, String key, T defaultValue) {
@@ -99,16 +111,19 @@ public class Config {
 
         JsonObject json = new JsonObject();
         json.addProperty("maxLevel", maxLevel);
-        json.addProperty("xpPerLevel", xpPerLevel);
         json.addProperty("catchXP", catchXP);
         json.addProperty("defeatXP", defeatXP);
+        json.addProperty("evolveXP", evolveXP);
+        json.addProperty("hatchXP", hatchXP);
+        json.addProperty("tradeXP", tradeXP);
         json.addProperty("premiumCost", premiumCost);
         json.addProperty("seasonDurationDays", seasonDurationDays);
         json.addProperty("currentSeason", currentSeason);
         json.addProperty("seasonStartTime", seasonStartTime);
         json.addProperty("seasonEndTime", seasonEndTime);
         json.addProperty("enablePermissionNodes", enablePermissionNodes);
-        json.addProperty("xpMultiplier", xpMultiplier);
+        json.add("xpProgression", xpProgression.toJson());
+        json.addProperty("premiumMode", premiumMode);
 
         Utils.writeFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE,
                 Utils.newGson().toJson(json));
@@ -116,18 +131,36 @@ public class Config {
 
     // Getters
     public int getMaxLevel() { return maxLevel; }
-    public int getXpPerLevel() { return xpPerLevel; }
     public int getCatchXP() { return catchXP; }
     public int getDefeatXP() { return defeatXP; }
+    public int getEvolveXP() { return evolveXP; }
+    public int getHatchXP() { return hatchXP; }
+    public int getTradeXP() { return tradeXP; }
     public long getPremiumCost() { return premiumCost; }
     public int getCurrentSeason() { return currentSeason; }
     public boolean isEnablePermissionNodes() { return enablePermissionNodes; }
-    public double getXpMultiplier() { return xpMultiplier; }
+    public XpProgression getXpProgression() { return xpProgression; }
+    public boolean isPremiumMode() { return premiumMode; }
     
-    public void startNewSeason() {
+    public void createNewSeason(int duration, int maxLevel, boolean premium) {
         currentSeason++;
+        seasonDurationDays = duration;
+        this.maxLevel = maxLevel;
+        this.premiumMode = premium;
+        seasonStartTime = 0;
+        seasonEndTime = 0;
+        save();
+    }
+
+    public void startNewSeason() {
         seasonStartTime = System.currentTimeMillis();
         seasonEndTime = seasonStartTime + (seasonDurationDays * Constants.MILLIS_PER_DAY);
+        save();
+    }
+
+    public void stopSeason() {
+        seasonStartTime = 0;
+        seasonEndTime = 0;
         save();
     }
 

@@ -36,14 +36,14 @@ public class Constants {
     
     // Battle Pass Constants
     public static final int MAX_LEVEL = 100;
-    public static final int XP_PER_LEVEL = 1000;
-    public static final double XP_MULTIPLIER = 1.1;
     
     // Default Values
     public static final int DEFAULT_MAX_LEVEL = 100;
-    public static final int DEFAULT_XP_PER_LEVEL = 1000;
     public static final int DEFAULT_CATCH_XP = 100;
     public static final int DEFAULT_DEFEAT_XP = 50;
+    public static final int DEFAULT_EVOLVE_XP = 75;
+    public static final int DEFAULT_HATCH_XP = 50;
+    public static final int DEFAULT_TRADE_XP = 25;
     public static final long DEFAULT_PREMIUM_COST = 1000;
     public static final boolean DEFAULT_ENABLE_PERMISSION_NODES = true;
     

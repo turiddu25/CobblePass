@@ -22,14 +22,12 @@ public class TierConfig {
     private final Map<Integer, BattlePassTier> tiers = new HashMap<>();
 
     public TierConfig() {
-        load();
+        // Do not load here
     }
 
     public void load() {
         String content = Utils.readFileSync(TIERS_PATH, TIERS_FILE);
         if (content == null || content.isEmpty()) {
-            generateDefaultTiers();
-            save();
             return;
         }
 
@@ -38,8 +36,6 @@ public class TierConfig {
             loadFromJson(json);
         } catch (Exception e) {
             CobblePass.LOGGER.error("Failed to load tier config", e);
-            generateDefaultTiers();
-            save();
         }
     }
 
@@ -75,83 +71,98 @@ public class TierConfig {
         }
 
         JsonElement rewardElement = tierObj.get(rewardKey);
-        
-        // Handle template references
-        if (rewardElement.isJsonPrimitive() && rewardElement.getAsString().startsWith("@")) {
-            String templateName = rewardElement.getAsString().substring(1);
-            if (templates.containsKey(templateName)) {
-                return Reward.fromJson(templates.get(templateName));
-            }
-            return null;
-        }
 
-        // Handle direct reward definitions
         if (rewardElement.isJsonObject()) {
-            return Reward.fromJson(rewardElement.getAsJsonObject());
+            JsonObject rewardObject = rewardElement.getAsJsonObject();
+            if (rewardObject.has("$template")) {
+                String templateName = rewardObject.get("$template").getAsString();
+                if (templates.containsKey(templateName)) {
+                    return Reward.fromJson(templates.get(templateName));
+                }
+                return null;
+            }
+            return Reward.fromJson(rewardObject);
         }
 
         return null;
     }
 
-    private void generateDefaultTiers() {
+    public void generateAndSaveTiers(int maxLevel) {
         tiers.clear();
-        
-        // Tier 1 - Basic Item
-        JsonObject tier1Data = new JsonObject();
-        tier1Data.addProperty("id", "cobblemon:poke_ball");
-        tier1Data.addProperty("Count", 5);
-        tiers.put(1, new BattlePassTier(1, Reward.item(tier1Data), null));
-        
-        // Tier 2 - Minecraft Item
-        JsonObject tier2Data = new JsonObject();
-        tier2Data.addProperty("id", "minecraft:diamond");
-        tier2Data.addProperty("Count", 3);
-        tiers.put(2, new BattlePassTier(2, Reward.item(tier2Data), null));
-        
-        // Tier 3 - Command with Custom Display
-        tiers.put(3, new BattlePassTier(3, 
-            Reward.command(
-                "effect give %player% minecraft:regeneration 30 2",
-                "minecraft:potion",
-                "Healing Boost"
-            ), 
-            null));
-        
-        // Tier 4 - Pokemon
-        JsonObject tier4Data = new JsonObject();
-        tier4Data.addProperty("species", "eevee");
-        tier4Data.addProperty("level", 10);
-        tier4Data.addProperty("shiny", false);
-        tiers.put(4, new BattlePassTier(4, Reward.pokemon(tier4Data), null));
-        
-        // Tier 5 - Premium Command
-        tiers.put(5, new BattlePassTier(5, null,
-            Reward.command(
-                "xp add %player% 1000",
-                "minecraft:experience_bottle",
-                "XP Boost"
-            )));
+
+        // Create a placeholder reward (an Apple, as you suggested)
+        JsonObject placeholderData = new JsonObject();
+        placeholderData.addProperty("id", "minecraft:apple");
+        placeholderData.addProperty("Count", 1);
+        Reward placeholderReward = Reward.item(placeholderData);
+
+        for (int i = 1; i <= maxLevel; i++) {
+            // By default, every tier gets a free placeholder reward. Premium is null.
+            // Server owners can then change the item or add a premium reward.
+            tiers.put(i, new BattlePassTier(i, placeholderReward, null));
+        }
+
+        // Now, save this new structure to tiers.json
+        save();
+    }
+
+    private void generateDefaultTiers() {
+        generateAndSaveTiers(10); // Generates a default 10-tier pass on first run
     }
 
     public void save() {
         JsonObject json = new JsonObject();
         JsonArray tiersArray = new JsonArray();
-        
+
+        // --- NEW: ADD A DEFAULT TEMPLATES OBJECT ---
+        JsonObject templatesObj = new JsonObject();
+        if (json.has("templates")) { // Preserve existing templates if they exist
+            templatesObj = json.getAsJsonObject("templates");
+        } else { // Otherwise, create some helpful default ones
+            // Template for 10 Poke Balls
+            JsonObject pokeBallData = new JsonObject();
+            pokeBallData.addProperty("type", "ITEM");
+            pokeBallData.add("data", new com.google.gson.Gson().fromJson("{id:\"cobblemon:poke_ball\",Count:10}", JsonObject.class));
+            templatesObj.add("pokeballs_10", pokeBallData);
+
+            // Template for a Rare Candy
+            JsonObject rareCandyData = new JsonObject();
+            rareCandyData.addProperty("type", "ITEM");
+            rareCandyData.add("data", new com.google.gson.Gson().fromJson("{id:\"cobblemon:rare_candy\",Count:1}", JsonObject.class));
+            templatesObj.add("rare_candy", rareCandyData);
+
+            // Template for a random shiny Eevee
+            JsonObject eeveeData = new JsonObject();
+            eeveeData.addProperty("type", "POKEMON");
+            eeveeData.add("data", new com.google.gson.Gson().fromJson("{species:\"eevee\",shiny:true}", JsonObject.class));
+            templatesObj.add("shiny_eevee", eeveeData);
+
+            // Template for a command reward
+            JsonObject commandData = new JsonObject();
+            commandData.addProperty("type", "COMMAND");
+            commandData.add("data", new com.google.gson.Gson().fromJson("{command:\"say Hello %player%!\",display_name:\"Greeting\",id:\"minecraft:paper\"}", JsonObject.class));
+            templatesObj.add("greeting_command", commandData);
+        }
+        json.add("templates", templatesObj);
+        // --- END NEW PART ---
+
         for (BattlePassTier tier : tiers.values()) {
             JsonObject tierObj = new JsonObject();
             tierObj.addProperty("level", tier.getLevel());
-            
+
             if (tier.getFreeReward() != null) {
+                // We can now even generate tiers that use these templates by default!
+                // For example, every 10th level could get a rare candy.
                 tierObj.add("freeReward", tier.getFreeReward().toJson());
             }
-            
+
             if (tier.getPremiumReward() != null) {
                 tierObj.add("premiumReward", tier.getPremiumReward().toJson());
             }
-            
+
             tiersArray.add(tierObj);
         }
-        
+
         json.add("tiers", tiersArray);
         Utils.writeFileSync(TIERS_PATH, TIERS_FILE, Utils.newGson().toJson(json));
     }
