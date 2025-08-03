@@ -1,17 +1,22 @@
 package com.cobblemon.mdks.cobblepass;
 
+import org.slf4j.LoggerFactory;
+
 import com.cobblemon.mdks.cobblepass.battlepass.BattlePass;
 import com.cobblemon.mdks.cobblepass.command.BattlePassCommand;
 import com.cobblemon.mdks.cobblepass.config.Config;
+import com.cobblemon.mdks.cobblepass.listeners.CatchPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.DefeatPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.EvolvePokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.HatchPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.TradePokemonListener;
 import com.cobblemon.mdks.cobblepass.util.CommandsRegistry;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
+
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
-import com.cobblemon.mdks.cobblepass.listeners.*;
-import com.cobblemon.mod.common.api.Priority;
 import net.minecraft.server.MinecraftServer;
-import org.slf4j.LoggerFactory;
 
 public class CobblePass implements ModInitializer {
     public static final org.slf4j.Logger LOGGER = LoggerFactory.getLogger("cobblepass");
@@ -82,7 +87,7 @@ public class CobblePass implements ModInitializer {
         } else {
             battlePass.reloadTiers(); // Only reload tier configuration without affecting player data
         }
-        LOGGER.info("CobblePass reloaded");
+        LOGGER.info("CobblePass reloaded - GUI and language configurations updated");
     }
 
     public static void resetInstance() {

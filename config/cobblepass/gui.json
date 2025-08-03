@@ -1,0 +1,104 @@
+{
+  "title": "lang.gui.title",
+  "enableCustomGui": true,
+  "structure": {
+    "structure": [
+      "# i # # B # # P #",
+      "# # # # # # # # #",
+      "# L f f f f f L #",
+      "# M r r r r r M #",
+      "# # # # # # # # #",
+      "< # # # # # # # >"
+    ],
+    "ingredients": {
+      "#": {
+        "type": "STATIC_ITEM",
+        "material": "minecraft:light_gray_stained_glass_pane",
+        "name": "lang.gui.decoration.border",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": true
+      },
+      "-": {
+        "type": "STATIC_ITEM",
+        "material": "minecraft:air",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": true
+      },
+      "i": {
+        "type": "XP_INFO_PLACEHOLDER",
+        "material": "minecraft:experience_bottle",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "B": {
+        "type": "PROGRESS_PLACEHOLDER",
+        "material": "minecraft:nether_star",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "P": {
+        "type": "PREMIUM_STATUS_PLACEHOLDER",
+        "material": "cobblemon:master_ball",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "L": {
+        "type": "FREE_REWARDS_LABEL",
+        "material": "cobblemon:premier_ball",
+        "name": "lang.gui.reward.free_label",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "M": {
+        "type": "PREMIUM_REWARDS_LABEL",
+        "material": "cobblemon:master_ball",
+        "name": "lang.gui.reward.premium_label",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "f": {
+        "type": "FREE_REWARD_PLACEHOLDER",
+        "material": "",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "r": {
+        "type": "PREMIUM_REWARD_PLACEHOLDER",
+        "material": "",
+        "name": "",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      "<": {
+        "type": "NAVIGATION_PREVIOUS",
+        "material": "minecraft:arrow",
+        "name": "lang.gui.navigation.previous",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      },
+      ">": {
+        "type": "NAVIGATION_NEXT",
+        "material": "minecraft:arrow",
+        "name": "lang.gui.navigation.next",
+        "lore": [],
+        "customModelData": 0,
+        "hideTooltip": false
+      }
+    }
+  }
+}

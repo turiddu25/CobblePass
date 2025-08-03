@@ -4,6 +4,7 @@ import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.battlepass.BattlePassTier;
 import com.cobblemon.mdks.cobblepass.battlepass.PlayerBattlePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.arguments.BoolArgumentType;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -33,7 +34,7 @@ public class ClaimCommand extends Subcommand {
     private int run(CommandContext<CommandSourceStack> context, boolean hasPremiumArg) {
         if (!context.getSource().isPlayer()) {
             context.getSource().sendSystemMessage(
-                Component.literal(Constants.ERROR_PREFIX + "This command must be run by a player!")
+                LangManager.getComponent("lang.command.must_be_player")
             );
             return 1;
         }
@@ -55,57 +56,51 @@ public class ClaimCommand extends Subcommand {
         if (premium) {
             // Check if player has reached this level
             if (level > pass.getLevel()) {
-                player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
+                player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
                 return 1;
             }
 
             if (!pass.isPremium()) {
-                player.sendSystemMessage(Component.literal(Constants.MSG_NOT_PREMIUM));
+                player.sendSystemMessage(LangManager.getComponent("lang.command.not_premium"));
                 return 1;
             }
 
             if (pass.hasClaimedPremiumReward(level)) {
-                player.sendSystemMessage(Component.literal(Constants.MSG_ALREADY_CLAIMED));
+                player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed"));
                 return 1;
             }
 
             if (!tier.hasPremiumReward()) {
-                player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
+                player.sendSystemMessage(LangManager.getComponent("lang.command.no_reward", level));
                 return 1;
             }
 
             tier.grantPremiumReward(player);
             pass.claimPremiumReward(level);
-            player.sendSystemMessage(Component.literal(String.format(
-                Constants.MSG_REWARD_CLAIM,
-                level
-            )));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
             return 1;
         }
 
         // Handle free rewards
         // Check if player has reached this level
         if (level > pass.getLevel()) {
-            player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "You haven't reached level " + level + " yet!"));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
             return 1;
         }
 
         if (pass.hasClaimedFreeReward(level)) {
-            player.sendSystemMessage(Component.literal(Constants.MSG_ALREADY_CLAIMED));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed"));
             return 1;
         }
 
         if (!tier.hasFreeReward()) {
-            player.sendSystemMessage(Component.literal(Constants.MSG_NO_REWARD));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.no_reward", level));
             return 1;
         }
 
         tier.grantFreeReward(player);
         pass.claimFreeReward(level);
-        player.sendSystemMessage(Component.literal(String.format(
-            Constants.MSG_REWARD_CLAIM,
-            level
-        )));
+        player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
         return 1;
     }
 

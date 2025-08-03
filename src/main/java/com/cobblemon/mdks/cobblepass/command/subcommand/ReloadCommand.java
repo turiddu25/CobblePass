@@ -1,10 +1,11 @@
 package com.cobblemon.mdks.cobblepass.command.subcommand;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
-import com.cobblemon.mdks.cobblepass.battlepass.BattlePass;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.tree.LiteralCommandNode;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.network.chat.Component;
@@ -29,9 +30,9 @@ public class ReloadCommand extends Subcommand {
             // ONLY CALL THE MAIN RELOAD METHOD
             CobblePass.reload();
 
-            context.getSource().sendSystemMessage(Component.literal(
-                "§aBattle Pass configuration and tiers reloaded successfully!"
-            ));
+            context.getSource().sendSystemMessage(
+                LangManager.getComponent("lang.command.config_reloaded")
+            );
 
             // Log reload event
             CobblePass.LOGGER.info("Battle Pass configuration reloaded by " + 

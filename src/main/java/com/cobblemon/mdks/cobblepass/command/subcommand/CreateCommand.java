@@ -25,7 +25,7 @@ import java.util.List;
 public class CreateCommand extends Subcommand {
 
     private int duration = 30;
-    private int maxLevel = 100;
+    private int maxLevel = 10;
     private boolean premium = false;
 
     public CreateCommand() {

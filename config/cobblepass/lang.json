@@ -1,0 +1,72 @@
+{
+  "lang.command.xp_gained": "§b[BattlePass] §fYou gained §e%d§f XP! (§e%d§f/§e%d§f)",
+  "lang.command.level_up": "§a[BattlePass] §fYou reached level §e%d§f!",
+  "lang.command.reward_claim": "§a[BattlePass] §fYou claimed the reward for level §e%d§f!",
+  "lang.command.premium_unlocked": "§a[BattlePass] §fYou unlocked the Premium Battle Pass!",
+  "lang.command.no_reward": "§c[BattlePass] §fNo reward available at level §e%d§f!",
+  "lang.command.already_claimed": "§c[BattlePass] §fYou already claimed this reward!",
+  "lang.command.already_claimed_level": "§c[BattlePass] §fYou already claimed the reward for level §e%d§f!",
+  "lang.command.level_not_reached": "§c[BattlePass] §fYou haven't reached level §e%d§f yet!",
+  "lang.command.not_premium": "§c[BattlePass] §fThis is a premium reward! Use §e/battlepass premium§f to unlock.",
+  "lang.command.config_reloaded": "§a[BattlePass] §fConfiguration reloaded!",
+  "lang.command.must_be_player": "§c[BattlePass] §fThis command must be run by a player!",
+  
+  "lang.season.started": "§a[BattlePass] §fBattle Pass Season %d has begun!",
+  "lang.season.already_active": "§c[BattlePass] §fA battle pass season is already active! (Season %d)",
+  "lang.season.no_active": "§c[BattlePass] §fNo battle pass season is currently active!",
+  "lang.season.time_remaining": "§b[BattlePass] §fSeason %d ends in %s",
+  
+  "lang.gui.title": "§3Battle Pass",
+  "lang.gui.xp_info.name": "§aHow to Earn XP",
+  "lang.gui.xp_info.description": "§7Earn XP by performing these actions:",
+  "lang.gui.xp_info.catch": "  §b• Catch Pokémon: §e+%d XP",
+  "lang.gui.xp_info.defeat": "  §b• Defeat Pokémon: §e+%d XP",
+  "lang.gui.xp_info.evolve": "  §b• Evolve Pokémon: §e+%d XP",
+  "lang.gui.xp_info.hatch": "  §b• Hatch Eggs: §e+%d XP",
+  "lang.gui.xp_info.trade": "  §b• Trade Pokémon: §e+%d XP",
+  
+  "lang.gui.progress.name": "§bBattle Pass Progress",
+  "lang.gui.progress.level": "§3Level: §f%d",
+  "lang.gui.progress.xp": "§3XP: §f%d§7/§f%d",
+  "lang.gui.progress.time_remaining": "§3Time Remaining: §b%s",
+  
+  "lang.gui.premium.name": "§6Premium Status",
+  "lang.gui.premium.active": "§aYou have the Premium Pass!",
+  "lang.gui.premium.inactive": "§cPremium Pass Inactive",
+  "lang.gui.premium.click_info": "§7Click to learn more!",
+  "lang.gui.premium.season": "§3Season %d",
+  "lang.gui.premium.no_season": "§cNo active season",
+  "lang.gui.premium.command_info": "§7Use §f/battlepass premium §7to unlock premium rewards.",
+  
+  "lang.gui.reward.free": "§aFree Reward",
+  "lang.gui.reward.premium": "§6Premium Reward",
+  "lang.gui.reward.free_label": "§aFree Rewards",
+  "lang.gui.reward.premium_label": "§6Premium Rewards",
+  
+  "lang.gui.status.name": "§3Level %d Status",
+  "lang.gui.status.requires_premium": "§cRequires Premium Pass",
+  "lang.gui.status.purchase_info": "§7Purchase with §e/bp premium buy",
+  "lang.gui.status.not_reached": "§7Not Reached",
+  "lang.gui.status.claimed": "§6Claimed",
+  "lang.gui.status.available": "§aAvailable to Claim",
+  
+  "lang.gui.tier_title": "§aTier %d",
+  
+  "lang.gui.status.in_lore.claimed": "§aStatus: Claimed",
+  "lang.gui.status.in_lore.available": "§eStatus: Available to Claim",
+  "lang.gui.status.in_lore.not_reached": "§cStatus: Locked (Requires Level %d)",
+  "lang.gui.status.in_lore.requires_premium": "§6Status: Premium Locked",
+  "lang.gui.status.in_lore.purchase_prompt": "§7Purchase the pass to unlock.",
+  
+  "lang.gui.navigation.previous": "§f← Previous Page",
+  "lang.gui.navigation.next": "§fNext Page →",
+  
+  "lang.gui.decoration.border": "§7 ",
+  
+  "lang.reward.item": "§7Item",
+  "lang.reward.pokemon": "§7Pokemon",
+  "lang.reward.level": "§7Level: §f%d",
+  "lang.reward.shiny": "§6✦ Shiny",
+  "lang.reward.mod_item": "§8%s Item",
+  "lang.reward.count": "§7%dx %s"
+}

@@ -27,6 +27,8 @@ public class Constants {
     public static final String CONFIG_PATH = CONFIG_DIR;
     public static final String CONFIG_FILE = "config.json";
     public static final String TIERS_FILE = "tiers.json";
+    public static final String LANG_FILE = "lang.json";
+    public static final String GUI_FILE = "gui.json";
     public static final String PLAYERS_PATH = CONFIG_DIR + "/players";
     public static final String PLAYER_DATA_DIR = PLAYERS_PATH;
     
@@ -35,10 +37,10 @@ public class Constants {
     public static final String PLAYER_DATA_VERSION = "1.0";
     
     // Battle Pass Constants
-    public static final int MAX_LEVEL = 100;
+    public static final int MAX_LEVEL = 10;
     
     // Default Values
-    public static final int DEFAULT_MAX_LEVEL = 100;
+    public static final int DEFAULT_MAX_LEVEL = 10;
     public static final int DEFAULT_CATCH_XP = 100;
     public static final int DEFAULT_DEFEAT_XP = 50;
     public static final int DEFAULT_EVOLVE_XP = 75;
@@ -53,21 +55,21 @@ public class Constants {
     public static final long MILLIS_PER_HOUR = MILLIS_PER_MINUTE * 60;
     public static final long MILLIS_PER_DAY = MILLIS_PER_HOUR * 24;
     
-    // Battle Pass Messages
-    public static final String MSG_XP_GAINED = PREFIX + "You gained §e%d§f XP! (§e%d§f/§e%d§f)";
-    public static final String MSG_LEVEL_UP = SUCCESS_PREFIX + "You reached level §e%d§f!";
-    public static final String MSG_REWARD_CLAIM = SUCCESS_PREFIX + "You claimed the reward for level §e%d§f!";
-    public static final String MSG_PREMIUM_UNLOCKED = SUCCESS_PREFIX + "You unlocked the Premium Battle Pass!";
-    public static final String MSG_NO_REWARD = ERROR_PREFIX + "No reward available at level §e%d§f!";
-    public static final String MSG_ALREADY_CLAIMED = ERROR_PREFIX + "You already claimed this reward!";
-    public static final String MSG_ALREADY_CLAIMED_LEVEL = ERROR_PREFIX + "You already claimed the reward for level §e%d§f!";
-    public static final String MSG_LEVEL_NOT_REACHED = ERROR_PREFIX + "You haven't reached level §e%d§f yet!";
-    public static final String MSG_NOT_PREMIUM = ERROR_PREFIX + "This is a premium reward! Use §e/battlepass premium§f to unlock.";
-    public static final String MSG_CONFIG_RELOADED = SUCCESS_PREFIX + "Configuration reloaded!";
+    // Battle Pass Messages (now using localization keys)
+    public static final String MSG_XP_GAINED = "lang.command.xp_gained";
+    public static final String MSG_LEVEL_UP = "lang.command.level_up";
+    public static final String MSG_REWARD_CLAIM = "lang.command.reward_claim";
+    public static final String MSG_PREMIUM_UNLOCKED = "lang.command.premium_unlocked";
+    public static final String MSG_NO_REWARD = "lang.command.no_reward";
+    public static final String MSG_ALREADY_CLAIMED = "lang.command.already_claimed";
+    public static final String MSG_ALREADY_CLAIMED_LEVEL = "lang.command.already_claimed_level";
+    public static final String MSG_LEVEL_NOT_REACHED = "lang.command.level_not_reached";
+    public static final String MSG_NOT_PREMIUM = "lang.command.not_premium";
+    public static final String MSG_CONFIG_RELOADED = "lang.command.config_reloaded";
     
-    // Season Messages
-    public static final String MSG_SEASON_STARTED = SUCCESS_PREFIX + "Battle Pass Season %d has begun!";
-    public static final String MSG_SEASON_ALREADY_ACTIVE = ERROR_PREFIX + "A battle pass season is already active! (Season %d)";
-    public static final String MSG_NO_ACTIVE_SEASON = ERROR_PREFIX + "No battle pass season is currently active!";
-    public static final String MSG_SEASON_TIME_REMAINING = PREFIX + "Season %d ends in %s";
+    // Season Messages (now using localization keys)
+    public static final String MSG_SEASON_STARTED = "lang.season.started";
+    public static final String MSG_SEASON_ALREADY_ACTIVE = "lang.season.already_active";
+    public static final String MSG_NO_ACTIVE_SEASON = "lang.season.no_active";
+    public static final String MSG_SEASON_TIME_REMAINING = "lang.season.time_remaining";
 }

@@ -2,6 +2,7 @@ package com.cobblemon.mdks.cobblepass.battlepass;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.cobblemon.mdks.cobblepass.config.TierConfig;
 import com.google.gson.JsonObject;
@@ -142,25 +143,16 @@ public class BattlePass {
 
         // Check if player has reached required level
         if (level > pass.getLevel()) {
-            player.sendSystemMessage(Component.literal(String.format(
-                Constants.MSG_LEVEL_NOT_REACHED,
-                level
-            )));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
             return false;
         }
 
         // Check if already claimed
         if (premium && pass.hasClaimedPremiumReward(level)) {
-            player.sendSystemMessage(Component.literal(String.format(
-                Constants.MSG_ALREADY_CLAIMED_LEVEL,
-                level
-            )));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed_level", level));
             return false;
         } else if (!premium && pass.hasClaimedFreeReward(level)) {
-            player.sendSystemMessage(Component.literal(String.format(
-                Constants.MSG_ALREADY_CLAIMED_LEVEL,
-                level
-            )));
+            player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed_level", level));
             return false;
         }
 

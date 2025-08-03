@@ -18,9 +18,12 @@ import com.cobblemon.mdks.cobblepass.command.subcommand.ManagePremiumCommand;
 import com.cobblemon.mdks.cobblepass.command.subcommand.PremiumCommand;
 import com.cobblemon.mdks.cobblepass.command.subcommand.ReloadCommand;
 import com.cobblemon.mdks.cobblepass.command.subcommand.SeasonCommand;
+import com.cobblemon.mdks.cobblepass.config.GuiIngredient;
+import com.cobblemon.mdks.cobblepass.config.GuiStructure;
 import com.cobblemon.mdks.cobblepass.data.Reward;
 import com.cobblemon.mdks.cobblepass.util.BaseCommand;
 import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
 import com.cobblemon.mod.common.api.pokeball.PokeBalls;
 import com.google.gson.JsonObject;
@@ -66,7 +69,7 @@ public class BattlePassCommand extends BaseCommand {
     public int run(CommandContext<CommandSourceStack> context) {
         if (!context.getSource().isPlayer()) {
             context.getSource().sendSystemMessage(
-                    Component.literal(Constants.ERROR_PREFIX + "This command must be run by a player!")
+                    LangManager.getComponent("lang.command.must_be_player")
             );
             return 1;
         }
@@ -77,7 +80,7 @@ public class BattlePassCommand extends BaseCommand {
                 showBattlePassInfo(player);
             } else {
                 context.getSource().sendSystemMessage(
-                        Component.literal(Constants.MSG_NO_ACTIVE_SEASON)
+                        LangManager.getComponent("lang.season.no_active")
                 );
             }
             return 1;
@@ -98,9 +101,11 @@ public class BattlePassCommand extends BaseCommand {
         return String.format("%d days, %d hours, %d minutes", days, hours, minutes);
     }
 
-    private static List<Component> getRewardLore(BattlePassTier tier, boolean isPremium) {
+    private static List<Component> getRewardLore(PlayerBattlePass pass, BattlePassTier tier, int level, boolean isPremium) {
         List<Component> lore = new ArrayList<>();
         Reward reward = isPremium ? tier.getPremiumReward() : tier.getFreeReward();
+
+        // Part 1: Add Reward Details (same as before)
         if (reward != null) {
             JsonObject data = reward.getData();
             switch (reward.getType()) {
@@ -115,15 +120,15 @@ public class BattlePassCommand extends BaseCommand {
                                 .collect(Collectors.joining(" "));
                         if (!parts[0].equals("minecraft")) {
                             String modName = parts[0].substring(0, 1).toUpperCase() + parts[0].substring(1);
-                            lore.add(Component.literal("§8" + modName + " Item"));
+                            lore.add(LangManager.getComponent("lang.reward.mod_item", modName));
                         }
-                        lore.add(Component.literal("§7" + count + "x " + itemName));
+                        lore.add(LangManager.getComponent("lang.reward.count", count, itemName));
                     } else {
-                        lore.add(Component.literal("§7Item"));
+                        lore.add(LangManager.getComponent("lang.reward.item"));
                     }
                     break;
                 case POKEMON:
-                    lore.add(Component.literal("§7Pokemon"));
+                    lore.add(LangManager.getComponent("lang.reward.pokemon"));
                     if (data != null) {
                         if (data.has("species")) {
                             String speciesName = data.get("species").getAsString();
@@ -131,10 +136,10 @@ public class BattlePassCommand extends BaseCommand {
                             lore.add(Component.literal(speciesName));
                         }
                         if (data.has("level")) {
-                            lore.add(Component.literal("§7Level: §f" + data.get("level").getAsInt()));
+                            lore.add(LangManager.getComponent("lang.reward.level", data.get("level").getAsInt()));
                         }
                         if (data.has("shiny") && data.get("shiny").getAsBoolean()) {
-                            lore.add(Component.literal("§6✦ Shiny"));
+                            lore.add(LangManager.getComponent("lang.reward.shiny"));
                         }
                     }
                     break;
@@ -155,6 +160,30 @@ public class BattlePassCommand extends BaseCommand {
                     break;
             }
         }
+
+        lore.add(Component.literal("")); // Spacer
+
+        // Part 2: Add Status Information
+        if (isPremium) {
+            if (!pass.isPremium()) {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.requires_premium"));
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.purchase_prompt"));
+            } else if (level > pass.getLevel()) {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.not_reached", level));
+            } else if (pass.hasClaimedPremiumReward(level)) {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.claimed"));
+            } else {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.available"));
+            }
+        } else { // Free Reward
+            if (level > pass.getLevel()) {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.not_reached", level));
+            } else if (pass.hasClaimedFreeReward(level)) {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.claimed"));
+            } else {
+                lore.add(LangManager.getComponent("lang.gui.status.in_lore.available"));
+            }
+        }
         return lore;
     }
 
@@ -166,80 +195,155 @@ public class BattlePassCommand extends BaseCommand {
             displayItem = new ItemStack(Items.BARRIER);
         }
 
+        // The lore is now generated with status information included
+        List<Component> lore = getRewardLore(pass, tier, level, isPremium);
+
         return GooeyButton.builder()
                 .display(displayItem)
-                .with(DataComponents.CUSTOM_NAME, Component.literal(isPremium ? "§6Premium Reward" : "§aFree Reward"))
-                .with(DataComponents.LORE, new ItemLore(getRewardLore(tier, isPremium)))
+                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.tier_title", level)) // Use a lang key for the title
+                .with(DataComponents.LORE, new ItemLore(lore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
                     if (level > pass.getLevel()) {
-                        player.sendSystemMessage(Component.literal(String.format(Constants.MSG_LEVEL_NOT_REACHED, level)));
+                        player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
                         return;
                     }
 
                     if (isPremium && !pass.isPremium()) {
-                        player.sendSystemMessage(Component.literal(Constants.MSG_NOT_PREMIUM));
+                        player.sendSystemMessage(LangManager.getComponent("lang.command.not_premium"));
                         return;
                     }
 
                     if (CobblePass.battlePass.claimReward(player, level, isPremium)) {
-                        player.sendSystemMessage(Component.literal(String.format(Constants.MSG_REWARD_CLAIM, level)));
-                        showBattlePassInfo(player, pageNum);
+                        player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
+                        showBattlePassInfo(player, pageNum); // Refresh UI
                     }
                 })
                 .build();
     }
 
-    private static Button createStatusButton(PlayerBattlePass pass, BattlePassTier tier, int level, boolean isPremium) {
-        ItemStack statusGlass;
-        List<Component> statusLore = new ArrayList<>();
-        String statusName = "§3Level " + level + " Status";
 
-        if (isPremium) {
-            if (!tier.hasPremiumReward()) {
-                // This case should ideally not be reached due to the new checks, but as a fallback:
-                return new PlaceholderButton();
-            }
+    private static Button createXpInfoButton(ServerPlayer player) {
+        List<Component> xpInfoLore = new ArrayList<>();
+        xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.description"));
+        xpInfoLore.add(Component.literal(""));
+        
+        if (CobblePass.config.getCatchXP() > 0) {
+            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.catch", CobblePass.config.getCatchXP()));
+        }
+        if (CobblePass.config.getDefeatXP() > 0) {
+            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.defeat", CobblePass.config.getDefeatXP()));
+        }
+        if (CobblePass.config.getEvolveXP() > 0) {
+            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.evolve", CobblePass.config.getEvolveXP()));
+        }
+        if (CobblePass.config.getHatchXP() > 0) {
+            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.hatch", CobblePass.config.getHatchXP()));
+        }
+        if (CobblePass.config.getTradeXP() > 0) {
+            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.trade", CobblePass.config.getTradeXP()));
+        }
 
-            if (!pass.isPremium()) {
-                statusGlass = new ItemStack(Items.RED_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§cRequires Premium Pass"));
-                statusLore.add(Component.literal("§7Purchase with §e/bp premium buy"));
-            } else if (level > pass.getLevel()) {
-                statusGlass = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§7Not Reached"));
-            } else if (pass.hasClaimedPremiumReward(level)) {
-                statusGlass = new ItemStack(Items.ORANGE_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§6Claimed"));
-            } else {
-                statusGlass = new ItemStack(Items.LIME_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§aAvailable to Claim"));
-            }
+        return GooeyButton.builder()
+                .display(new ItemStack(Items.EXPERIENCE_BOTTLE))
+                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.xp_info.name"))
+                .with(DataComponents.LORE, new ItemLore(xpInfoLore))
+                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                .build();
+    }
 
+    private static Button createProgressButton(PlayerBattlePass pass) {
+        int currentXP = pass.getXP();
+        int xpForNext;
+        if (CobblePass.config.getXpProgression().getMode().equalsIgnoreCase("MANUAL")) {
+            xpForNext = CobblePass.config.getXpProgression().getManualXpForLevel(pass.getLevel() + 1);
         } else {
-            if (!tier.hasFreeReward()) {
-                // This case should ideally not be reached due to the new checks, but as a fallback:
-                return new PlaceholderButton();
-            }
+            xpForNext = (int)(CobblePass.config.getXpProgression().getXpPerLevel() * Math.pow(CobblePass.config.getXpProgression().getXpMultiplier(), pass.getLevel() - 1));
+        }
+        
+        List<Component> infoLore = new ArrayList<>();
+        infoLore.add(LangManager.getComponent("lang.gui.progress.level", pass.getLevel()));
+        infoLore.add(LangManager.getComponent("lang.gui.progress.xp", currentXP, xpForNext));
 
-            if (level > pass.getLevel()) {
-                statusGlass = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§7Not Reached"));
-            } else if (pass.hasClaimedFreeReward(level)) {
-                statusGlass = new ItemStack(Items.ORANGE_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§6Claimed"));
-            } else {
-                statusGlass = new ItemStack(Items.LIME_STAINED_GLASS_PANE);
-                statusLore.add(Component.literal("§aAvailable to Claim"));
+        if (CobblePass.config.isSeasonActive()) {
+            long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
+            if (timeLeft > 0) {
+                infoLore.add(Component.literal(""));
+                infoLore.add(LangManager.getComponent("lang.gui.progress.time_remaining", formatTimeRemaining(timeLeft)));
             }
         }
 
         return GooeyButton.builder()
-                .display(statusGlass)
-                .with(DataComponents.CUSTOM_NAME, Component.literal(statusName))
-                .with(DataComponents.LORE, new ItemLore(statusLore))
+                .display(new ItemStack(Items.NETHER_STAR))
+                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.progress.name"))
+                .with(DataComponents.LORE, new ItemLore(infoLore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .build();
+    }
+
+    private static Button createPremiumStatusButton(PlayerBattlePass pass, ServerPlayer player) {
+        ItemStack premiumDisplay = pass.isPremium() ? new ItemStack(PokeBalls.INSTANCE.getMASTER_BALL().item()) : new ItemStack(PokeBalls.INSTANCE.getPREMIER_BALL().item());
+        List<Component> premiumLore = new ArrayList<>();
+        
+        if (pass.isPremium()) {
+            premiumLore.add(LangManager.getComponent("lang.gui.premium.active"));
+            if (CobblePass.config.isSeasonActive()) {
+                premiumLore.add(LangManager.getComponent("lang.gui.premium.season", CobblePass.config.getCurrentSeason()));
+            } else {
+                premiumLore.add(LangManager.getComponent("lang.gui.premium.no_season"));
+            }
+        } else {
+            premiumLore.add(LangManager.getComponent("lang.gui.premium.inactive"));
+            premiumLore.add(LangManager.getComponent("lang.gui.premium.click_info"));
+        }
+
+        return GooeyButton.builder()
+                .display(premiumDisplay)
+                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.premium.name"))
+                .with(DataComponents.LORE, new ItemLore(premiumLore))
+                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                .onClick(action -> {
+                    if (!pass.isPremium()) {
+                        player.closeContainer();
+                        player.sendSystemMessage(LangManager.getComponent("lang.gui.premium.command_info"));
+                    }
+                })
+                .build();
+    }
+
+    private static Button createStaticButton(GuiIngredient ingredient) {
+        ItemStack stack = ingredient.createItemStack();
+        
+        // Process name and lore for localization
+        String name = ingredient.getName();
+        if (name != null && name.startsWith("lang.")) {
+            name = LangManager.get(name);
+        }
+        
+        List<Component> loreComponents = new ArrayList<>();
+        for (String loreLine : ingredient.getLore()) {
+            if (loreLine.startsWith("lang.")) {
+                loreComponents.add(LangManager.getComponent(loreLine));
+            } else {
+                loreComponents.add(Component.literal(loreLine));
+            }
+        }
+
+        GooeyButton.Builder builder = GooeyButton.builder().display(stack);
+        
+        if (name != null && !name.isEmpty()) {
+            builder.with(DataComponents.CUSTOM_NAME, Component.literal(name));
+        }
+        
+        if (!loreComponents.isEmpty()) {
+            builder.with(DataComponents.LORE, new ItemLore(loreComponents));
+        }
+        
+        if (ingredient.isHideTooltip()) {
+            builder.with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+        }
+
+        return builder.build();
     }
 
     public static void showBattlePassInfo(ServerPlayer player) {
@@ -248,140 +352,101 @@ public class BattlePassCommand extends BaseCommand {
 
     public static void showBattlePassInfo(ServerPlayer player, int pageToShow) {
         PlayerBattlePass pass = CobblePass.battlePass.getPlayerPass(player);
-
-        Button background = GooeyButton.builder()
-                .display(new ItemStack(Items.LIGHT_GRAY_STAINED_GLASS_PANE))
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§7 "))
-                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-                .build();
-
-        List<Component> xpInfoLore = new ArrayList<>();
-        xpInfoLore.add(Component.literal("§7Earn XP by performing these actions:"));
-        xpInfoLore.add(Component.literal(""));
-        if (CobblePass.config.getCatchXP() > 0) {
-            xpInfoLore.add(Component.literal(String.format("  §b\u2022 Catch Pokémon: §e+%d XP", CobblePass.config.getCatchXP())));
-        }
-        if (CobblePass.config.getDefeatXP() > 0) {
-            xpInfoLore.add(Component.literal(String.format("  §b\u2022 Defeat Pokémon: §e+%d XP", CobblePass.config.getDefeatXP())));
-        }
-        if (CobblePass.config.getEvolveXP() > 0) {
-            xpInfoLore.add(Component.literal(String.format("  §b\u2022 Evolve Pokémon: §e+%d XP", CobblePass.config.getEvolveXP())));
-        }
-        if (CobblePass.config.getHatchXP() > 0) {
-            xpInfoLore.add(Component.literal(String.format("  §b\u2022 Hatch Eggs: §e+%d XP", CobblePass.config.getHatchXP())));
-        }
-        if (CobblePass.config.getTradeXP() > 0) {
-            xpInfoLore.add(Component.literal(String.format("  §b\u2022 Trade Pokémon: §e+%d XP", CobblePass.config.getTradeXP())));
-        }
-
-        GooeyButton xpInfoButton = GooeyButton.builder()
-                .display(new ItemStack(Items.EXPERIENCE_BOTTLE))
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§aHow to Earn XP"))
-                .with(DataComponents.LORE, new ItemLore(xpInfoLore))
-                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-                .build();
-
-        int currentXP = pass.getXP();
-        int xpForNext;
-        if (CobblePass.config.getXpProgression().getMode().equalsIgnoreCase("MANUAL")) {
-            xpForNext = CobblePass.config.getXpProgression().getManualXpForLevel(pass.getLevel() + 1);
-        } else {
-            xpForNext = (int)(CobblePass.config.getXpProgression().getXpPerLevel() * Math.pow(CobblePass.config.getXpProgression().getXpMultiplier(), pass.getLevel() - 1));
-        }
-        List<Component> infoLore = new ArrayList<>(Arrays.asList(
-                Component.literal(String.format("§3Level: §f%d", pass.getLevel())),
-                Component.literal(String.format("§3XP: §f%d§7/§f%d", currentXP, xpForNext))
-        ));
-
-        if (CobblePass.config.isSeasonActive()) {
-            long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
-            if (timeLeft > 0) {
-                infoLore.add(Component.literal(""));
-                infoLore.add(Component.literal("§3Time Remaining: §b" + formatTimeRemaining(timeLeft)));
-            }
-        }
-
-        GooeyButton infoButton = GooeyButton.builder()
-                .display(new ItemStack(Items.NETHER_STAR))
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§bBattle Pass Progress"))
-                .with(DataComponents.LORE, new ItemLore(infoLore))
-                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-                .build();
-
-        ItemStack premiumDisplay = pass.isPremium() ? new ItemStack(PokeBalls.INSTANCE.getMASTER_BALL().item()) : new ItemStack(PokeBalls.INSTANCE.getPREMIER_BALL().item());
-        List<Component> premiumLore = new ArrayList<>();
-        if (pass.isPremium()) {
-            premiumLore.add(Component.literal("§aYou have the Premium Pass!"));
-            if (CobblePass.config.isSeasonActive()) {
-                premiumLore.add(Component.literal("§3Season " + CobblePass.config.getCurrentSeason()));
-            } else {
-                premiumLore.add(Component.literal("§cNo active season"));
-            }
-        } else {
-            premiumLore.add(Component.literal("§cPremium Pass Inactive"));
-            premiumLore.add(Component.literal("§7Click to learn more!"));
-        }
-
-        GooeyButton premiumButton = GooeyButton.builder()
-                .display(premiumDisplay)
-                .with(DataComponents.CUSTOM_NAME, Component.literal("§6Premium Status"))
-                .with(DataComponents.LORE, new ItemLore(premiumLore))
-                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
-                .onClick(action -> {
-                    if (!pass.isPremium()) {
-                        player.closeContainer();
-                        player.sendSystemMessage(Component.literal("§7Use §f/battlepass premium §7to unlock premium rewards."));
-                    }
-                })
-                .build();
+        GuiStructure guiStructure = CobblePass.config.getGuiConfig().getStructure();
 
         Map<Integer, BattlePassTier> tiers = CobblePass.battlePass.getTiers();
         int totalTiers = tiers.values().stream().mapToInt(BattlePassTier::getLevel).max().orElse(0);
 
+        // Calculate how many reward slots we have per page
+        List<GuiStructure.SlotInfo> freeRewardSlots = guiStructure.findPlaceholderSlots(GuiIngredient.IngredientType.FREE_REWARD_PLACEHOLDER);
+        List<GuiStructure.SlotInfo> premiumRewardSlots = guiStructure.findPlaceholderSlots(GuiIngredient.IngredientType.PREMIUM_REWARD_PLACEHOLDER);
+        
+        int rewardsPerPage = Math.max(freeRewardSlots.size(), premiumRewardSlots.size());
+        if (rewardsPerPage == 0) rewardsPerPage = 7; // Fallback
+        
+        int totalPages = (int) Math.ceil((double) totalTiers / rewardsPerPage);
+
         List<LinkedPage> pages = new ArrayList<>();
-        int buttonsPerPage = 7;
-        int totalPages = (int) Math.ceil((double) totalTiers / buttonsPerPage);
 
         for (int pageNum = 0; pageNum < totalPages; pageNum++) {
-            ChestTemplate template = ChestTemplate.builder(6)
-                    .fill(background)
-                    .set(0, 0, xpInfoButton)
-                    .set(0, 4, infoButton)
-                    .set(0, 8, premiumButton)
-                    .set(2, 0, GooeyButton.builder().display(new ItemStack(PokeBalls.INSTANCE.getPREMIER_BALL().item())).with(DataComponents.CUSTOM_NAME, Component.literal("§aFree Rewards")).build())
-                    .set(4, 0, GooeyButton.builder().display(new ItemStack(PokeBalls.INSTANCE.getMASTER_BALL().item())).with(DataComponents.CUSTOM_NAME, Component.literal("§6Premium Rewards")).build())
-                    .build();
+            ChestTemplate.Builder templateBuilder = ChestTemplate.builder(6);
 
-            int startLevel = (pageNum * buttonsPerPage) + 1;
-            int endLevel = Math.min(startLevel + buttonsPerPage, totalTiers + 1);
+            // Fill all slots based on structure
+            for (int row = 0; row < GuiStructure.getGuiRows(); row++) {
+                for (int col = 0; col < GuiStructure.getGuiCols(); col++) {
+                    GuiIngredient ingredient = guiStructure.getIngredientAt(row, col);
+                    if (ingredient == null) continue;
 
-            for (int level = startLevel; level < endLevel; level++) {
-                int column = 1 + (level - startLevel);
-                BattlePassTier tier = tiers.get(level);
-                if (tier == null) continue;
+                    Button button = null;
+                    switch (ingredient.getType()) {
+                        case STATIC_ITEM:
+                            button = createStaticButton(ingredient);
+                            break;
+                        case XP_INFO_PLACEHOLDER:
+                            button = createXpInfoButton(player);
+                            break;
+                        case PROGRESS_PLACEHOLDER:
+                            button = createProgressButton(pass);
+                            break;
+                        case PREMIUM_STATUS_PLACEHOLDER:
+                            button = createPremiumStatusButton(pass, player);
+                            break;
+                        case FREE_REWARDS_LABEL:
+                            button = GooeyButton.builder()
+                                    .display(new ItemStack(PokeBalls.INSTANCE.getPREMIER_BALL().item()))
+                                    .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.reward.free_label"))
+                                    .build();
+                            break;
+                        case PREMIUM_REWARDS_LABEL:
+                            button = GooeyButton.builder()
+                                    .display(new ItemStack(PokeBalls.INSTANCE.getMASTER_BALL().item()))
+                                    .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.reward.premium_label"))
+                                    .build();
+                            break;
+                    }
 
-                // FIX: Check if the tier has a reward before attempting to place a button.
-                // This prevents placing a PlaceholderButton over our background fill.
-                if (tier.hasFreeReward()) {
-                    template.set(2, column, createRewardButton(player, pass, tier, level, false, pageNum));
-                    template.set(3, column, createStatusButton(pass, tier, level, false));
-                }
-
-                // FIX: Same check for the premium reward.
-                if (tier.hasPremiumReward()) {
-                    template.set(4, column, createRewardButton(player, pass, tier, level, true, pageNum));
-                    template.set(5, column, createStatusButton(pass, tier, level, true));
+                    if (button != null) {
+                        templateBuilder.set(row, col, button);
+                    }
                 }
             }
 
+            // Now handle reward placeholders
+            int startLevel = (pageNum * rewardsPerPage) + 1;
+            int endLevel = Math.min(startLevel + rewardsPerPage, totalTiers + 1);
+
+            int rewardIndex = 0;
+            for (int level = startLevel; level < endLevel; level++) {
+                BattlePassTier tier = tiers.get(level);
+                if (tier == null) continue;
+
+                // Place free reward if slot available
+                if (rewardIndex < freeRewardSlots.size() && tier.hasFreeReward()) {
+                    GuiStructure.SlotInfo slot = freeRewardSlots.get(rewardIndex);
+                    templateBuilder.set(slot.getRow(), slot.getCol(), createRewardButton(player, pass, tier, level, false, pageNum));
+                }
+
+                // Place premium reward if slot available
+                if (rewardIndex < premiumRewardSlots.size() && tier.hasPremiumReward()) {
+                    GuiStructure.SlotInfo slot = premiumRewardSlots.get(rewardIndex);
+                    templateBuilder.set(slot.getRow(), slot.getCol(), createRewardButton(player, pass, tier, level, true, pageNum));
+                }
+
+
+                rewardIndex++;
+            }
+
+            ChestTemplate template = templateBuilder.build();
+            
             LinkedPage page = LinkedPage.builder()
                     .template(template)
-                    .title("§3Battle Pass")
+                    .title(LangManager.get("lang.gui.title"))
                     .build();
 
             pages.add(page);
         }
 
+        // Link pages and add navigation
         for (int i = 0; i < pages.size(); i++) {
             LinkedPage current = pages.get(i);
             if (i > 0) {
@@ -391,24 +456,31 @@ public class BattlePassCommand extends BaseCommand {
                 current.setNext(pages.get(i + 1));
             }
 
+            // Add navigation buttons
             ChestTemplate template = (ChestTemplate) current.getTemplate();
-            if (current.getPrevious() != null) {
+            List<GuiStructure.SlotInfo> prevSlots = guiStructure.findPlaceholderSlots(GuiIngredient.IngredientType.NAVIGATION_PREVIOUS);
+            List<GuiStructure.SlotInfo> nextSlots = guiStructure.findPlaceholderSlots(GuiIngredient.IngredientType.NAVIGATION_NEXT);
+
+            if (current.getPrevious() != null && !prevSlots.isEmpty()) {
+                GuiStructure.SlotInfo slot = prevSlots.get(0);
                 Button prevBtn = LinkedPageButton.builder()
                         .display(new ItemStack(Items.ARROW))
-                        .with(DataComponents.CUSTOM_NAME, Component.literal("§f← Previous Page"))
+                        .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.navigation.previous"))
                         .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                         .linkType(LinkType.Previous)
                         .build();
-                template.set(5, 0, prevBtn);
+                template.set(slot.getRow(), slot.getCol(), prevBtn);
             }
-            if (current.getNext() != null) {
+            
+            if (current.getNext() != null && !nextSlots.isEmpty()) {
+                GuiStructure.SlotInfo slot = nextSlots.get(0);
                 Button nextBtn = LinkedPageButton.builder()
                         .display(new ItemStack(Items.ARROW))
-                        .with(DataComponents.CUSTOM_NAME, Component.literal("§fNext Page →"))
+                        .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.navigation.next"))
                         .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                         .linkType(LinkType.Next)
                         .build();
-                template.set(5, 8, nextBtn);
+                template.set(slot.getRow(), slot.getCol(), nextBtn);
             }
         }
 

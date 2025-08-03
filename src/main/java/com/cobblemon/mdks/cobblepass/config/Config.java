@@ -2,6 +2,7 @@ package com.cobblemon.mdks.cobblepass.config;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.google.gson.JsonElement;
 import com.google.gson.JsonObject;
@@ -21,6 +22,7 @@ public class Config {
     private long seasonEndTime;
     private boolean enablePermissionNodes;
     private XpProgression xpProgression;
+    private GuiConfig guiConfig;
 
     private boolean premiumMode;
 
@@ -46,6 +48,7 @@ public class Config {
         this.seasonEndTime = 0;
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
         this.xpProgression = new XpProgression();
+        this.guiConfig = new GuiConfig();
         this.premiumMode = false;
     }
 
@@ -53,8 +56,13 @@ public class Config {
         // Ensure config directory exists
         Utils.checkForDirectory("/" + Constants.CONFIG_PATH);
         
+        // Always load GUI and language configurations first
+        loadGuiConfig();
+        loadLangConfig();
+        
         String content = Utils.readFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE);
         if (content == null || content.isEmpty()) {
+            CobblePass.LOGGER.info("No main config file found, using defaults");
             return;
         }
 
@@ -63,6 +71,28 @@ public class Config {
             loadFromJson(json);
         } catch (Exception e) {
             CobblePass.LOGGER.error("Failed to load config", e);
+        }
+    }
+
+    private void loadGuiConfig() {
+        try {
+            if (guiConfig == null) {
+                guiConfig = new GuiConfig();
+            }
+            guiConfig.load();
+            CobblePass.LOGGER.info("GUI configuration loaded successfully");
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to load GUI configuration", e);
+            guiConfig = new GuiConfig(); // Fallback to default
+        }
+    }
+
+    private void loadLangConfig() {
+        try {
+            LangManager.load();
+            CobblePass.LOGGER.info("Language configuration loaded successfully");
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to load language configuration", e);
         }
     }
 
@@ -140,6 +170,7 @@ public class Config {
     public int getCurrentSeason() { return currentSeason; }
     public boolean isEnablePermissionNodes() { return enablePermissionNodes; }
     public XpProgression getXpProgression() { return xpProgression; }
+    public GuiConfig getGuiConfig() { return guiConfig; }
     public boolean isPremiumMode() { return premiumMode; }
     
     public void createNewSeason(int duration, int maxLevel, boolean premium) {

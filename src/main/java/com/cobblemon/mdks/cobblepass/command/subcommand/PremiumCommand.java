@@ -4,6 +4,7 @@ import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.battlepass.PlayerBattlePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.EconomyUtils;
+import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Subcommand;
 import com.cobblemon.mdks.cobblepass.util.Utils;
 import com.mojang.brigadier.context.CommandContext;
@@ -37,7 +38,7 @@ public class PremiumCommand extends Subcommand {
 
     private int buyPremium(CommandContext<CommandSourceStack> context) {
         if (!context.getSource().isPlayer()) {
-            context.getSource().sendSystemMessage(Component.literal("This command must be run by a player"));
+            context.getSource().sendSystemMessage(LangManager.getComponent("lang.command.must_be_player"));
             return 1;
         }
 
@@ -51,7 +52,7 @@ public class PremiumCommand extends Subcommand {
 
         // Check if season is active
         if (!CobblePass.config.isSeasonActive()) {
-            player.sendSystemMessage(Component.literal(Constants.MSG_NO_ACTIVE_SEASON));
+            player.sendSystemMessage(LangManager.getComponent("lang.season.no_active"));
             return 1;
         }
 
@@ -92,7 +93,7 @@ public class PremiumCommand extends Subcommand {
 
     private int showInfo(CommandContext<CommandSourceStack> context) {
         if (!context.getSource().isPlayer()) {
-            context.getSource().sendSystemMessage(Component.literal("This command must be run by a player"));
+            context.getSource().sendSystemMessage(LangManager.getComponent("lang.command.must_be_player"));
             return 1;
         }
 
@@ -107,7 +108,7 @@ public class PremiumCommand extends Subcommand {
                 (CobblePass.battlePass.getPlayerPass(player).hasPremium() ? "Premium" : "Free")));
             player.sendSystemMessage(Component.literal("§3Get premium with: §b/battlepass premium buy"));
         } else {
-            player.sendSystemMessage(Component.literal(Constants.MSG_NO_ACTIVE_SEASON));
+            player.sendSystemMessage(LangManager.getComponent("lang.season.no_active"));
             player.sendSystemMessage(Component.literal("§3Start a new season with: §b/battlepass start"));
         }
 
