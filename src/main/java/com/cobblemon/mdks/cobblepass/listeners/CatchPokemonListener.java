@@ -22,6 +22,21 @@ public class CatchPokemonListener {
             PlayerBattlePass battlePass = CobblePass.battlePass.getPlayerPass(player);
             if (battlePass != null) {
                 int xp = CobblePass.config.getCatchXP();
+                if (event.getPokemon().isLegendary()) {
+                    xp += CobblePass.config.getCatchLegendaryXP();
+                }
+                if (event.getPokemon().getShiny()) {
+                    xp += CobblePass.config.getCatchShinyXP();
+                }
+                if (event.getPokemon().hasLabels("ultra-beast")) {
+                    xp += CobblePass.config.getCatchUltraBeastXP();
+                }
+                if (event.getPokemon().isMythical()) {
+                    xp += CobblePass.config.getCatchMythicalXP();
+                }
+                if (event.getPokemon().hasLabels("paradox")) {
+                    xp += CobblePass.config.getCatchParadoxXP();
+                }
                 battlePass.addXP(xp);
                 LOGGER.debug("Awarded " + xp + " XP to " + player.getName().getString() + " for catching a Pokémon");
             }

@@ -26,7 +26,9 @@ public class GuiIngredient {
         NAVIGATION_PREVIOUS,
         NAVIGATION_NEXT,
         FREE_REWARDS_LABEL,
-        PREMIUM_REWARDS_LABEL
+        PREMIUM_REWARDS_LABEL,
+        CUSTOM_ITEM,                // Custom display item with optional command
+        COMMAND_BUTTON             // Dedicated command execution button
     }
 
     private IngredientType type;
@@ -35,6 +37,11 @@ public class GuiIngredient {
     private List<String> lore;
     private int customModelData;
     private boolean hideTooltip;
+    private String command;                // Command to execute on click
+    private String permission;             // Required permission to click
+    private boolean executeAsPlayer;       // Execute as player (true) or server (false)
+    private String clickMessage;           // Message to show when clicked
+    private String noPermissionMessage;    // Message when lacking permission
 
     public GuiIngredient() {
         this.type = IngredientType.STATIC_ITEM;
@@ -43,6 +50,11 @@ public class GuiIngredient {
         this.lore = new ArrayList<>();
         this.customModelData = 0;
         this.hideTooltip = true;
+        this.command = null;
+        this.permission = null;
+        this.executeAsPlayer = true;
+        this.clickMessage = null;
+        this.noPermissionMessage = "§cYou don't have permission to use this!";
     }
 
     public static GuiIngredient fromJson(JsonObject json) {
@@ -80,6 +92,27 @@ public class GuiIngredient {
             ingredient.hideTooltip = json.get("hideTooltip").getAsBoolean();
         }
 
+        // Load command-related properties
+        if (json.has("command")) {
+            ingredient.command = json.get("command").getAsString();
+        }
+
+        if (json.has("permission")) {
+            ingredient.permission = json.get("permission").getAsString();
+        }
+
+        if (json.has("executeAsPlayer")) {
+            ingredient.executeAsPlayer = json.get("executeAsPlayer").getAsBoolean();
+        }
+
+        if (json.has("clickMessage")) {
+            ingredient.clickMessage = json.get("clickMessage").getAsString();
+        }
+
+        if (json.has("noPermissionMessage")) {
+            ingredient.noPermissionMessage = json.get("noPermissionMessage").getAsString();
+        }
+
         return ingredient;
     }
 
@@ -97,6 +130,21 @@ public class GuiIngredient {
         
         json.addProperty("customModelData", customModelData);
         json.addProperty("hideTooltip", hideTooltip);
+
+        // Save command-related properties
+        if (command != null && !command.isEmpty()) {
+            json.addProperty("command", command);
+        }
+        if (permission != null && !permission.isEmpty()) {
+            json.addProperty("permission", permission);
+        }
+        json.addProperty("executeAsPlayer", executeAsPlayer);
+        if (clickMessage != null && !clickMessage.isEmpty()) {
+            json.addProperty("clickMessage", clickMessage);
+        }
+        if (noPermissionMessage != null && !noPermissionMessage.isEmpty()) {
+            json.addProperty("noPermissionMessage", noPermissionMessage);
+        }
         
         return json;
     }
@@ -105,15 +153,22 @@ public class GuiIngredient {
         // Parse material string to get item
         ItemStack stack;
         try {
-            ResourceLocation itemId = ResourceLocation.parse(material);
-            var item = BuiltInRegistries.ITEM.get(itemId);
-            if (item == Items.AIR) {
-                stack = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+            // Handle empty or null material
+            if (material == null || material.trim().isEmpty()) {
+                stack = getDefaultItemForType();
             } else {
-                stack = new ItemStack(item);
+                ResourceLocation itemId = ResourceLocation.parse(material);
+                var item = BuiltInRegistries.ITEM.get(itemId);
+                if (item == Items.AIR) {
+                    stack = getDefaultItemForType();
+                } else {
+                    stack = new ItemStack(item);
+                }
             }
         } catch (Exception e) {
-            stack = new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+            // Log the error for debugging
+            com.cobblemon.mdks.cobblepass.CobblePass.LOGGER.warn("Invalid material '{}' for GUI ingredient type {}, using default", material, type);
+            stack = getDefaultItemForType();
         }
 
         // Set custom name if provided
@@ -141,6 +196,26 @@ public class GuiIngredient {
         }
 
         return stack;
+    }
+
+    /**
+     * Gets a sensible default item based on the ingredient type
+     */
+    private ItemStack getDefaultItemForType() {
+        return switch (type) {
+            case FREE_REWARD_PLACEHOLDER -> new ItemStack(Items.CHEST);
+            case PREMIUM_REWARD_PLACEHOLDER -> new ItemStack(Items.ENDER_CHEST);
+            case STATUS_PLACEHOLDER -> new ItemStack(Items.BOOK);
+            case XP_INFO_PLACEHOLDER -> new ItemStack(Items.EXPERIENCE_BOTTLE);
+            case PROGRESS_PLACEHOLDER -> new ItemStack(Items.NETHER_STAR);
+            case PREMIUM_STATUS_PLACEHOLDER -> new ItemStack(Items.DIAMOND);
+            case NAVIGATION_PREVIOUS, NAVIGATION_NEXT -> new ItemStack(Items.ARROW);
+            case FREE_REWARDS_LABEL -> new ItemStack(Items.CHEST);
+            case PREMIUM_REWARDS_LABEL -> new ItemStack(Items.ENDER_CHEST);
+            case CUSTOM_ITEM -> new ItemStack(Items.PAPER);
+            case COMMAND_BUTTON -> new ItemStack(Items.STONE_BUTTON);
+            default -> new ItemStack(Items.GRAY_STAINED_GLASS_PANE);
+        };
     }
 
     // Getters and setters
@@ -190,5 +265,65 @@ public class GuiIngredient {
 
     public void setHideTooltip(boolean hideTooltip) {
         this.hideTooltip = hideTooltip;
+    }
+
+    // New getters and setters for command functionality
+    public String getCommand() {
+        return command;
+    }
+
+    public void setCommand(String command) {
+        this.command = command;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
+
+    public boolean isExecuteAsPlayer() {
+        return executeAsPlayer;
+    }
+
+    public void setExecuteAsPlayer(boolean executeAsPlayer) {
+        this.executeAsPlayer = executeAsPlayer;
+    }
+
+    public String getClickMessage() {
+        return clickMessage;
+    }
+
+    public void setClickMessage(String clickMessage) {
+        this.clickMessage = clickMessage;
+    }
+
+    public String getNoPermissionMessage() {
+        return noPermissionMessage;
+    }
+
+    public void setNoPermissionMessage(String noPermissionMessage) {
+        this.noPermissionMessage = noPermissionMessage;
+    }
+
+    /**
+     * Checks if this ingredient has a command to execute
+     */
+    public boolean hasCommand() {
+        return command != null && !command.isEmpty();
+    }
+
+    /**
+     * Checks if this ingredient is clickable (has command or is interactive type)
+     */
+    public boolean isClickable() {
+        return hasCommand() ||
+               type == IngredientType.COMMAND_BUTTON ||
+               type == IngredientType.CUSTOM_ITEM ||
+               type == IngredientType.NAVIGATION_PREVIOUS ||
+               type == IngredientType.NAVIGATION_NEXT ||
+               type == IngredientType.PREMIUM_STATUS_PLACEHOLDER;
     }
 }

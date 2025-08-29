@@ -2,6 +2,7 @@ package com.cobblemon.mdks.cobblepass.data;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.google.gson.JsonObject;
+
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.RegistryAccess;
 import net.minecraft.nbt.CompoundTag;
@@ -13,11 +14,17 @@ public class Reward {
     private final RewardType type;
     private final JsonObject data;
     private final String command;
+    private final JsonObject lockedDisplay;
+    private final JsonObject claimedDisplay;
+    private final JsonObject claimableDisplay;
 
-    public Reward(RewardType type, JsonObject data, String command) {
+    public Reward(RewardType type, JsonObject data, String command, JsonObject lockedDisplay, JsonObject claimedDisplay, JsonObject claimableDisplay) {
         this.type = type;
         this.data = data;
         this.command = command;
+        this.lockedDisplay = lockedDisplay;
+        this.claimedDisplay = claimedDisplay;
+        this.claimableDisplay = claimableDisplay;
     }
 
     public RewardType getType() {
@@ -30,6 +37,18 @@ public class Reward {
 
     public String getCommand() {
         return command;
+    }
+
+    public JsonObject getLockedDisplay() {
+        return lockedDisplay;
+    }
+
+    public JsonObject getClaimedDisplay() {
+        return claimedDisplay;
+    }
+
+    public JsonObject getClaimableDisplay() {
+        return claimableDisplay;
     }
 
     public ItemStack getItemStack(RegistryAccess registryAccess) {
@@ -109,6 +128,15 @@ public class Reward {
         if (type == RewardType.COMMAND && command != null) {
             json.addProperty("command", command);
         }
+        if (this.lockedDisplay != null) {
+            json.add("lockedDisplay", this.lockedDisplay);
+        }
+        if (this.claimedDisplay != null) {
+            json.add("claimedDisplay", this.claimedDisplay);
+        }
+        if (this.claimableDisplay != null) {
+            json.add("claimableDisplay", this.claimableDisplay);
+        }
         return json;
     }
 
@@ -116,22 +144,25 @@ public class Reward {
         RewardType type = RewardType.fromString(json.get("type").getAsString());
         JsonObject data = json.get("data").getAsJsonObject();
         String command = json.has("command") ? json.get("command").getAsString() : null;
-        return new Reward(type, data, command);
+        JsonObject lockedDisplay = json.has("lockedDisplay") ? json.get("lockedDisplay").getAsJsonObject() : null;
+        JsonObject claimedDisplay = json.has("claimedDisplay") ? json.get("claimedDisplay").getAsJsonObject() : null;
+        JsonObject claimableDisplay = json.has("claimableDisplay") ? json.get("claimableDisplay").getAsJsonObject() : null;
+        return new Reward(type, data, command, lockedDisplay, claimedDisplay, claimableDisplay);
     }
 
     // Factory methods for different reward types
     public static Reward item(JsonObject nbtData) {
-        return new Reward(RewardType.ITEM, nbtData, null);
+        return new Reward(RewardType.ITEM, nbtData, null, null, null, null);
     }
 
     public static Reward pokemon(JsonObject pokemonData) {
-        return new Reward(RewardType.POKEMON, pokemonData, null);
+        return new Reward(RewardType.POKEMON, pokemonData, null, null, null, null);
     }
 
     public static Reward command(String commandData, String displayId, String displayName) {
         JsonObject data = new JsonObject();
         data.addProperty("id", displayId); // Item to show in UI
         data.addProperty("display_name", displayName); // Custom name to show in UI
-        return new Reward(RewardType.COMMAND, data, commandData);
+        return new Reward(RewardType.COMMAND, data, commandData, null, null, null);
     }
 }

@@ -1,0 +1,2108 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>full_guide.md</title>
+<meta http-equiv="Content-type" content="text/html;charset=UTF-8">
+
+<style>
+/* https://github.com/microsoft/vscode/blob/master/extensions/markdown-language-features/media/markdown.css */
+/*---------------------------------------------------------------------------------------------
+ *  Copyright (c) Microsoft Corporation. All rights reserved.
+ *  Licensed under the MIT License. See License.txt in the project root for license information.
+ *--------------------------------------------------------------------------------------------*/
+
+body {
+	font-family: var(--vscode-markdown-font-family, -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif);
+	font-size: var(--vscode-markdown-font-size, 14px);
+	padding: 0 26px;
+	line-height: var(--vscode-markdown-line-height, 22px);
+	word-wrap: break-word;
+}
+
+#code-csp-warning {
+	position: fixed;
+	top: 0;
+	right: 0;
+	color: white;
+	margin: 16px;
+	text-align: center;
+	font-size: 12px;
+	font-family: sans-serif;
+	background-color:#444444;
+	cursor: pointer;
+	padding: 6px;
+	box-shadow: 1px 1px 1px rgba(0,0,0,.25);
+}
+
+#code-csp-warning:hover {
+	text-decoration: none;
+	background-color:#007acc;
+	box-shadow: 2px 2px 2px rgba(0,0,0,.25);
+}
+
+body.scrollBeyondLastLine {
+	margin-bottom: calc(100vh - 22px);
+}
+
+body.showEditorSelection .code-line {
+	position: relative;
+}
+
+body.showEditorSelection .code-active-line:before,
+body.showEditorSelection .code-line:hover:before {
+	content: "";
+	display: block;
+	position: absolute;
+	top: 0;
+	left: -12px;
+	height: 100%;
+}
+
+body.showEditorSelection li.code-active-line:before,
+body.showEditorSelection li.code-line:hover:before {
+	left: -30px;
+}
+
+.vscode-light.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.15);
+}
+
+.vscode-light.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(0, 0, 0, 0.40);
+}
+
+.vscode-light.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-dark.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.4);
+}
+
+.vscode-dark.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 255, 255, 0.60);
+}
+
+.vscode-dark.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+.vscode-high-contrast.showEditorSelection .code-active-line:before {
+	border-left: 3px solid rgba(255, 160, 0, 0.7);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line:hover:before {
+	border-left: 3px solid rgba(255, 160, 0, 1);
+}
+
+.vscode-high-contrast.showEditorSelection .code-line .code-line:hover:before {
+	border-left: none;
+}
+
+img {
+	max-width: 100%;
+	max-height: 100%;
+}
+
+a {
+	text-decoration: none;
+}
+
+a:hover {
+	text-decoration: underline;
+}
+
+a:focus,
+input:focus,
+select:focus,
+textarea:focus {
+	outline: 1px solid -webkit-focus-ring-color;
+	outline-offset: -1px;
+}
+
+hr {
+	border: 0;
+	height: 2px;
+	border-bottom: 2px solid;
+}
+
+h1 {
+	padding-bottom: 0.3em;
+	line-height: 1.2;
+	border-bottom-width: 1px;
+	border-bottom-style: solid;
+}
+
+h1, h2, h3 {
+	font-weight: normal;
+}
+
+table {
+	border-collapse: collapse;
+}
+
+table > thead > tr > th {
+	text-align: left;
+	border-bottom: 1px solid;
+}
+
+table > thead > tr > th,
+table > thead > tr > td,
+table > tbody > tr > th,
+table > tbody > tr > td {
+	padding: 5px 10px;
+}
+
+table > tbody > tr + tr > td {
+	border-top: 1px solid;
+}
+
+blockquote {
+	margin: 0 7px 0 5px;
+	padding: 0 16px 0 10px;
+	border-left-width: 5px;
+	border-left-style: solid;
+}
+
+code {
+	font-family: Menlo, Monaco, Consolas, "Droid Sans Mono", "Courier New", monospace, "Droid Sans Fallback";
+	font-size: 1em;
+	line-height: 1.357em;
+}
+
+body.wordWrap pre {
+	white-space: pre-wrap;
+}
+
+pre:not(.hljs),
+pre.hljs code > div {
+	padding: 16px;
+	border-radius: 3px;
+	overflow: auto;
+}
+
+pre code {
+	color: var(--vscode-editor-foreground);
+	tab-size: 4;
+}
+
+/** Theming */
+
+.vscode-light pre {
+	background-color: rgba(220, 220, 220, 0.4);
+}
+
+.vscode-dark pre {
+	background-color: rgba(10, 10, 10, 0.4);
+}
+
+.vscode-high-contrast pre {
+	background-color: rgb(0, 0, 0);
+}
+
+.vscode-high-contrast h1 {
+	border-color: rgb(0, 0, 0);
+}
+
+.vscode-light table > thead > tr > th {
+	border-color: rgba(0, 0, 0, 0.69);
+}
+
+.vscode-dark table > thead > tr > th {
+	border-color: rgba(255, 255, 255, 0.69);
+}
+
+.vscode-light h1,
+.vscode-light hr,
+.vscode-light table > tbody > tr + tr > td {
+	border-color: rgba(0, 0, 0, 0.18);
+}
+
+.vscode-dark h1,
+.vscode-dark hr,
+.vscode-dark table > tbody > tr + tr > td {
+	border-color: rgba(255, 255, 255, 0.18);
+}
+
+</style>
+
+<style>
+/* Tomorrow Theme */
+/* http://jmblog.github.com/color-themes-for-google-code-highlightjs */
+/* Original theme - https://github.com/chriskempson/tomorrow-theme */
+
+/* Tomorrow Comment */
+.hljs-comment,
+.hljs-quote {
+	color: #8e908c;
+}
+
+/* Tomorrow Red */
+.hljs-variable,
+.hljs-template-variable,
+.hljs-tag,
+.hljs-name,
+.hljs-selector-id,
+.hljs-selector-class,
+.hljs-regexp,
+.hljs-deletion {
+	color: #c82829;
+}
+
+/* Tomorrow Orange */
+.hljs-number,
+.hljs-built_in,
+.hljs-builtin-name,
+.hljs-literal,
+.hljs-type,
+.hljs-params,
+.hljs-meta,
+.hljs-link {
+	color: #f5871f;
+}
+
+/* Tomorrow Yellow */
+.hljs-attribute {
+	color: #eab700;
+}
+
+/* Tomorrow Green */
+.hljs-string,
+.hljs-symbol,
+.hljs-bullet,
+.hljs-addition {
+	color: #718c00;
+}
+
+/* Tomorrow Blue */
+.hljs-title,
+.hljs-section {
+	color: #4271ae;
+}
+
+/* Tomorrow Purple */
+.hljs-keyword,
+.hljs-selector-tag {
+	color: #8959a8;
+}
+
+.hljs {
+	display: block;
+	overflow-x: auto;
+	color: #4d4d4c;
+	padding: 0.5em;
+}
+
+.hljs-emphasis {
+	font-style: italic;
+}
+
+.hljs-strong {
+	font-weight: bold;
+}
+</style>
+
+<style>
+/*
+ * Markdown PDF CSS
+ */
+
+ body {
+	font-family: -apple-system, BlinkMacSystemFont, "Segoe WPC", "Segoe UI", "Ubuntu", "Droid Sans", sans-serif, "Meiryo";
+	padding: 0 12px;
+}
+
+pre {
+	background-color: #f8f8f8;
+	border: 1px solid #cccccc;
+	border-radius: 3px;
+	overflow-x: auto;
+	white-space: pre-wrap;
+	overflow-wrap: break-word;
+}
+
+pre:not(.hljs) {
+	padding: 23px;
+	line-height: 19px;
+}
+
+blockquote {
+	background: rgba(127, 127, 127, 0.1);
+	border-color: rgba(0, 122, 204, 0.5);
+}
+
+.emoji {
+	height: 1.4em;
+}
+
+code {
+	font-size: 14px;
+	line-height: 19px;
+}
+
+/* for inline code */
+:not(pre):not(.hljs) > code {
+	color: #C9AE75; /* Change the old color so it seems less like an error */
+	font-size: inherit;
+}
+
+/* Page Break : use <div class="page"/> to insert page break
+-------------------------------------------------------- */
+.page {
+	page-break-after: always;
+}
+
+</style>
+
+<script src="https://unpkg.com/mermaid/dist/mermaid.min.js"></script>
+</head>
+<body>
+  <script>
+    mermaid.initialize({
+      startOnLoad: true,
+      theme: document.body.classList.contains('vscode-dark') || document.body.classList.contains('vscode-high-contrast')
+          ? 'dark'
+          : 'default'
+    });
+  </script>
+<h1 id="cobblepass---the-ultimate-battle-pass-for-cobblemon">CobblePass - The Ultimate Battle Pass for Cobblemon</h1>
+<p>Welcome to the completely revamped CobblePass! This mod provides a deeply integrated and highly customizable battle pass system for your Cobblemon server. Engage your players with a rewarding progression system, complete with free and premium tracks, seasonal content, and a wide array of configurable rewards.</p>
+<p><img src="https://i.giphy.com/media/v1.Y2lkPTc5MGI3NjExaTU2ZTBpNWpkMXpyOTJyY3FnOWYxZHppOXRpcnhobm5veXU3bjVseCZlcD12MV9pbnRlcm5hbF9naWZfYnlfaWQmY3Q9Zw/YNbbM79OAECuE6HU5I/giphy.gif" alt="CobblePass UI"></p>
+<h2 id="features">Features</h2>
+<ul>
+<li><strong>Seasons:</strong> Create unique battle pass seasons with configurable durations and rewards.</li>
+<li><strong>Dual Reward Tracks:</strong> Implement both <code>free</code> and <code>premium</code> reward tiers.</li>
+<li><strong>Dynamic GUI:</strong> A clean, intuitive, and paginated GUI (<code>/bp</code>) for players to view progress and claim rewards.</li>
+<li><strong>XP Progression:</strong>
+<ul>
+<li>Gain XP from various in-game actions: catching, defeating, evolving, hatching, and trading Pokémon.</li>
+<li>Two XP progression models:
+<ul>
+<li><strong><code>FORMULA</code>:</strong> XP required per level increases based on a configurable multiplier.</li>
+<li><strong><code>MANUAL</code>:</strong> Manually define the exact XP required for each level.</li>
+</ul>
+</li>
+</ul>
+</li>
+<li><strong>Diverse Reward Types:</strong>
+<ul>
+<li><strong><code>ITEM</code>:</strong> Grant any item from Minecraft or other mods, with full NBT support.</li>
+<li><strong><code>POKEMON</code>:</strong> Reward players with specific Pokémon, including level, shininess, and other attributes.</li>
+<li><strong><code>COMMAND</code>:</strong> Execute any server command as a reward, with placeholders for player name and UUID.</li>
+</ul>
+</li>
+<li><strong>Admin Management:</strong>
+<ul>
+<li>A full suite of commands for managing seasons, players, and configurations.</li>
+<li>Create, start, stop, and delete seasons.</li>
+<li>Modify player XP, levels, and premium status on the fly.</li>
+<li>Reload configurations without a server restart.</li>
+</ul>
+</li>
+<li><strong>Economy Integration:</strong> Charge for the premium pass using any Impactor-compatible economy plugin.</li>
+<li><strong>Highly Configurable:</strong> Tweak everything from XP values to reward templates and season settings through intuitive JSON files.</li>
+<li><strong>Data Integrity:</strong> Player data is saved reliably and includes safeguards against corruption.</li>
+</ul>
+<h2 id="dependencies">Dependencies</h2>
+<p>CobblePass requires the following mods to be installed on your server:</p>
+<ul>
+<li><strong><a href="https://modrinth.com/mod/fabric-api">Fabric API</a></strong></li>
+<li><strong><a href="https://modrinth.com/mod/cobblemon">Cobblemon</a></strong> (v1.6+)</li>
+<li><strong><a href="https://modrinth.com/mod/impactor">Impactor</a></strong> (For economy features)</li>
+<li><strong><a href="https://modrinth.com/mod/gooeylibs">GooeyLibs</a></strong></li>
+</ul>
+<h2 id="installation">Installation</h2>
+<ol>
+<li>Ensure you have a Fabric server running Minecraft 1.21.1 or later.</li>
+<li>Download the latest versions of CobblePass and all required dependencies.</li>
+<li>Place the <code>.jar</code> files into your server's <code>mods</code> folder.</li>
+<li>Start your server. CobblePass will generate its default configuration files in the <code>config/cobblepass/</code> directory.</li>
+</ol>
+<hr>
+<h2 id="getting-started-your-first-season">Getting Started: Your First Season</h2>
+<p>Setting up a new Battle Pass is easy with the in-game creation tool.</p>
+<p><strong>Step 1: Create the Battle Pass</strong></p>
+<ul>
+<li>As an operator, run the command: <code>/battlepass create</code></li>
+<li>This will open a GUI where you can set:
+<ul>
+<li><strong>Duration:</strong> The length of the season in days.</li>
+<li><strong>Max Level:</strong> The highest level players can achieve.</li>
+<li><strong>Premium Toggle:</strong> Whether this season will have a premium track.</li>
+</ul>
+</li>
+<li>Click &quot;Create Battle Pass&quot;. This generates <code>config.json</code> and <code>tiers.json</code> files and resets all player progress for a fresh start.</li>
+</ul>
+<p><strong>Step 2: Configure Your Rewards</strong></p>
+<ul>
+<li>Open <code>config/cobblepass/tiers.json</code>.</li>
+<li>By default, it's filled with placeholder rewards (Apples). Customize each level's <code>freeReward</code> and <code>premiumReward</code>. See <code>TIERS.md</code> for detailed configuration options and examples.</li>
+<li>This is where you can also define reusable reward <code>templates</code>!</li>
+</ul>
+<p><strong>Step 3: Configure Settings</strong></p>
+<ul>
+<li>Open <code>config/cobblepass/config.json</code>.</li>
+<li>Adjust XP gain values (<code>catchXP</code>, <code>defeatXP</code>, etc.), the cost of the premium pass (<code>premiumCost</code>), and the XP progression model (<code>xpProgression</code>). See <code>CONFIG.md</code> for more details.</li>
+</ul>
+<p><strong>Step 4: Reload the Configuration</strong></p>
+<ul>
+<li>Once you've saved your changes to the JSON files, run the command: <code>/battlepass reload</code></li>
+<li>This will load all your new settings and rewards into the server without needing a restart.</li>
+</ul>
+<p><strong>Step 5: Start the Season!</strong></p>
+<ul>
+<li>When you're ready for the season to begin, run: <code>/battlepass season start</code></li>
+<li>The timer will start, and players can now begin earning XP!</li>
+</ul>
+<hr>
+<h2 id="documentation">Documentation</h2>
+<p>For detailed information on commands, configuration, and other features, please refer to the following documentation files:</p>
+<ul>
+<li><strong><a href="COMMANDS.md"><code>COMMANDS.md</code></a>:</strong> A comprehensive list of all player and admin commands.</li>
+<li><strong><a href="CONFIG.md"><code>CONFIG.md</code></a>:</strong> Detailed explanations of <code>config.json</code> and all its parameters.</li>
+<li><strong><a href="TIERS.md"><code>TIERS.md</code></a>:</strong> A guide to configuring rewards, tiers, and templates in <code>tiers.json</code>.</li>
+<li><strong><a href="GUI.md"><code>GUI.md</code></a>:</strong> Information on customizing the look and feel of the Battle Pass GUI.</li>
+<li><strong><a href="LANG.md"><code>LANG.md</code></a>:</strong> Instructions for customizing the in-game text and messages.</li>
+<li><strong><a href="EXAMPLES.md"><code>EXAMPLES.md</code></a>:</strong> Practical examples of advanced configurations and reward setups.</li>
+</ul>
+<h3 id="player-data">Player Data</h3>
+<p>Player progress is stored individually in <code>config/cobblepass/players/&lt;uuid&gt;.json</code>. It is recommended not to edit these files manually.</p>
+<h1 id="commands">Commands</h1>
+<h2 id="battlepass"><code>/battlepass</code></h2>
+<ul>
+<li><strong>Description:</strong> Opens the main Battle Pass interface, where you can view your progress, see available rewards, and claim them.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Permission:</strong> <code>cobblepass.command.base</code> (defaults to <code>none</code>, available to all players)</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass
+</div></code></pre>
+</li>
+</ul>
+<h2 id="battlepass-claim-level-ispremium"><code>/battlepass claim &lt;level&gt; [is_premium]</code></h2>
+<ul>
+<li><strong>Description:</strong> Allows players to claim rewards for a specific tier they have unlocked.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>level</code> (Required): The tier number you want to claim the reward from.</li>
+<li><code>is_premium</code> (Optional): A boolean (<code>true</code> or <code>false</code>) indicating whether to claim the premium reward. Defaults to <code>false</code> (the free reward).</li>
+</ul>
+</li>
+<li><strong>Permission:</strong> <code>cobblepass.claim</code> (defaults to <code>none</code>, available to all players)</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>To claim the free reward for tier 10:<pre class="hljs"><code><div>/battlepass claim 10
+</div></code></pre>
+</li>
+<li>To claim the premium reward for tier 10 (requires premium access):<pre class="hljs"><code><div>/battlepass claim 10 true
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="battlepass-premium"><code>/battlepass premium</code></h2>
+<ul>
+<li><strong>Description:</strong> Provides information about the premium version of the Battle Pass and allows purchasing it if enabled.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>info</code> (Optional): Shows your current premium status, the cost to upgrade, and how to get it. This is the default action if no subcommand is provided.</li>
+<li><code>buy</code> (Optional): Purchases the premium Battle Pass if the server has configured an economy provider.</li>
+</ul>
+</li>
+<li><strong>Permission:</strong> <code>cobblepass.premium</code> (defaults to <code>op</code>, requires administrator privileges)</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>To see your premium status:<pre class="hljs"><code><div>/battlepass premium info
+</div></code></pre>
+</li>
+<li>To purchase the premium pass:<pre class="hljs"><code><div>/battlepass premium buy
+
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="battlepass-addlevels-player-levels"><code>/battlepass addlevels [player] &lt;levels&gt;</code></h2>
+<ul>
+<li><strong>Description:</strong> Adds a specified number of levels to a player's battle pass.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>player</code> (Optional): The player to add levels to. Defaults to the command executor.</li>
+<li><code>levels</code> (Required): The number of levels to add (integer between 1 and 100).</li>
+</ul>
+</li>
+<li><strong>Permission:</strong> <code>cobblepass.addlevels</code> (defaults to <code>op</code>, requires administrator privileges)</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>To add 5 levels to your own battle pass:<pre class="hljs"><code><div>/battlepass addlevels 5
+</div></code></pre>
+</li>
+<li>To add 10 levels to a player named <code>Steve</code>:<pre class="hljs"><code><div>/battlepass addlevels Steve 10
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="battlepass-addxp-player-amount"><code>/battlepass addxp &lt;player&gt; &lt;amount&gt;</code></h2>
+<ul>
+<li><strong>Description:</strong> Adds a specified amount of XP to a player's battle pass.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>player</code> (Required): The player to add XP to.</li>
+<li><code>amount</code> (Required): The amount of XP to add (integer, must be at least 1).</li>
+</ul>
+</li>
+<li><strong>Permission:</strong> <code>cobblepass.addxp</code> (defaults to <code>op</code>, requires administrator privileges)</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>To add 500 XP to a player named <code>Alex</code>:<pre class="hljs"><code><div>/battlepass addxp Alex 500
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="battlepass-create"><code>/battlepass create</code></h2>
+<ul>
+<li><strong>Description:</strong> Opens a GUI to create a new Battle Pass season. This command allows you to configure the duration, maximum level, and whether premium features are enabled. Running this command will wipe all existing player progress to ensure a clean start.</li>
+<li><strong>Arguments:</strong> None (configuration is handled via the in-game GUI).</li>
+<li><strong>Permission:</strong> <code>cobblepass.create</code> (defaults to <code>op</code>, requires administrator privileges)</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass create
+</div></code></pre>
+</li>
+</ul>
+<h2 id="battlepass-delete"><code>/battlepass delete</code></h2>
+<ul>
+<li><strong>Description:</strong> Deletes all Battle Pass data, including configuration files (<code>config.json</code>, <code>tiers.json</code>) and all player progress. This action is irreversible and requires a confirmation step.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>confirm</code> (Required for deletion): You must run the command with <code>confirm</code> to finalize the deletion.</li>
+</ul>
+</li>
+<li><strong>Permission:</strong> <code>cobblepass.delete</code> (defaults to <code>op</code>, requires administrator privileges)</li>
+<li><strong>Examples:</strong>
+<ul>
+<li>To initiate the deletion process:<pre class="hljs"><code><div>/battlepass delete
+</div></code></pre>
+</li>
+<li>To confirm and permanently delete the Battle Pass:<pre class="hljs"><code><div>/battlepass delete confirm
+</div></code></pre>
+</li>
+</ul>
+</li>
+</ul>
+<h2 id="battlepass-premiumanage"><code>/battlepass premiumanage</code></h2>
+<ul>
+<li><strong>Description:</strong> Manages premium access for players and related settings.</li>
+<li><strong>Permission:</strong> <code>cobblepass.premiumanage</code> (defaults to <code>op</code>, requires administrator privileges - level 4)</li>
+</ul>
+<h3 id="sub-commands">Sub-commands:</h3>
+<h4 id="add-player"><code>add &lt;player&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Grants premium access to a specific player.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>player</code> (Required): The player to grant premium access to.</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage add Steve
+</div></code></pre>
+</li>
+</ul>
+<h4 id="remove-player"><code>remove &lt;player&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Revokes premium access from a specific player.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>player</code> (Required): The player to revoke premium access from.</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage remove Steve
+</div></code></pre>
+</li>
+</ul>
+<h4 id="bulk-add-players"><code>bulk add &lt;players&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Grants premium access to multiple players at once.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>players</code> (Required): The target players (can use selectors like <code>@a</code>).</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage bulk add @a[tag=vip]
+</div></code></pre>
+</li>
+</ul>
+<h4 id="bulk-remove-players"><code>bulk remove &lt;players&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Revokes premium access from multiple players at once.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>players</code> (Required): The target players (can use selectors like <code>@a</code>).</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage bulk remove @a[tag=expired_vip]
+</div></code></pre>
+</li>
+</ul>
+<h4 id="mode-set-mode"><code>mode set &lt;mode&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Sets the server's premium mode.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>mode</code> (Required): The premium mode to set. Valid options are <code>ECONOMY</code>, <code>PERMISSION</code>, or <code>DISABLED</code>.</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage mode set ECONOMY
+</div></code></pre>
+</li>
+</ul>
+<h4 id="mode-get"><code>mode get</code></h4>
+<ul>
+<li><strong>Description:</strong> Displays the current premium mode and its description.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage mode get
+</div></code></pre>
+</li>
+</ul>
+<h4 id="status-player"><code>status &lt;player&gt;</code></h4>
+<ul>
+<li><strong>Description:</strong> Checks the premium status of a specific player.</li>
+<li><strong>Arguments:</strong>
+<ul>
+<li><code>player</code> (Required): The player whose status you want to check.</li>
+</ul>
+</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage status Alex
+</div></code></pre>
+</li>
+</ul>
+<h4 id="migrate"><code>migrate</code></h4>
+<ul>
+<li><strong>Description:</strong> Initiates a migration process for all players' premium statuses. This is useful to ensure consistency after configuration changes.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass premiumanage migrate
+</div></code></pre>
+</li>
+</ul>
+<h2 id="battlepass-reload"><code>/battlepass reload</code></h2>
+<ul>
+<li><strong>Description:</strong> Reloads all Battle Pass configuration files, including <code>config.json</code>, <code>tiers.json</code>, and <code>lang.json</code>. This is useful for applying changes without restarting the server.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Permission:</strong> <code>cobblepass.reload</code> (defaults to <code>op</code>, requires administrator privileges - level 4)</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass reload
+</div></code></pre>
+</li>
+</ul>
+<h2 id="battlepass-season"><code>/battlepass season</code></h2>
+<ul>
+<li><strong>Description:</strong> Manages Battle Pass seasons, allowing you to start, stop, or transition between them.</li>
+<li><strong>Permission:</strong> <code>cobblepass.season</code> (defaults to <code>op</code>, requires administrator privileges - level 4)</li>
+</ul>
+<h3 id="sub-commands">Sub-commands:</h3>
+<h4 id="start"><code>start</code></h4>
+<ul>
+<li><strong>Description:</strong> Starts a new Battle Pass season if one is not already active.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass season start
+</div></code></pre>
+</li>
+</ul>
+<h4 id="stop"><code>stop</code></h4>
+<ul>
+<li><strong>Description:</strong> Immediately stops the current Battle Pass season. Player progress is paused but not reset.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass season stop
+</div></code></pre>
+</li>
+</ul>
+<h4 id="endseason"><code>endseason</code></h4>
+<ul>
+<li><strong>Description:</strong> Initiates the process of ending the current season and starting a new one. This command opens a GUI to configure the reset process, including options for preserving premium status, creating backups, and validating data. This is the recommended and safest way to transition between seasons.</li>
+<li><strong>Arguments:</strong> None</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div>/battlepass season endseason
+</div></code></pre>
+</li>
+</ul>
+<h1 id="configuration">Configuration</h1>
+<p>This file documents the main configuration settings for the CobblePass mod, found in <code>config/cobblepass/config.json</code>.</p>
+<h2 id="main-settings">Main Settings</h2>
+<h3 id="maxlevel"><code>maxLevel</code></h3>
+<ul>
+<li><strong>Description</strong>: The maximum level a player can achieve in the battle pass.</li>
+<li><strong>Default Value</strong>: <code>100</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"maxLevel"</span>: <span class="hljs-number">100</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="catchxp"><code>catchXP</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of XP awarded for catching a Pokémon.</li>
+<li><strong>Default Value</strong>: <code>100</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"catchXP"</span>: <span class="hljs-number">100</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="defeatxp"><code>defeatXP</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of XP awarded for defeating a Pokémon.</li>
+<li><strong>Default Value</strong>: <code>50</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"defeatXP"</span>: <span class="hljs-number">50</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="evolvexp"><code>evolveXP</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of XP awarded for evolving a Pokémon. This value is not in the default <code>config.json</code> but can be added.</li>
+<li><strong>Default Value</strong>: <code>150</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"evolveXP"</span>: <span class="hljs-number">150</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="hatchxp"><code>hatchXP</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of XP awarded for hatching a Pokémon from an egg. This value is not in the default <code>config.json</code> but can be added.</li>
+<li><strong>Default Value</strong>: <code>200</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"hatchXP"</span>: <span class="hljs-number">200</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="tradexp"><code>tradeXP</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of XP awarded for trading a Pokémon. This value is not in the default <code>config.json</code> but can be added.</li>
+<li><strong>Default Value</strong>: <code>250</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"tradeXP"</span>: <span class="hljs-number">250</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="seasondurationdays"><code>seasonDurationDays</code></h3>
+<ul>
+<li><strong>Description</strong>: The duration of a battle pass season in days.</li>
+<li><strong>Default Value</strong>: <code>60</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"seasonDurationDays"</span>: <span class="hljs-number">60</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="currentseason"><code>currentSeason</code></h3>
+<ul>
+<li><strong>Description</strong>: The identifier for the current season. This is managed internally and should not be manually edited unless you know what you are doing.</li>
+<li><strong>Default Value</strong>: <code>0</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"currentSeason"</span>: <span class="hljs-number">0</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="seasonstarttime"><code>seasonStartTime</code></h3>
+<ul>
+<li><strong>Description</strong>: The Unix timestamp (in milliseconds) when the current season started. This is managed internally. A value of <code>0</code> indicates no season is active.</li>
+<li><strong>Default Value</strong>: <code>0</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"seasonStartTime"</span>: <span class="hljs-number">1672531200000</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="seasonendtime"><code>seasonEndTime</code></h3>
+<ul>
+<li><strong>Description</strong>: The Unix timestamp (in milliseconds) when the current season will end. This is managed internally. A value of <code>0</code> indicates no season is active.</li>
+<li><strong>Default Value</strong>: <code>0</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"seasonEndTime"</span>: <span class="hljs-number">1677715200000</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="enablepermissionnodes"><code>enablePermissionNodes</code></h3>
+<ul>
+<li><strong>Description</strong>: If <code>true</code>, enables permission nodes for various commands and features. If <code>false</code>, permissions are not checked.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"enablePermissionNodes"</span>: <span class="hljs-literal">true</span>
+
+</div></code></pre>
+</li>
+</ul>
+<h2 id="xp-progression-xpprogression">XP Progression (<code>xpProgression</code>)</h2>
+<p>The <code>xpProgression</code> object controls how the XP required for each level is calculated. You can use a formula-based approach or define manual XP values for each level.</p>
+<ul>
+<li><strong>Example <code>xpProgression</code> object:</strong><pre class="hljs"><code><div><span class="hljs-string">"xpProgression"</span>: {
+  <span class="hljs-attr">"mode"</span>: <span class="hljs-string">"FORMULA"</span>,
+  <span class="hljs-attr">"xpPerLevel"</span>: <span class="hljs-number">1000</span>,
+  <span class="hljs-attr">"xpMultiplier"</span>: <span class="hljs-number">1.1</span>,
+  <span class="hljs-attr">"manualXpValues"</span>: {
+    <span class="hljs-attr">"1"</span>: <span class="hljs-number">500</span>,
+    <span class="hljs-attr">"2"</span>: <span class="hljs-number">1000</span>,
+    <span class="hljs-attr">"3"</span>: <span class="hljs-number">1500</span>
+  }
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="mode"><code>mode</code></h3>
+<ul>
+<li><strong>Description</strong>: Determines the method for calculating XP requirements.
+<ul>
+<li><code>FORMULA</code>: Uses a formula where the XP for a level is <code>xpPerLevel * (level * xpMultiplier)</code>.</li>
+<li><code>MANUAL</code>: Uses the specific values defined in <code>manualXpValues</code>. If a level is not defined in the map, leveling up will be effectively disabled for that level.</li>
+</ul>
+</li>
+<li><strong>Default Value</strong>: <code>&quot;FORMULA&quot;</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"mode"</span>: <span class="hljs-string">"MANUAL"</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="xpperlevel"><code>xpPerLevel</code></h3>
+<ul>
+<li><strong>Description</strong>: The base XP required per level when using the <code>FORMULA</code> mode.</li>
+<li><strong>Default Value</strong>: <code>1000</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"xpPerLevel"</span>: <span class="hljs-number">1000</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="xpmultiplier"><code>xpMultiplier</code></h3>
+<ul>
+<li><strong>Description</strong>: The multiplier applied to the level when calculating XP requirements in <code>FORMULA</code> mode. This creates an escalating XP curve.</li>
+<li><strong>Default Value</strong>: <code>1.1</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"xpMultiplier"</span>: <span class="hljs-number">1.2</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="manualxpvalues"><code>manualXpValues</code></h3>
+<ul>
+<li><strong>Description</strong>: A map where you can define the exact amount of XP required for each specific level. This is only used when <code>mode</code> is set to <code>MANUAL</code>. The key is the level (as a string), and the value is the XP required.</li>
+<li><strong>Default Value</strong>: <code>{}</code> (empty object)</li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"manualXpValues"</span>: {
+  <span class="hljs-attr">"1"</span>: <span class="hljs-number">500</span>,
+  <span class="hljs-attr">"2"</span>: <span class="hljs-number">1000</span>,
+  <span class="hljs-attr">"3"</span>: <span class="hljs-number">1500</span>,
+  <span class="hljs-attr">"4"</span>: <span class="hljs-number">2200</span>,
+  <span class="hljs-attr">"5"</span>: <span class="hljs-number">3000</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h2 id="premium-pass-premiumconfig">Premium Pass (<code>premiumConfig</code>)</h2>
+<p>The <code>premiumConfig</code> object allows you to configure how players obtain premium access to the battle pass. This object is optional; if it's not present in your <code>config.json</code>, default values will be used.</p>
+<ul>
+<li><strong>Example <code>premiumConfig</code> object:</strong><pre class="hljs"><code><div><span class="hljs-string">"premiumConfig"</span>: {
+  <span class="hljs-attr">"mode"</span>: <span class="hljs-string">"economy"</span>,
+  <span class="hljs-attr">"permissionNode"</span>: <span class="hljs-string">"cobblepass.premium"</span>,
+  <span class="hljs-attr">"economyEnabled"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"premiumCost"</span>: <span class="hljs-number">1000</span>,
+  <span class="hljs-attr">"autoRenew"</span>: <span class="hljs-literal">false</span>,
+  <span class="hljs-attr">"preserveOnSeasonChange"</span>: <span class="hljs-literal">true</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="mode"><code>mode</code></h3>
+<ul>
+<li><strong>Description</strong>: Determines the method for granting premium access.
+<ul>
+<li><code>economy</code>: Players can purchase premium access using an economy plugin (e.g., Vault). The cost is defined by <code>premiumCost</code>.</li>
+<li><code>permission</code>: Premium access is granted to players who have a specific permission node, defined by <code>permissionNode</code>.</li>
+<li><code>disabled</code>: Premium access is disabled. All players are considered premium, and no purchase or permission is required.</li>
+</ul>
+</li>
+<li><strong>Default Value</strong>: <code>&quot;economy&quot;</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"mode"</span>: <span class="hljs-string">"permission"</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="permissionnode"><code>permissionNode</code></h3>
+<ul>
+<li><strong>Description</strong>: The permission node required for premium access when <code>mode</code> is set to <code>permission</code>.</li>
+<li><strong>Default Value</strong>: <code>&quot;cobblepass.premium&quot;</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"permissionNode"</span>: <span class="hljs-string">"my.custom.permission"</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="economyenabled"><code>economyEnabled</code></h3>
+<ul>
+<li><strong>Description</strong>: A legacy setting that is largely controlled by the <code>mode</code>. When <code>mode</code> is <code>economy</code>, this is effectively <code>true</code>.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"economyEnabled"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="premiumcost"><code>premiumCost</code></h3>
+<ul>
+<li><strong>Description</strong>: The amount of in-game currency required to purchase premium access when <code>mode</code> is set to <code>economy</code>.</li>
+<li><strong>Default Value</strong>: <code>1000</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"premiumCost"</span>: <span class="hljs-number">2500</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="autorenew"><code>autoRenew</code></h3>
+<ul>
+<li><strong>Description</strong>: If set to <code>true</code>, the server will attempt to automatically charge players and renew their premium status at the beginning of a new season. This only applies if <code>mode</code> is <code>economy</code>.</li>
+<li><strong>Default Value</strong>: <code>false</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"autoRenew"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="preserveonseasonchange"><code>preserveOnSeasonChange</code></h3>
+<ul>
+<li><strong>Description</strong>: If set to <code>true</code>, players who had premium access in the previous season will automatically be granted premium access in the new season at no cost. If <code>autoRenew</code> is also <code>true</code>, the renewal charge will still be attempted.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"preserveOnSeasonChange"</span>: <span class="hljs-literal">false</span>
+</div></code></pre>
+</li>
+</ul>
+<h2 id="season-reset-seasonresetconfig">Season Reset (<code>seasonResetConfig</code>)</h2>
+<p>The <code>seasonResetConfig</code> object allows you to configure how season resets are handled. This includes settings for automatic backups, preservation of premium status, and other safety features. This object is optional; if it's not present in your <code>config.json</code>, default values will be used.</p>
+<ul>
+<li><strong>Example <code>seasonResetConfig</code> object:</strong><pre class="hljs"><code><div><span class="hljs-string">"seasonResetConfig"</span>: {
+  <span class="hljs-attr">"autoBackupOnReset"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"defaultPreservationMode"</span>: <span class="hljs-string">"PRESERVE_ALL"</span>,
+  <span class="hljs-attr">"broadcastTransitionMessages"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"backupRetentionDays"</span>: <span class="hljs-number">30</span>,
+  <span class="hljs-attr">"requireConfirmation"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"validateBeforeReset"</span>: <span class="hljs-literal">true</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="autobackuponreset"><code>autoBackupOnReset</code></h3>
+<ul>
+<li><strong>Description</strong>: If <code>true</code>, the server will automatically create a backup of player data before a season reset is performed. This is a critical safety feature to prevent data loss.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"autoBackupOnReset"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="defaultpreservationmode"><code>defaultPreservationMode</code></h3>
+<ul>
+<li><strong>Description</strong>: Determines how premium status is handled for players during a season reset.
+<ul>
+<li><code>PRESERVE_ALL</code>: All players with premium status will keep it in the new season.</li>
+<li><code>PRESERVE_PAID</code>: Only players who paid for premium (if using an economy provider) will keep it.</li>
+<li><code>NONE</code>: No premium status is preserved; all players will need to re-acquire it.</li>
+</ul>
+</li>
+<li><strong>Default Value</strong>: <code>&quot;PRESERVE_ALL&quot;</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"defaultPreservationMode"</span>: <span class="hljs-string">"PRESERVE_PAID"</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="broadcasttransitionmessages"><code>broadcastTransitionMessages</code></h3>
+<ul>
+<li><strong>Description</strong>: If <code>true</code>, global messages will be broadcast to all players announcing the end of a season and the start of a new one.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"broadcastTransitionMessages"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="backupretentiondays"><code>backupRetentionDays</code></h3>
+<ul>
+<li><strong>Description</strong>: The number of days to keep automatic backups before they are deleted. This helps manage disk space while retaining recent backups. The value must be between 1 and 365.</li>
+<li><strong>Default Value</strong>: <code>30</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"backupRetentionDays"</span>: <span class="hljs-number">15</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="requireconfirmation"><code>requireConfirmation</code></h3>
+<ul>
+<li><strong>Description</strong>: If <code>true</code>, any command that initiates a season reset will require a second confirmation command to proceed. This prevents accidental resets.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"requireConfirmation"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h3 id="validatebeforereset"><code>validateBeforeReset</code></h3>
+<ul>
+<li><strong>Description</strong>: If <code>true</code>, the system will perform a series of validation checks before executing a season reset to ensure that the configuration is valid and that the reset can be performed safely.</li>
+<li><strong>Default Value</strong>: <code>true</code></li>
+<li><strong>Example</strong>:<pre class="hljs"><code><div><span class="hljs-string">"validateBeforeReset"</span>: <span class="hljs-literal">true</span>
+</div></code></pre>
+</li>
+</ul>
+<h1 id="gui-customization">GUI Customization</h1>
+<p>The <code>gui.json</code> file allows for complete customization of the Battle Pass GUI. You can change the title, layout, and items displayed.</p>
+<h2 id="main-properties">Main Properties</h2>
+<h3 id="title"><code>title</code></h3>
+<ul>
+<li><strong>Type:</strong> <code>String</code></li>
+<li><strong>Description:</strong> The title of the GUI. This can be a plain string or a language key from <code>lang.json</code>.</li>
+<li><strong>Example:</strong> <code>&quot;title&quot;: &quot;My Awesome Battle Pass&quot;</code> or <code>&quot;title&quot;: &quot;lang.gui.title&quot;</code></li>
+</ul>
+<h3 id="enablecustomgui"><code>enableCustomGui</code></h3>
+<ul>
+<li><strong>Type:</strong> <code>Boolean</code></li>
+<li><strong>Description:</strong> Enables or disables the custom GUI. If set to <code>false</code>, a default, hard-coded GUI will be used.</li>
+<li><strong>Example:</strong> <code>&quot;enableCustomGui&quot;: true</code></li>
+</ul>
+<h2 id="structure-object"><code>structure</code> Object</h2>
+<p>The <code>structure</code> object defines the layout and the items within the GUI. It consists of two main parts: <code>structure</code> and <code>ingredients</code>.</p>
+<h3 id="structure-array"><code>structure</code> Array</h3>
+<ul>
+<li><strong>Type:</strong> <code>Array of Strings</code></li>
+<li><strong>Description:</strong> This array defines the visual layout of the GUI. Each string in the array represents a row, and each character represents a slot. The characters are mapped to items in the <code>ingredients</code> object. <strong>A space character (' ') will be treated as an empty slot.</strong></li>
+<li><strong>Example:</strong><pre class="hljs"><code><div><span class="hljs-string">"structure"</span>: [
+  <span class="hljs-string">"#########"</span>,
+  <span class="hljs-string">"#ifbpr L#"</span>,
+  <span class="hljs-string">"#       #"</span>,
+  <span class="hljs-string">"#&lt;     &gt;#"</span>
+]
+</div></code></pre>
+</li>
+</ul>
+<h3 id="ingredients-object"><code>ingredients</code> Object</h3>
+<ul>
+<li><strong>Type:</strong> <code>Object</code></li>
+<li><strong>Description:</strong> This object maps the characters used in the <code>structure</code> array to specific item definitions. Each key is a character, and the value is an object defining the item's properties.</li>
+<li><strong>Example:</strong><pre class="hljs"><code><div><span class="hljs-string">"ingredients"</span>: {
+  <span class="hljs-attr">"#"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"STATIC_ITEM"</span>,
+    <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:light_gray_stained_glass_pane"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"lang.gui.decoration.border"</span>,
+    <span class="hljs-attr">"hideTooltip"</span>: <span class="hljs-literal">true</span>
+  },
+  <span class="hljs-attr">"f"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FREE_REWARD_PLACEHOLDER"</span>
+  },
+  <span class="hljs-attr">"r"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PREMIUM_REWARD_PLACEHOLDER"</span>
+  },
+  <span class="hljs-attr">"&lt;"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"NAVIGATION_PREVIOUS"</span>,
+    <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:arrow"</span>,
+    <span class="hljs-attr">"name"</span>: <span class="hljs-string">"lang.gui.navigation.previous"</span>
+  }
+}
+</div></code></pre>
+</li>
+</ul>
+<p>In the example above:</p>
+<ul>
+<li>The <code>#</code> character creates a border.</li>
+<li><code>i</code>, <code>f</code>, <code>b</code>, <code>p</code>, <code>r</code>, and <code>L</code> are placeholders for various dynamic or static items.</li>
+<li>The space characters create an empty row in the middle.</li>
+<li><code>&lt;</code> and <code>&gt;</code> are navigation buttons.</li>
+</ul>
+<h2 id="guiingredient-types"><code>GuiIngredient</code> Types</h2>
+<p>This section details the different types of ingredients you can use in the <code>ingredients</code> object of your <code>gui.json</code>.</p>
+<h3 id="staticitem"><code>STATIC_ITEM</code></h3>
+<ul>
+<li>
+<p><strong>Purpose:</strong> A simple, non-interactive item used for decoration, such as borders or fillers.</p>
+</li>
+<li>
+<p><strong>Configurable Properties:</strong></p>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:gray_stained_glass_pane&quot;</code>): The Minecraft item ID to display.</li>
+<li><code>name</code> (String, Optional): The display name of the item. Supports color codes and language keys.</li>
+<li><code>lore</code> (List of Strings, Optional): A list of strings to be used as the item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data for the item, for use with resource packs.</li>
+<li><code>hideTooltip</code> (Boolean, Optional, Default: <code>true</code>): If <code>true</code>, hides the default item tooltip (e.g., &quot;minecraft:stone&quot;).</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"b"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"STATIC_ITEM"</span>,
+  <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:black_stained_glass_pane"</span>,
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">" "</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="freerewardplaceholder"><code>FREE_REWARD_PLACEHOLDER</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A placeholder that will be dynamically replaced by a free reward item from <code>tiers.json</code>.</li>
+<li><strong>Configurable Properties:</strong> None. The item's appearance is determined by the reward it represents.</li>
+</ul>
+<h3 id="premiumrewardplaceholder"><code>PREMIUM_REWARD_PLACEHOLDER</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A placeholder that will be dynamically replaced by a premium reward item from <code>tiers.json</code>.</li>
+<li><strong>Configurable Properties:</strong> None. The item's appearance is determined by the reward it represents.</li>
+</ul>
+<h3 id="xpinfoplaceholder"><code>XP_INFO_PLACEHOLDER</code></h3>
+<ul>
+<li>
+<p><strong>Purpose:</strong> Displays the player's current XP, level, and progress to the next level.</p>
+</li>
+<li>
+<p><strong>Configurable Properties:</strong></p>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:experience_bottle&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name. You can use placeholders like <code>{level}</code>.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore. You can use placeholders like <code>{xp}</code>, <code>{required_xp}</code>, and <code>{progress_bar}</code>.</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"x"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"XP_INFO_PLACEHOLDER"</span>,
+  <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:experience_bottle"</span>,
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"§eLevel {level}"</span>,
+  <span class="hljs-attr">"lore"</span>: [
+    <span class="hljs-string">"§7XP: §a{xp}§7/§c{required_xp}"</span>,
+    <span class="hljs-string">"{progress_bar}"</span>
+  ]
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="progressplaceholder"><code>PROGRESS_PLACEHOLDER</code></h3>
+<ul>
+<li><strong>Purpose:</strong> Displays the player's overall Battle Pass progression.</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:writable_book&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore. You can use placeholders like <code>{progress}</code> (e.g., &quot;5/50 Tiers Claimed&quot;).</li>
+</ul>
+</li>
+</ul>
+<h3 id="premiumstatusplaceholder"><code>PREMIUM_STATUS_PLACEHOLDER</code></h3>
+<ul>
+<li><strong>Purpose:</strong> Shows the player's premium status. If the player does not have premium, it can be configured to act as a button to purchase it (if using an economy provider).</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+</ul>
+</li>
+</ul>
+<h3 id="navigationprevious"><code>NAVIGATION_PREVIOUS</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A button to navigate to the previous page of rewards.</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:arrow&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data for the item.</li>
+</ul>
+</li>
+</ul>
+<h3 id="navigationnext"><code>NAVIGATION_NEXT</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A button to navigate to the next page of rewards.</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:arrow&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data for the item.</li>
+</ul>
+</li>
+</ul>
+<h3 id="freerewardslabel"><code>FREE_REWARDS_LABEL</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A static item to label the free rewards track.</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:book&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data for the item.</li>
+</ul>
+</li>
+</ul>
+<h3 id="premiumrewardslabel"><code>PREMIUM_REWARDS_LABEL</code></h3>
+<ul>
+<li><strong>Purpose:</strong> A static item to label the premium rewards track.</li>
+<li><strong>Configurable Properties:</strong>
+<ul>
+<li><code>material</code> (String, Optional, Default: <code>&quot;minecraft:diamond&quot;</code>): The item to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data for the item.</li>
+</ul>
+</li>
+</ul>
+<h3 id="customitem"><code>CUSTOM_ITEM</code></h3>
+<ul>
+<li>
+<p><strong>Purpose:</strong> A fully customizable item that can be used for decoration or to execute a command when clicked.</p>
+</li>
+<li>
+<p><strong>Configurable Properties:</strong></p>
+<ul>
+<li><code>material</code> (String, Required): The Minecraft item ID to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data.</li>
+<li><code>command</code> (String, Optional): The command to execute on click. Placeholders like <code>{player}</code> are supported.</li>
+<li><code>permission</code> (String, Optional): A permission node required to execute the command.</li>
+<li><code>executeAsPlayer</code> (Boolean, Optional, Default: <code>true</code>): If <code>true</code>, the player executes the command. If <code>false</code>, the server console executes it.</li>
+<li><code>clickMessage</code> (String, Optional): A message to send to the player when they click the item.</li>
+<li><code>noPermissionMessage</code> (String, Optional, Default: <code>&quot;§cYou don't have permission to use this!&quot;</code>): The message shown if the player lacks the required permission.</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"w"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CUSTOM_ITEM"</span>,
+  <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:nether_star"</span>,
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"§bVisit our Website!"</span>,
+  <span class="hljs-attr">"command"</span>: <span class="hljs-string">"tellraw {player} {\"text\":\"Click here to visit our site!\",\"clickEvent\":{\"action\":\"open_url\",\"value\":\"https://example.com\"}}"</span>,
+  <span class="hljs-attr">"clickMessage"</span>: <span class="hljs-string">"§aOpening website..."</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h3 id="commandbutton"><code>COMMAND_BUTTON</code></h3>
+<ul>
+<li>
+<p><strong>Purpose:</strong> An item that is specifically designed to execute a command when clicked.</p>
+</li>
+<li>
+<p><strong>Configurable Properties:</strong></p>
+<ul>
+<li><code>material</code> (String, Required): The Minecraft item ID to display.</li>
+<li><code>name</code> (String, Optional): The display name.</li>
+<li><code>lore</code> (List of Strings, Optional): The item's lore.</li>
+<li><code>customModelData</code> (Integer, Optional): The custom model data.</li>
+<li><code>command</code> (String, Required): The command to execute on click.</li>
+<li><code>permission</code> (String, Optional): A permission node required to execute the command.</li>
+<li><code>executeAsPlayer</code> (Boolean, Optional, Default: <code>true</code>): If <code>true</code>, the player executes the command. If <code>false</code>, the server console executes it.</li>
+<li><code>clickMessage</code> (String, Optional): A message to send to the player when they click the item.</li>
+<li><code>noPermissionMessage</code> (String, Optional, Default: <code>&quot;§cYou don't have permission to use this!&quot;</code>): The message shown if the player lacks the required permission.</li>
+</ul>
+</li>
+<li>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"c"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COMMAND_BUTTON"</span>,
+  <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:command_block"</span>,
+  <span class="hljs-attr">"name"</span>: <span class="hljs-string">"§6Claim Daily Reward"</span>,
+  <span class="hljs-attr">"command"</span>: <span class="hljs-string">"dailyreward {player}"</span>,
+  <span class="hljs-attr">"permission"</span>: <span class="hljs-string">"cobblepass.dailyreward"</span>
+}
+</div></code></pre>
+</li>
+</ul>
+<h1 id="lang-file-langjson">Lang File (<code>lang.json</code>)</h1>
+<p>The <code>lang.json</code> file is used to customize all the text displayed by the CobblePass mod. This allows server owners to translate messages into different languages or change the wording to better fit their server's theme.</p>
+<h2 id="placeholders">Placeholders</h2>
+<p>The lang file uses placeholders to insert dynamic values into messages, such as player names, numbers, or time. There are two types of placeholders: indexed and named.</p>
+<h3 id="indexed-placeholders">Indexed Placeholders</h3>
+<p>Indexed placeholders are replaced by values in the order they are provided in the code. They are useful for simple substitutions.</p>
+<ul>
+<li><code>%s</code> - Replaced by a string (text).</li>
+<li><code>%d</code> - Replaced by an integer (number).</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"lang.command.xp_gained"</span>: <span class="hljs-string">"§b[BattlePass] §fYou gained §e%d§f XP! (§e%d§f/§e%d§f)"</span>
+</div></code></pre>
+<p>In this example, the three <code>%d</code> placeholders would be replaced by the amount of XP gained, the current total XP, and the XP needed for the next level, respectively.</p>
+<h3 id="named-placeholders">Named Placeholders</h3>
+<p>Named placeholders are replaced by values based on their name. This can make the lang file easier to read and manage, especially for complex messages.</p>
+<ul>
+<li><code>{placeholder}</code> - Replaced by the value associated with &quot;placeholder&quot;.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<p>While the current <code>lang.json</code> doesn't use named placeholders, a future implementation might look like this:</p>
+<pre class="hljs"><code><div><span class="hljs-string">"lang.welcome_message"</span>: <span class="hljs-string">"Welcome, {player_name}! You are on level {level}."</span>
+</div></code></pre>
+<p>Here, <code>{player_name}</code> would be replaced by the player's name and <code>{level}</code> by their current Battle Pass level.</p>
+<h2 id="translation-keys">Translation Keys</h2>
+<p>Below is a complete list of all translation keys available in <code>lang.json</code>, their default values, and an explanation of what they are used for.</p>
+<table>
+<thead>
+<tr>
+<th>Key</th>
+<th>Default Value</th>
+<th>Description</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td><code>lang.command.xp_gained</code></td>
+<td><code>§b[BattlePass] §fYou gained §e%d§f XP! (§e%d§f/§e%d§f)</code></td>
+<td>Message shown when a player gains Battle Pass XP.</td>
+</tr>
+<tr>
+<td><code>lang.command.level_up</code></td>
+<td><code>§a[BattlePass] §fYou reached level §e%d§f!</code></td>
+<td>Message shown when a player levels up.</td>
+</tr>
+<tr>
+<td><code>lang.command.reward_claim</code></td>
+<td><code>§a[BattlePass] §fYou claimed the reward for level §e%d§f!</code></td>
+<td>Message shown when a player claims a reward.</td>
+</tr>
+<tr>
+<td><code>lang.command.premium_unlocked</code></td>
+<td><code>§a[BattlePass] §fYou unlocked the Premium Battle Pass!</code></td>
+<td>Message shown when a player unlocks the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.command.no_reward</code></td>
+<td><code>§c[BattlePass] §fNo reward available at level §e%d§f!</code></td>
+<td>Error message when trying to claim a non-existent reward.</td>
+</tr>
+<tr>
+<td><code>lang.command.already_claimed</code></td>
+<td><code>§c[BattlePass] §fYou already claimed this reward!</code></td>
+<td>Error message when a reward has already been claimed.</td>
+</tr>
+<tr>
+<td><code>lang.command.already_claimed_level</code></td>
+<td><code>§c[BattlePass] §fYou already claimed the reward for level §e%d§f!</code></td>
+<td>A more specific version of the 'already claimed' message.</td>
+</tr>
+<tr>
+<td><code>lang.command.level_not_reached</code></td>
+<td><code>§c[BattlePass] §fYou haven't reached level §e%d§f yet!</code></td>
+<td>Error message when a player tries to claim a reward for a level they haven't reached.</td>
+</tr>
+<tr>
+<td><code>lang.command.not_premium</code></td>
+<td><code>§c[BattlePass] §fThis is a premium reward! Use §e/battlepass premium§f to unlock.</code></td>
+<td>Error message for trying to claim a premium reward without the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.command.config_reloaded</code></td>
+<td><code>§a[BattlePass] §fConfiguration reloaded!</code></td>
+<td>Confirmation message after using the reload command.</td>
+</tr>
+<tr>
+<td><code>lang.command.must_be_player</code></td>
+<td><code>§c[BattlePass] §fThis command must be run by a player!</code></td>
+<td>Error message when a command is run from the console instead of by a player.</td>
+</tr>
+<tr>
+<td><code>lang.season.started</code></td>
+<td><code>§a[BattlePass] §fBattle Pass Season %d has begun!</code></td>
+<td>Message broadcasted when a new season starts.</td>
+</tr>
+<tr>
+<td><code>lang.season.already_active</code></td>
+<td><code>§c[BattlePass] §fA battle pass season is already active! (Season %d)</code></td>
+<td>Error message when trying to start a season while one is already active.</td>
+</tr>
+<tr>
+<td><code>lang.season.no_active</code></td>
+<td><code>§c[BattlePass] §fNo battle pass season is currently active!</code></td>
+<td>Error message when no season is active.</td>
+</tr>
+<tr>
+<td><code>lang.season.time_remaining</code></td>
+<td><code>§b[BattlePass] §fSeason %d ends in %s</code></td>
+<td>Displays the time remaining for the current season.</td>
+</tr>
+<tr>
+<td><code>lang.gui.title</code></td>
+<td><code>§3Battle Pass</code></td>
+<td>The title of the main Battle Pass GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.name</code></td>
+<td><code>§aHow to Earn XP</code></td>
+<td>Title for the XP information section in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.description</code></td>
+<td><code>§7Earn XP by performing these actions:</code></td>
+<td>Description for the XP information section.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.catch</code></td>
+<td><code>  §b• Catch Pokémon: §e+%d XP</code></td>
+<td>Text showing XP gained from catching Pokémon.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.defeat</code></td>
+<td><code>  §b• Defeat Pokémon: §e+%d XP</code></td>
+<td>Text showing XP gained from defeating Pokémon.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.evolve</code></td>
+<td><code>  §b• Evolve Pokémon: §e+%d XP</code></td>
+<td>Text showing XP gained from evolving Pokémon.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.hatch</code></td>
+<td><code>  §b• Hatch Eggs: §e+%d XP</code></td>
+<td>Text showing XP gained from hatching eggs.</td>
+</tr>
+<tr>
+<td><code>lang.gui.xp_info.trade</code></td>
+<td><code>  §b• Trade Pokémon: §e+%d XP</code></td>
+<td>Text showing XP gained from trading Pokémon.</td>
+</tr>
+<tr>
+<td><code>lang.gui.progress.name</code></td>
+<td><code>§bBattle Pass Progress</code></td>
+<td>Title for the progress section in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.progress.level</code></td>
+<td><code>§3Level: §f%d</code></td>
+<td>Displays the player's current level.</td>
+</tr>
+<tr>
+<td><code>lang.gui.progress.xp</code></td>
+<td><code>§3XP: §f%d§7/§f%d</code></td>
+<td>Displays the player's current XP progress.</td>
+</tr>
+<tr>
+<td><code>lang.gui.progress.time_remaining</code></td>
+<td><code>§3Time Remaining: §b%s</code></td>
+<td>Displays the time remaining in the season within the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.name</code></td>
+<td><code>§6Premium Status</code></td>
+<td>Title for the premium status section in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.active</code></td>
+<td><code>§aYou have the Premium Pass!</code></td>
+<td>Message indicating the premium pass is active.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.inactive</code></td>
+<td><code>§cPremium Pass Inactive</code></td>
+<td>Message indicating the premium pass is not active.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.click_info</code></td>
+<td><code>§7Click to learn more!</code></td>
+<td>A prompt to click for more information on the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.season</code></td>
+<td><code>§3Season %d</code></td>
+<td>Displays the current season number in the premium section.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.no_season</code></td>
+<td><code>§cNo active season</code></td>
+<td>Message shown in the premium section when no season is active.</td>
+</tr>
+<tr>
+<td><code>lang.gui.premium.command_info</code></td>
+<td><code>§7Use §f/battlepass premium §7to unlock premium rewards.</code></td>
+<td>Informational text on how to unlock the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.gui.reward.free</code></td>
+<td><code>§aFree Reward</code></td>
+<td>Label for free rewards.</td>
+</tr>
+<tr>
+<td><code>lang.gui.reward.premium</code></td>
+<td><code>§6Premium Reward</code></td>
+<td>Label for premium rewards.</td>
+</tr>
+<tr>
+<td><code>lang.gui.reward.free_label</code></td>
+<td><code>§aFree Rewards</code></td>
+<td>A more general label for the free rewards track.</td>
+</tr>
+<tr>
+<td><code>lang.gui.reward.premium_label</code></td>
+<td><code>§6Premium Rewards</code></td>
+<td>A more general label for the premium rewards track.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.name</code></td>
+<td><code>§3Level %d Status</code></td>
+<td>Title for the status of a specific level.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.requires_premium</code></td>
+<td><code>§cRequires Premium Pass</code></td>
+<td>Status text when a reward requires the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.purchase_info</code></td>
+<td><code>§7Purchase with §e/bp premium buy</code></td>
+<td>Information on how to purchase the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.not_reached</code></td>
+<td><code>§7Not Reached</code></td>
+<td>Status text for a level that has not been reached yet.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.claimed</code></td>
+<td><code>§6Claimed</code></td>
+<td>Status text for a reward that has been claimed.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.available</code></td>
+<td><code>§aAvailable to Claim</code></td>
+<td>Status text for a reward that is available to be claimed.</td>
+</tr>
+<tr>
+<td><code>lang.gui.tier_title</code></td>
+<td><code>§aTier %d</code></td>
+<td>Title for a tier in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.in_lore.claimed</code></td>
+<td><code>§aStatus: Claimed</code></td>
+<td>Lore text for a claimed reward.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.in_lore.available</code></td>
+<td><code>§eStatus: Available to Claim</code></td>
+<td>Lore text for an available reward.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.in_lore.not_reached</code></td>
+<td><code>§cStatus: Locked (Requires Level %d)</code></td>
+<td>Lore text for a locked reward.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.in_lore.requires_premium</code></td>
+<td><code>§6Status: Premium Locked</code></td>
+<td>Lore text for a premium-locked reward.</td>
+</tr>
+<tr>
+<td><code>lang.gui.status.in_lore.purchase_prompt</code></td>
+<td><code>§7Purchase the pass to unlock.</code></td>
+<td>Lore text prompting to purchase the premium pass.</td>
+</tr>
+<tr>
+<td><code>lang.gui.navigation.previous</code></td>
+<td><code>§f← Previous Page</code></td>
+<td>Text for the 'previous page' button in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.navigation.next</code></td>
+<td><code>§fNext Page →</code></td>
+<td>Text for the 'next page' button in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.gui.decoration.border</code></td>
+<td><code>§7 </code></td>
+<td>The character used for decorative borders in the GUI.</td>
+</tr>
+<tr>
+<td><code>lang.reward.item</code></td>
+<td><code>§7Item</code></td>
+<td>Label for an item reward.</td>
+</tr>
+<tr>
+<td><code>lang.reward.pokemon</code></td>
+<td><code>§7Pokemon</code></td>
+<td>Label for a Pokémon reward.</td>
+</tr>
+<tr>
+<td><code>lang.reward.level</code></td>
+<td><code>§7Level: §f%d</code></td>
+<td>Displays the level of a Pokémon reward.</td>
+</tr>
+<tr>
+<td><code>lang.reward.shiny</code></td>
+<td><code>§6✦ Shiny</code></td>
+<td>Indicates that a Pokémon reward is shiny.</td>
+</tr>
+<tr>
+<td><code>lang.reward.mod_item</code></td>
+<td><code>§8%s Item</code></td>
+<td>Label for an item from another mod.</td>
+</tr>
+<tr>
+<td><code>lang.reward.count</code></td>
+<td><code>§7%dx %s</code></td>
+<td>Displays the count and name of an item reward.</td>
+</tr>
+</tbody>
+</table>
+<h1 id="tiers-configuration-tiersjson">Tiers Configuration (<code>tiers.json</code>)</h1>
+<p>The <code>tiers.json</code> file defines the rewards for each level of your Battle Pass. It consists of a main JSON object containing a <code>tiers</code> array. Each element in the array represents a single tier.</p>
+<h2 id="basic-structure">Basic Structure</h2>
+<p>The root of the file is a JSON object that can contain two main properties: <code>templates</code> and <code>tiers</code>.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"templates"</span>: {
+    <span class="hljs-attr">"template_name"</span>: { ... }
+  },
+  <span class="hljs-attr">"tiers"</span>: [
+    { ... tier object ... },
+    { ... tier object ... }
+  ]
+}
+</div></code></pre>
+<h3 id="tier-object">Tier Object</h3>
+<p>Each tier object in the <code>tiers</code> array has the following structure:</p>
+<ul>
+<li><code>level</code> (number, required): The level this tier represents.</li>
+<li><code>freeReward</code> (object, optional): The reward given to all players who reach this level.</li>
+<li><code>premiumReward</code> (object, optional): The reward given only to players with a premium pass who reach this level.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"level"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"freeReward"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ITEM"</span>,
+    <span class="hljs-attr">"data"</span>: {
+      <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:poke_ball"</span>,
+      <span class="hljs-attr">"Count"</span>: <span class="hljs-number">5</span>
+    }
+  },
+  <span class="hljs-attr">"premiumReward"</span>: {
+    <span class="hljs-attr">"type"</span>: <span class="hljs-string">"POKEMON"</span>,
+    <span class="hljs-attr">"data"</span>: {
+      <span class="hljs-attr">"species"</span>: <span class="hljs-string">"charmander"</span>,
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">5</span>,
+      <span class="hljs-attr">"shiny"</span>: <span class="hljs-literal">true</span>
+    }
+  }
+}
+</div></code></pre>
+<hr>
+<h2 id="templates">Templates</h2>
+<p>The <code>templates</code> feature allows you to define reusable reward structures, which can simplify your <code>tiers.json</code> file and reduce duplication. This is especially useful for rewards that appear in multiple tiers.</p>
+<h3 id="defining-templates">Defining Templates</h3>
+<p>Templates are defined in the <code>templates</code> object at the root of your <code>tiers.json</code> file. Each key in this object is a template name, and its value is a standard reward object.</p>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"templates"</span>: {
+    <span class="hljs-attr">"common_item_bundle"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ITEM"</span>,
+      <span class="hljs-attr">"data"</span>: {
+        <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:poke_ball"</span>,
+        <span class="hljs-attr">"Count"</span>: <span class="hljs-number">10</span>
+      }
+    },
+    <span class="hljs-attr">"rare_pokemon"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"POKEMON"</span>,
+      <span class="hljs-attr">"data"</span>: {
+        <span class="hljs-attr">"species"</span>: <span class="hljs-string">"dratini"</span>,
+        <span class="hljs-attr">"level"</span>: <span class="hljs-number">20</span>
+      }
+    }
+  },
+  <span class="hljs-attr">"tiers"</span>: [
+    ...
+  ]
+}
+</div></code></pre>
+<h3 id="using-templates-in-tiers">Using Templates in Tiers</h3>
+<p>To use a template in a tier, create a reward object with a single property: <code>$ref</code>. The value of <code>$ref</code> should be a string that points to the template you want to use, in the format <code>#/templates/template_name</code>.</p>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"level"</span>: <span class="hljs-number">1</span>,
+  <span class="hljs-attr">"freeReward"</span>: {
+    <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"#/templates/common_item_bundle"</span>
+  }
+},
+{
+  <span class="hljs-attr">"level"</span>: <span class="hljs-number">10</span>,
+  <span class="hljs-attr">"premiumReward"</span>: {
+    <span class="hljs-attr">"$ref"</span>: <span class="hljs-string">"#/templates/rare_pokemon"</span>
+  }
+}
+</div></code></pre>
+<p>When the configuration is loaded, the <code>$ref</code> will be replaced by the content of the corresponding template.</p>
+<h2 id="reward-types">Reward Types</h2>
+<p>Each reward object (<code>freeReward</code> or <code>premiumReward</code>) must have a <code>type</code> and a <code>data</code> object.</p>
+<h3 id="item"><code>ITEM</code></h3>
+<p>The <code>ITEM</code> reward type is used to give players any item from Minecraft, Cobblemon, or any other mod. The system handles both <code>minecraft:</code> and <code>cobblemon:</code> item IDs, as well as items from other mods.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><code>id</code> (string, required): The item's identifier (e.g., <code>minecraft:diamond</code>, <code>cobblemon:poke_ball</code>).</li>
+<li><code>Count</code> (number, optional): The number of items to give. Defaults to <code>1</code>.</li>
+<li>Any other valid NBT data for the item.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"freeReward"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"ITEM"</span>,
+  <span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:iron_ingot"</span>,
+    <span class="hljs-attr">"Count"</span>: <span class="hljs-number">10</span>
+  }
+}
+</div></code></pre>
+<h3 id="pokemon"><code>POKEMON</code></h3>
+<p>The <code>POKEMON</code> reward type gives the player a Pokémon with specified attributes.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><code>species</code> (string, required): The species of the Pokémon (e.g., <code>pikachu</code>, <code>eevee</code>).</li>
+<li><code>level</code> (number, optional): The level of the Pokémon.</li>
+<li><code>shiny</code> (boolean, optional): Whether the Pokémon should be shiny. Defaults to <code>false</code>.</li>
+<li><code>ability</code> (string, optional): A specific ability for the Pokémon.</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"premiumReward"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"POKEMON"</span>,
+  <span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"species"</span>: <span class="hljs-string">"eevee"</span>,
+    <span class="hljs-attr">"level"</span>: <span class="hljs-number">15</span>,
+    <span class="hljs-attr">"shiny"</span>: <span class="hljs-literal">true</span>
+  }
+}
+</div></code></pre>
+<h3 id="command"><code>COMMAND</code></h3>
+<p>The <code>COMMAND</code> reward type executes a server command. This is useful for integrating with other plugins, giving permissions, or running custom functions.</p>
+<p><strong>Properties:</strong></p>
+<ul>
+<li><code>command</code> (string, required): The command to execute. You can use placeholders:
+<ul>
+<li><code>%player%</code>: The player's username.</li>
+<li><code>%uuid%</code>: The player's UUID.</li>
+</ul>
+</li>
+<li><code>data</code> (object, required): An object to define how the reward is displayed in the GUI.
+<ul>
+<li><code>id</code> (string, required): The item ID to display as an icon for the reward.</li>
+<li><code>display_name</code> (string, optional): A custom name to show for the reward in the GUI.</li>
+</ul>
+</li>
+</ul>
+<p><strong>Example:</strong></p>
+<pre class="hljs"><code><div><span class="hljs-string">"premiumReward"</span>: {
+  <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COMMAND"</span>,
+  <span class="hljs-attr">"command"</span>: <span class="hljs-string">"msg %player% You've unlocked a special command reward!"</span>,
+  <span class="hljs-attr">"data"</span>: {
+    <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:paper"</span>,
+    <span class="hljs-attr">"display_name"</span>: <span class="hljs-string">"Special Message"</span>
+  }
+}
+# Enhanced Season Command Usage Guide
+
+The enhanced SeasonCommand provides comprehensive season management capabilities with confirmation dialogs, progress feedback, and detailed reporting.
+
+## Commands
+
+### Basic Season Management
+
+#### Start a Season
+</div></code></pre>
+<p>/battlepass season start</p>
+<pre class="hljs"><code><div>- Starts a new battle pass season
+- Requires operator permission (level 4)
+- Only works if no season is currently active
+
+#### Stop a Season
+</div></code></pre>
+<p>/battlepass season stop</p>
+<pre class="hljs"><code><div>- Stops the current battle pass season
+- Requires operator permission (level 4)
+- Only works if a season is currently active
+
+### Enhanced Season Reset
+
+#### End Season with Reset
+</div></code></pre>
+<p>/battlepass season endseason</p>
+<pre class="hljs"><code><div>- Opens an interactive GUI for season reset configuration
+- Requires operator permission (level 4)
+- Must be run by a player (not console)
+- Only works if a season is currently active
+
+## Season Reset GUI
+
+When you run `/battlepass season endseason`, you'll see a confirmation GUI with the following options:
+
+### Premium Preservation Modes
+
+1. **Preserve All Premium** (Diamond)
+   - Keeps premium status for all current premium players
+   - Default and recommended option
+
+2. **Sync from Permissions** (Redstone)
+   - Grants premium based on permission nodes only
+   - Useful for permission-based premium systems
+
+3. **Preserve + Sync** (Emerald)
+   - Keeps existing premium AND syncs from permissions
+   - Best of both worlds approach
+
+4. **No Preservation** (Coal)
+   - All players lose premium status on reset
+   - Use with caution
+
+### Additional Options
+
+- **Broadcast Messages**: Send season transition messages to all players
+- **Create Backup**: Create timestamped backups before reset (recommended)
+- **Validate Before Reset**: Run pre-operation validation checks (recommended)
+
+### Confirmation
+
+- **Green Confirm Button**: Proceed with the season reset
+- **Red Cancel Button**: Cancel the operation
+
+## Progress Feedback
+
+During a season reset, you'll receive real-time progress updates:
+
+1. **Initiating**: Operation startup
+2. **Creating backup**: Player data backup creation (20%)
+3. **Preserving premium status**: Premium player list storage (40%)
+4. **Clearing player progress**: Actual data reset (60%)
+5. **Restoring premium status**: Premium restoration based on selected mode (80%)
+6. **Finalizing**: Operation completion (100%)
+
+## Completion Summary
+
+After a successful reset, you'll receive a detailed summary including:
+
+- Total players reset
+- Premium players preserved/restored
+- Number of backup files created
+- Operation duration
+- New season information
+
+## Error Handling
+
+The system includes comprehensive error handling for:
+
+- **No Active Season**: Cannot reset if no season is running
+- **Operation in Progress**: Prevents concurrent reset operations
+- **Backup Failures**: Cancels reset if backup creation fails
+- **Validation Errors**: Pre-operation checks prevent unsafe operations
+- **Rollback Support**: Automatic rollback on critical failures
+
+## Language Customization
+
+All messages can be customized in your `lang.json` file. Key message categories:
+
+- `lang.season.reset.confirm.*` - Confirmation dialog messages
+- `lang.season.reset.progress.*` - Progress update messages
+- `lang.season.reset.complete.*` - Completion summary messages
+- `lang.season.reset.error.*` - Error messages
+- `lang.season.premium.*` - Premium preservation messages
+
+## Best Practices
+
+1. **Always Create Backups**: Keep the backup option enabled
+2. **Use Validation**: Keep pre-reset validation enabled
+3. **Choose Appropriate Preservation Mode**: Consider your server's premium system
+4. **Inform Players**: Use broadcast messages to keep players informed
+5. **Monitor Progress**: Watch the progress messages for any issues
+6. **Test First**: Try the process on a test server before production use
+
+## Troubleshooting
+
+### Common Issues
+
+1. **&quot;No active season to reset&quot;**
+   - Start a season first with `/battlepass season start`
+
+2. **&quot;Season transition already in progress&quot;**
+   - Wait for the current operation to complete
+   - Check server logs for any stuck operations
+
+3. **&quot;Failed to create player data backup&quot;**
+   - Check file system permissions
+   - Ensure sufficient disk space
+   - Verify the config directory is writable
+
+4. **GUI doesn't open**
+   - Command must be run by a player, not console
+   - Ensure you have operator permissions
+   - Check that GooeyLibs is properly installed
+
+### Recovery
+
+If a reset fails:
+1. Check the error message for specific details
+2. Look for backup files in the config directory
+3. Use the rollback information if provided
+4. Contact support with server logs if needed
+
+## Technical Details
+
+The enhanced SeasonCommand integrates with:
+- **SeasonManager**: Central coordination of season operations
+- **SeasonResetHandler**: Actual reset operation execution
+- **PremiumPreservationService**: Premium status management
+- **SeasonTransitionMessenger**: Player communication
+- **LangManager**: Localized messaging system
+
+All operations are asynchronous and include proper error handling and rollback capabilities.
+# Examples
+
+## Simple Battle Pass
+
+This example demonstrates a basic Battle Pass with 5 levels, linear progression (the same XP is required for each level), and only free rewards. It's a great starting point for servers wanting a simple, no-fuss engagement system.
+
+### How It Works Together
+
+1.  **`config.json`**: This file is the brain of your Battle Pass. It sets the `maxLevel` to 5 and defines that each level requires `100` XP. It also specifies how players earn that XP (e.g., `10` XP for catching a Pokémon).
+2.  **`tiers.json`**: This file is the heart of your rewards system. It lists the specific items players will receive for reaching each of the 5 levels. Since this is a simple setup, we only use `freeReward`.
+3.  **`gui.json`**: This file controls the visual presentation. It creates a clean, single-row interface where the five reward items from `tiers.json` are displayed, making it easy for players to track their progress and see what's next.
+
+This combination results in a straightforward and engaging Battle Pass where players level up by playing and are rewarded with items at each milestone.
+
+---
+
+### Example Files
+
+#### `config.json`
+This configuration establishes the core mechanics: 5 levels, 100 XP per level, and simple XP sources. Premium features are disabled by setting the cost to 0.
+
+```json
+{
+  &quot;maxLevel&quot;: 5,
+  &quot;xpPerLevel&quot;: 100,
+  &quot;catchXP&quot;: 10,
+  &quot;defeatXP&quot;: 5,
+  &quot;premiumCost&quot;: 0,
+  &quot;seasonDurationDays&quot;: 30,
+  &quot;currentSeason&quot;: 1,
+  &quot;enablePermissionNodes&quot;: false,
+  &quot;xpMultiplier&quot;: 1.0
+}
+</div></code></pre>
+<h4 id="tiersjson"><code>tiers.json</code></h4>
+<p>This file defines a unique, free reward for each of the 5 levels. Each reward is a simple Minecraft or Cobblemon item.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"tiers"</span>: [
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:stone"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">16</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:poke_ball"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">5</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">3</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:iron_ingot"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">8</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">4</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:great_ball"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">3</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">5</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:diamond"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">1</span> } }
+    }
+  ]
+}
+</div></code></pre>
+<h4 id="guijson"><code>gui.json</code></h4>
+<p>This GUI configuration creates a compact, single-row menu to display the rewards. The <code>f</code> placeholders are automatically filled with the <code>freeReward</code> items from <code>tiers.json</code>.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Simple Battle Pass"</span>,
+  <span class="hljs-attr">"enableCustomGui"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"structure"</span>: {
+    <span class="hljs-attr">"structure"</span>: [
+      <span class="hljs-string">"# # # # # # # # #"</span>,
+      <span class="hljs-string">"# f f f f f #"</span>,
+      <span class="hljs-string">"# # # # # # # # #"</span>
+    ],
+    <span class="hljs-attr">"ingredients"</span>: {
+      <span class="hljs-attr">"#"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"STATIC_ITEM"</span>,
+        <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:light_gray_stained_glass_pane"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">" "</span>
+      },
+      <span class="hljs-attr">"f"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FREE_REWARD_PLACEHOLDER"</span>
+      }
+    }
+  }
+}
+</div></code></pre>
+<hr>
+<h2 id="advanced-battle-pass">Advanced Battle Pass</h2>
+<p>This example showcases a sophisticated Battle Pass designed for servers that want fine-grained control and a premium experience. It features manual XP progression, permission-based premium access, command-based rewards, reward templates for efficiency, and a highly customized GUI.</p>
+<h3 id="how-it-works-together">How It Works Together</h3>
+<ol>
+<li><strong><code>config.json</code></strong>: This configuration sets the <code>xpProgression</code> mode to <code>MANUAL</code>, meaning administrators must grant XP or levels to players via commands (e.g., <code>/pass addxp</code> or <code>/pass addlevels</code>). The <code>premiumConfig</code> is set to <code>PERMISSION</code> mode, requiring players to have the <code>cobblepass.premium</code> permission node to access premium rewards. This is ideal for servers that integrate with donation stores or other permission-granting plugins.</li>
+<li><strong><code>tiers.json</code></strong>: This file defines a rich reward structure with both free and premium tracks. It uses a <code>template</code> for the &quot;Rare Candy&quot; reward to avoid duplicating the item definition. It also includes a <code>COMMAND</code> reward, which runs a server command (<code>kit give legendary {player}</code>) to grant the player a special kit when they claim the final premium reward.</li>
+<li><strong><code>gui.json</code></strong>: This file creates a visually distinct, two-row GUI to separate free and premium rewards. It uses a <code>CUSTOM_ITEM</code> as a decorative centerpiece and a <code>COMMAND_BUTTON</code> that allows players with the <code>cobblepass.buy.premium</code> permission to run the <code>/pass premium</code> command directly from the GUI, providing a seamless upgrade path.</li>
+</ol>
+<p>This combination creates a flexible and powerful Battle Pass system that can be tailored to specific server needs, offering a clear distinction between free and premium content while giving administrators full control over player progression.</p>
+<hr>
+<h3 id="example-files">Example Files</h3>
+<h4 id="configjson"><code>config.json</code></h4>
+<p>This configuration requires administrators to manually grant XP. Premium access is restricted to players with the <code>cobblepass.premium</code> permission.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"maxLevel"</span>: <span class="hljs-number">5</span>,
+  <span class="hljs-attr">"xpProgression"</span>: {
+    <span class="hljs-attr">"mode"</span>: <span class="hljs-string">"MANUAL"</span>,
+    <span class="hljs-attr">"levels"</span>: {
+      <span class="hljs-attr">"1"</span>: <span class="hljs-number">100</span>,
+      <span class="hljs-attr">"2"</span>: <span class="hljs-number">150</span>,
+      <span class="hljs-attr">"3"</span>: <span class="hljs-number">200</span>,
+      <span class="hljs-attr">"4"</span>: <span class="hljs-number">250</span>,
+      <span class="hljs-attr">"5"</span>: <span class="hljs-number">300</span>
+    }
+  },
+  <span class="hljs-attr">"premiumConfig"</span>: {
+    <span class="hljs-attr">"mode"</span>: <span class="hljs-string">"PERMISSION"</span>,
+    <span class="hljs-attr">"permission"</span>: <span class="hljs-string">"cobblepass.premium"</span>
+  },
+  <span class="hljs-attr">"seasonDurationDays"</span>: <span class="hljs-number">90</span>,
+  <span class="hljs-attr">"currentSeason"</span>: <span class="hljs-number">1</span>
+}
+</div></code></pre>
+<h4 id="tiersjson"><code>tiers.json</code></h4>
+<p>This file defines parallel free and premium reward tracks. It uses a <code>template</code> for efficiency and a <code>COMMAND</code> reward for the final premium tier.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"templates"</span>: {
+    <span class="hljs-attr">"rare_candy_template"</span>: {
+      <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>,
+      <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:rare_candy"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">5</span> }
+    }
+  },
+  <span class="hljs-attr">"tiers"</span>: [
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">1</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:iron_ingot"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">16</span> } },
+      <span class="hljs-attr">"premiumReward"</span>: { <span class="hljs-attr">"template"</span>: <span class="hljs-string">"rare_candy_template"</span> }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">2</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:great_ball"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">8</span> } },
+      <span class="hljs-attr">"premiumReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:diamond"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">3</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">3</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:gold_ingot"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">16</span> } },
+      <span class="hljs-attr">"premiumReward"</span>: { <span class="hljs-attr">"template"</span>: <span class="hljs-string">"rare_candy_template"</span> }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">4</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:ultra_ball"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">8</span> } },
+      <span class="hljs-attr">"premiumReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"MINECRAFT_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"minecraft:emerald"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">5</span> } }
+    },
+    {
+      <span class="hljs-attr">"level"</span>: <span class="hljs-number">5</span>,
+      <span class="hljs-attr">"freeReward"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COBBLEMON_ITEM"</span>, <span class="hljs-attr">"data"</span>: { <span class="hljs-attr">"id"</span>: <span class="hljs-string">"cobblemon:master_ball"</span>, <span class="hljs-attr">"Count"</span>: <span class="hljs-number">1</span> } },
+      <span class="hljs-attr">"premiumReward"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COMMAND"</span>,
+        <span class="hljs-attr">"data"</span>: {
+          <span class="hljs-attr">"command"</span>: <span class="hljs-string">"kit give legendary {player}"</span>,
+          <span class="hljs-attr">"displayName"</span>: <span class="hljs-string">"Legendary Kit"</span>,
+          <span class="hljs-attr">"displayItem"</span>: <span class="hljs-string">"minecraft:beacon"</span>
+        }
+      }
+    }
+  ]
+}
+</div></code></pre>
+<h4 id="guijson"><code>gui.json</code></h4>
+<p>This GUI configuration creates a two-row layout for free (<code>f</code>) and premium (<code>p</code>) rewards. It includes a decorative <code>CUSTOM_ITEM</code> (<code>C</code>) and a <code>COMMAND_BUTTON</code> (<code>B</code>) that requires a permission to use.</p>
+<pre class="hljs"><code><div>{
+  <span class="hljs-attr">"title"</span>: <span class="hljs-string">"Advanced Battle Pass"</span>,
+  <span class="hljs-attr">"enableCustomGui"</span>: <span class="hljs-literal">true</span>,
+  <span class="hljs-attr">"structure"</span>: {
+    <span class="hljs-attr">"structure"</span>: [
+      <span class="hljs-string">"f f f f f"</span>,
+      <span class="hljs-string">"p p p p p"</span>,
+      <span class="hljs-string">"# # B C # #"</span>
+    ],
+    <span class="hljs-attr">"ingredients"</span>: {
+      <span class="hljs-attr">"f"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"FREE_REWARD_PLACEHOLDER"</span> },
+      <span class="hljs-attr">"p"</span>: { <span class="hljs-attr">"type"</span>: <span class="hljs-string">"PREMIUM_REWARD_PLACEHOLDER"</span> },
+      <span class="hljs-attr">"#"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"STATIC_ITEM"</span>,
+        <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:black_stained_glass_pane"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">" "</span>
+      },
+      <span class="hljs-attr">"C"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"CUSTOM_ITEM"</span>,
+        <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:dragon_head"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"&amp;5Advanced Pass"</span>
+      },
+      <span class="hljs-attr">"B"</span>: {
+        <span class="hljs-attr">"type"</span>: <span class="hljs-string">"COMMAND_BUTTON"</span>,
+        <span class="hljs-attr">"material"</span>: <span class="hljs-string">"minecraft:emerald_block"</span>,
+        <span class="hljs-attr">"name"</span>: <span class="hljs-string">"&amp;aBuy Premium"</span>,
+        <span class="hljs-attr">"lore"</span>: [<span class="hljs-string">"&amp;7Click to purchase the premium pass!"</span>],
+        <span class="hljs-attr">"command"</span>: <span class="hljs-string">"pass premium"</span>,
+        <span class="hljs-attr">"permission"</span>: <span class="hljs-string">"cobblepass.buy.premium"</span>
+      }
+    }
+  }
+}
+</div></code></pre>
+
+</body>
+</html>

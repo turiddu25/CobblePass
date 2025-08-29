@@ -32,7 +32,6 @@ import com.mojang.brigadier.context.CommandContext;
 import ca.landonjw.gooeylibs2.api.UIManager;
 import ca.landonjw.gooeylibs2.api.button.Button;
 import ca.landonjw.gooeylibs2.api.button.GooeyButton;
-import ca.landonjw.gooeylibs2.api.button.PlaceholderButton;
 import ca.landonjw.gooeylibs2.api.button.linked.LinkType;
 import ca.landonjw.gooeylibs2.api.button.linked.LinkedPageButton;
 import ca.landonjw.gooeylibs2.api.page.LinkedPage;
@@ -40,6 +39,7 @@ import ca.landonjw.gooeylibs2.api.template.types.ChestTemplate;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
+import net.minecraft.server.MinecraftServer;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.util.Unit;
 import net.minecraft.world.item.ItemStack;
@@ -69,7 +69,7 @@ public class BattlePassCommand extends BaseCommand {
     public int run(CommandContext<CommandSourceStack> context) {
         if (!context.getSource().isPlayer()) {
             context.getSource().sendSystemMessage(
-                    LangManager.getComponent("lang.command.must_be_player")
+                    LangManager.get("lang.command.must_be_player")
             );
             return 1;
         }
@@ -80,7 +80,7 @@ public class BattlePassCommand extends BaseCommand {
                 showBattlePassInfo(player);
             } else {
                 context.getSource().sendSystemMessage(
-                        LangManager.getComponent("lang.season.no_active")
+                        LangManager.get("lang.season.no_active")
                 );
             }
             return 1;
@@ -118,17 +118,15 @@ public class BattlePassCommand extends BaseCommand {
                         itemName = Arrays.stream(itemName.split(" "))
                                 .map(word -> word.substring(0, 1).toUpperCase() + word.substring(1))
                                 .collect(Collectors.joining(" "));
-                        if (!parts[0].equals("minecraft")) {
-                            String modName = parts[0].substring(0, 1).toUpperCase() + parts[0].substring(1);
-                            lore.add(LangManager.getComponent("lang.reward.mod_item", modName));
-                        }
-                        lore.add(LangManager.getComponent("lang.reward.count", count, itemName));
+                        
+                        // Format: "Item Name x Count" without showing mod name or separate count line
+                        lore.add(LangManager.get("lang.reward.item_format", itemName, count));
                     } else {
-                        lore.add(LangManager.getComponent("lang.reward.item"));
+                        lore.add(LangManager.get("lang.reward.item"));
                     }
                     break;
                 case POKEMON:
-                    lore.add(LangManager.getComponent("lang.reward.pokemon"));
+                    lore.add(LangManager.get("lang.reward.pokemon"));
                     if (data != null) {
                         if (data.has("species")) {
                             String speciesName = data.get("species").getAsString();
@@ -136,10 +134,10 @@ public class BattlePassCommand extends BaseCommand {
                             lore.add(Component.literal(speciesName));
                         }
                         if (data.has("level")) {
-                            lore.add(LangManager.getComponent("lang.reward.level", data.get("level").getAsInt()));
+                            lore.add(LangManager.get("lang.reward.level", data.get("level").getAsInt()));
                         }
                         if (data.has("shiny") && data.get("shiny").getAsBoolean()) {
-                            lore.add(LangManager.getComponent("lang.reward.shiny"));
+                            lore.add(LangManager.get("lang.reward.shiny"));
                         }
                     }
                     break;
@@ -166,30 +164,32 @@ public class BattlePassCommand extends BaseCommand {
         // Part 2: Add Status Information
         if (isPremium) {
             if (!pass.isPremium()) {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.requires_premium"));
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.purchase_prompt"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.requires_premium"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.purchase_prompt"));
             } else if (level > pass.getLevel()) {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.not_reached", level));
+                lore.add(LangManager.get("lang.gui.status.in_lore.not_reached", level));
             } else if (pass.hasClaimedPremiumReward(level)) {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.claimed"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.claimed"));
             } else {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.available"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.available"));
             }
         } else { // Free Reward
             if (level > pass.getLevel()) {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.not_reached", level));
+                lore.add(LangManager.get("lang.gui.status.in_lore.not_reached", level));
             } else if (pass.hasClaimedFreeReward(level)) {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.claimed"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.claimed"));
             } else {
-                lore.add(LangManager.getComponent("lang.gui.status.in_lore.available"));
+                lore.add(LangManager.get("lang.gui.status.in_lore.available"));
             }
         }
         return lore;
     }
 
     private static Button createRewardButton(ServerPlayer player, PlayerBattlePass pass, BattlePassTier tier, int level, boolean isPremium, int pageNum) {
-        Reward reward = isPremium ? tier.getPremiumReward() : tier.getFreeReward();
-        ItemStack displayItem = isPremium ? tier.getPremiumRewardItem(player.level().registryAccess()) : tier.getFreeRewardItem(player.level().registryAccess());
+        // Use the consolidated display logic from BattlePassTier
+        ItemStack displayItem = isPremium ?
+            tier.getPremiumRewardItem(pass, player.level().registryAccess()) :
+            tier.getFreeRewardItem(pass, player.level().registryAccess());
 
         if (displayItem == null || displayItem.isEmpty()) {
             displayItem = new ItemStack(Items.BARRIER);
@@ -200,22 +200,22 @@ public class BattlePassCommand extends BaseCommand {
 
         return GooeyButton.builder()
                 .display(displayItem)
-                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.tier_title", level)) // Use a lang key for the title
+                .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.tier_title", level)) // Use a lang key for the title
                 .with(DataComponents.LORE, new ItemLore(lore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
                     if (level > pass.getLevel()) {
-                        player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
+                        player.sendSystemMessage(LangManager.get("lang.command.level_not_reached", level));
                         return;
                     }
 
                     if (isPremium && !pass.isPremium()) {
-                        player.sendSystemMessage(LangManager.getComponent("lang.command.not_premium"));
+                        player.sendSystemMessage(LangManager.get("lang.command.not_premium"));
                         return;
                     }
 
                     if (CobblePass.battlePass.claimReward(player, level, isPremium)) {
-                        player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
+                        player.sendSystemMessage(LangManager.get("lang.command.reward_claim", level));
                         showBattlePassInfo(player, pageNum); // Refresh UI
                     }
                 })
@@ -225,28 +225,33 @@ public class BattlePassCommand extends BaseCommand {
 
     private static Button createXpInfoButton(ServerPlayer player) {
         List<Component> xpInfoLore = new ArrayList<>();
-        xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.description"));
+        xpInfoLore.add(LangManager.get("lang.gui.xp_info.description"));
         xpInfoLore.add(Component.literal(""));
         
-        if (CobblePass.config.getCatchXP() > 0) {
-            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.catch", CobblePass.config.getCatchXP()));
-        }
-        if (CobblePass.config.getDefeatXP() > 0) {
-            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.defeat", CobblePass.config.getDefeatXP()));
-        }
-        if (CobblePass.config.getEvolveXP() > 0) {
-            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.evolve", CobblePass.config.getEvolveXP()));
-        }
-        if (CobblePass.config.getHatchXP() > 0) {
-            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.hatch", CobblePass.config.getHatchXP()));
-        }
-        if (CobblePass.config.getTradeXP() > 0) {
-            xpInfoLore.add(LangManager.getComponent("lang.gui.xp_info.trade", CobblePass.config.getTradeXP()));
+        // This is the correct way to get the XP values from the config
+        Map<String, Integer> xpSources = new java.util.HashMap<>();
+        xpSources.put("catch", CobblePass.config.getCatchXP());
+        xpSources.put("defeat", CobblePass.config.getDefeatXP());
+        xpSources.put("evolve", CobblePass.config.getEvolveXP());
+        xpSources.put("hatch", CobblePass.config.getHatchXP());
+        xpSources.put("trade", CobblePass.config.getTradeXP());
+        xpSources.put("fish", CobblePass.config.getFishXP());
+        xpSources.put("catch_legendary", CobblePass.config.getCatchLegendaryXP());
+        xpSources.put("catch_shiny", CobblePass.config.getCatchShinyXP());
+        xpSources.put("catch_ultrabeast", CobblePass.config.getCatchUltraBeastXP());
+        xpSources.put("catch_mythical", CobblePass.config.getCatchMythicalXP());
+        xpSources.put("catch_paradox", CobblePass.config.getCatchParadoxXP());
+        xpSources.put("release", CobblePass.config.getReleaseXP());
+
+        for (Map.Entry<String, Integer> entry : xpSources.entrySet()) {
+            if (entry.getValue() > 0) {
+                xpInfoLore.add(LangManager.get("lang.gui.info.lore." + entry.getKey(), entry.getValue()));
+            }
         }
 
         return GooeyButton.builder()
                 .display(new ItemStack(Items.EXPERIENCE_BOTTLE))
-                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.xp_info.name"))
+                .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.xp_info.name"))
                 .with(DataComponents.LORE, new ItemLore(xpInfoLore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .build();
@@ -262,20 +267,20 @@ public class BattlePassCommand extends BaseCommand {
         }
         
         List<Component> infoLore = new ArrayList<>();
-        infoLore.add(LangManager.getComponent("lang.gui.progress.level", pass.getLevel()));
-        infoLore.add(LangManager.getComponent("lang.gui.progress.xp", currentXP, xpForNext));
+        infoLore.add(LangManager.get("lang.gui.progress.level", pass.getLevel()));
+        infoLore.add(LangManager.get("lang.gui.progress.xp", currentXP, xpForNext));
 
         if (CobblePass.config.isSeasonActive()) {
             long timeLeft = CobblePass.config.getSeasonEndTime() - System.currentTimeMillis();
             if (timeLeft > 0) {
                 infoLore.add(Component.literal(""));
-                infoLore.add(LangManager.getComponent("lang.gui.progress.time_remaining", formatTimeRemaining(timeLeft)));
+                infoLore.add(LangManager.get("lang.gui.progress.time_remaining", formatTimeRemaining(timeLeft)));
             }
         }
 
         return GooeyButton.builder()
                 .display(new ItemStack(Items.NETHER_STAR))
-                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.progress.name"))
+                .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.progress.name"))
                 .with(DataComponents.LORE, new ItemLore(infoLore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .build();
@@ -286,26 +291,26 @@ public class BattlePassCommand extends BaseCommand {
         List<Component> premiumLore = new ArrayList<>();
         
         if (pass.isPremium()) {
-            premiumLore.add(LangManager.getComponent("lang.gui.premium.active"));
+            premiumLore.add(LangManager.get("lang.gui.premium.active"));
             if (CobblePass.config.isSeasonActive()) {
-                premiumLore.add(LangManager.getComponent("lang.gui.premium.season", CobblePass.config.getCurrentSeason()));
+                premiumLore.add(LangManager.get("lang.gui.premium.season", CobblePass.config.getCurrentSeason()));
             } else {
-                premiumLore.add(LangManager.getComponent("lang.gui.premium.no_season"));
+                premiumLore.add(LangManager.get("lang.gui.premium.no_season"));
             }
         } else {
-            premiumLore.add(LangManager.getComponent("lang.gui.premium.inactive"));
-            premiumLore.add(LangManager.getComponent("lang.gui.premium.click_info"));
+            premiumLore.add(LangManager.get("lang.gui.premium.inactive"));
+            premiumLore.add(LangManager.get("lang.gui.premium.click_info"));
         }
 
         return GooeyButton.builder()
                 .display(premiumDisplay)
-                .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.premium.name"))
+                .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.premium.name"))
                 .with(DataComponents.LORE, new ItemLore(premiumLore))
                 .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                 .onClick(action -> {
                     if (!pass.isPremium()) {
                         player.closeContainer();
-                        player.sendSystemMessage(LangManager.getComponent("lang.gui.premium.command_info"));
+                        player.sendSystemMessage(LangManager.get("lang.gui.premium.command_info"));
                     }
                 })
                 .build();
@@ -315,33 +320,33 @@ public class BattlePassCommand extends BaseCommand {
         ItemStack stack = ingredient.createItemStack();
         
         // Process name and lore for localization
-        String name = ingredient.getName();
-        if (name != null && name.startsWith("lang.")) {
-            name = LangManager.get(name);
+        // Process name and lore for localization
+        Component name = null;
+        if (ingredient.getName() != null && !ingredient.getName().isEmpty()) {
+            name = ingredient.getName().startsWith("lang.")
+                    ? LangManager.get(ingredient.getName())
+                    : LangManager.asComponent(ingredient.getName());
         }
-        
+
         List<Component> loreComponents = new ArrayList<>();
         for (String loreLine : ingredient.getLore()) {
-            if (loreLine.startsWith("lang.")) {
-                loreComponents.add(LangManager.getComponent(loreLine));
-            } else {
-                loreComponents.add(Component.literal(loreLine));
-            }
+            loreComponents.add(loreLine.startsWith("lang.")
+                    ? LangManager.get(loreLine)
+                    : LangManager.asComponent(loreLine));
         }
 
         GooeyButton.Builder builder = GooeyButton.builder().display(stack);
-        
-        if (name != null && !name.isEmpty()) {
-            builder.with(DataComponents.CUSTOM_NAME, Component.literal(name));
+
+        if (name != null) {
+            builder.with(DataComponents.CUSTOM_NAME, name);
         }
         
         if (!loreComponents.isEmpty()) {
             builder.with(DataComponents.LORE, new ItemLore(loreComponents));
         }
         
-        if (ingredient.isHideTooltip()) {
-            builder.with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
-        }
+        // Always hide tooltips for all GUI elements
+        builder.with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
 
         return builder.build();
     }
@@ -382,6 +387,12 @@ public class BattlePassCommand extends BaseCommand {
                         case STATIC_ITEM:
                             button = createStaticButton(ingredient);
                             break;
+                        case CUSTOM_ITEM:
+                            button = createCustomItemButton(ingredient, player, pageNum);
+                            break;
+                        case COMMAND_BUTTON:
+                            button = createCommandButton(ingredient, player, pageNum);
+                            break;
                         case XP_INFO_PLACEHOLDER:
                             button = createXpInfoButton(player);
                             break;
@@ -394,13 +405,15 @@ public class BattlePassCommand extends BaseCommand {
                         case FREE_REWARDS_LABEL:
                             button = GooeyButton.builder()
                                     .display(new ItemStack(PokeBalls.INSTANCE.getPREMIER_BALL().item()))
-                                    .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.reward.free_label"))
+                                    .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.reward.free_label"))
+                                    .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                                     .build();
                             break;
                         case PREMIUM_REWARDS_LABEL:
                             button = GooeyButton.builder()
                                     .display(new ItemStack(PokeBalls.INSTANCE.getMASTER_BALL().item()))
-                                    .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.reward.premium_label"))
+                                    .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.reward.premium_label"))
+                                    .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                                     .build();
                             break;
                     }
@@ -440,7 +453,7 @@ public class BattlePassCommand extends BaseCommand {
             
             LinkedPage page = LinkedPage.builder()
                     .template(template)
-                    .title(LangManager.get("lang.gui.title"))
+                    .title(LangManager.getLegacy("lang.gui.title"))
                     .build();
 
             pages.add(page);
@@ -463,9 +476,11 @@ public class BattlePassCommand extends BaseCommand {
 
             if (current.getPrevious() != null && !prevSlots.isEmpty()) {
                 GuiStructure.SlotInfo slot = prevSlots.get(0);
+                GuiIngredient prevIngredient = guiStructure.getIngredients().get('<');
+                ItemStack prevDisplay = prevIngredient != null ? prevIngredient.createItemStack() : new ItemStack(Items.ARROW);
                 Button prevBtn = LinkedPageButton.builder()
-                        .display(new ItemStack(Items.ARROW))
-                        .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.navigation.previous"))
+                        .display(prevDisplay)
+                        .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.navigation.previous"))
                         .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                         .linkType(LinkType.Previous)
                         .build();
@@ -474,9 +489,11 @@ public class BattlePassCommand extends BaseCommand {
             
             if (current.getNext() != null && !nextSlots.isEmpty()) {
                 GuiStructure.SlotInfo slot = nextSlots.get(0);
+                GuiIngredient nextIngredient = guiStructure.getIngredients().get('>');
+                ItemStack nextDisplay = nextIngredient != null ? nextIngredient.createItemStack() : new ItemStack(Items.ARROW);
                 Button nextBtn = LinkedPageButton.builder()
-                        .display(new ItemStack(Items.ARROW))
-                        .with(DataComponents.CUSTOM_NAME, LangManager.getComponent("lang.gui.navigation.next"))
+                        .display(nextDisplay)
+                        .with(DataComponents.CUSTOM_NAME, LangManager.get("lang.gui.navigation.next"))
                         .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
                         .linkType(LinkType.Next)
                         .build();
@@ -487,6 +504,170 @@ public class BattlePassCommand extends BaseCommand {
         if (!pages.isEmpty()) {
             int targetPage = Math.max(0, Math.min(pageToShow, pages.size() - 1));
             UIManager.openUIForcefully(player, pages.get(targetPage));
+        }
+    }
+
+    /**
+     * Creates a custom item button with optional command functionality
+     */
+    private static Button createCustomItemButton(GuiIngredient ingredient, ServerPlayer player, int pageNum) {
+        ItemStack stack = ingredient.createItemStack();
+        
+        // Process name and lore for localization and color codes
+        Component name = null;
+        if (ingredient.getName() != null && !ingredient.getName().isEmpty()) {
+            name = ingredient.getName().startsWith("lang.")
+                    ? LangManager.get(ingredient.getName())
+                    : LangManager.asComponent(ingredient.getName());
+        }
+
+        List<Component> loreComponents = new ArrayList<>();
+        for (String loreLine : ingredient.getLore()) {
+            loreComponents.add(loreLine.startsWith("lang.")
+                    ? LangManager.get(loreLine)
+                    : LangManager.asComponent(loreLine));
+        }
+
+        GooeyButton.Builder builder = GooeyButton.builder().display(stack);
+        
+        if (name != null) {
+            builder.with(DataComponents.CUSTOM_NAME, name);
+        }
+        
+        if (!loreComponents.isEmpty()) {
+            builder.with(DataComponents.LORE, new ItemLore(loreComponents));
+        }
+        
+        // Always hide tooltips for all GUI elements
+        builder.with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE);
+
+        // Add click handler if the item has a command or is otherwise interactive
+        if (ingredient.hasCommand()) {
+            builder.onClick(action -> handleCustomItemClick(ingredient, player));
+        }
+
+        return builder.build();
+    }
+
+    /**
+     * Creates a dedicated command button
+     */
+    private static Button createCommandButton(GuiIngredient ingredient, ServerPlayer player, int pageNum) {
+        ItemStack stack = ingredient.createItemStack();
+        
+        // Process name and lore
+        Component name = null;
+        if (ingredient.getName() != null && !ingredient.getName().isEmpty()) {
+            name = ingredient.getName().startsWith("lang.")
+                    ? LangManager.get(ingredient.getName())
+                    : LangManager.asComponent(ingredient.getName());
+        }
+
+        List<Component> loreComponents = new ArrayList<>();
+        for (String loreLine : ingredient.getLore()) {
+            loreComponents.add(loreLine.startsWith("lang.")
+                    ? LangManager.get(loreLine)
+                    : LangManager.asComponent(loreLine));
+        }
+
+        // Add command info to lore if not hidden
+        if (ingredient.hasCommand() && !ingredient.isHideTooltip()) {
+            loreComponents.add(Component.literal(""));
+            loreComponents.add(LangManager.asComponent("<gray>Click to execute command</gray>"));
+        }
+
+        GooeyButton.Builder builder = GooeyButton.builder()
+                .display(stack);
+
+        if (name != null) {
+            builder.with(DataComponents.CUSTOM_NAME, name);
+        } else {
+            builder.with(DataComponents.CUSTOM_NAME, LangManager.asComponent("<gold>Command Button</gold>"));
+        }
+
+        return builder.with(DataComponents.LORE, new ItemLore(loreComponents))
+                .with(DataComponents.HIDE_ADDITIONAL_TOOLTIP, Unit.INSTANCE)
+                .onClick(action -> handleCustomItemClick(ingredient, player))
+                .build();
+    }
+
+    /**
+     * Handles clicking on custom items and command buttons
+     */
+    private static void handleCustomItemClick(GuiIngredient ingredient, ServerPlayer player) {
+        // Check permission if required
+        if (ingredient.getPermission() != null && !ingredient.getPermission().isEmpty()) {
+            // Simple permission check - can be enhanced with proper permission system
+            if (!player.hasPermissions(2)) { // Requires op level 2 or higher
+                String message = ingredient.getNoPermissionMessage();
+                if (message != null && !message.isEmpty()) {
+                    player.sendSystemMessage(Component.literal(message.replace("&", "§")));
+                } else {
+                    player.sendSystemMessage(Component.literal("§cYou don't have permission to use this!"));
+                }
+                return;
+            }
+        }
+
+        // Execute command if present
+        if (ingredient.hasCommand()) {
+            executeIngredientCommand(ingredient, player);
+        }
+
+        // Show click message if present
+        if (ingredient.getClickMessage() != null && !ingredient.getClickMessage().isEmpty()) {
+            String message = ingredient.getClickMessage()
+                    .replace("%player%", player.getName().getString())
+                    .replace("&", "§");
+            player.sendSystemMessage(Component.literal(message));
+        }
+    }
+
+    /**
+     * Executes a command from an ingredient
+     */
+    private static void executeIngredientCommand(GuiIngredient ingredient, ServerPlayer player) {
+        String command = ingredient.getCommand();
+        if (command == null || command.isEmpty()) {
+            return;
+        }
+
+        // Replace placeholders
+        String processedCommand = command
+                .replace("%player%", player.getName().getString())
+                .replace("%uuid%", player.getUUID().toString())
+                .replace("%x%", String.valueOf((int) player.getX()))
+                .replace("%y%", String.valueOf((int) player.getY()))
+                .replace("%z%", String.valueOf((int) player.getZ()));
+
+        try {
+            MinecraftServer server = player.getServer();
+            if (server != null) {
+                CommandSourceStack source;
+                
+                if (ingredient.isExecuteAsPlayer()) {
+                    // Execute as player
+                    source = player.createCommandSourceStack();
+                } else {
+                    // Execute as server/console
+                    source = server.createCommandSourceStack();
+                }
+
+                // Remove leading slash if present
+                if (processedCommand.startsWith("/")) {
+                    processedCommand = processedCommand.substring(1);
+                }
+
+                // Execute the command
+                server.getCommands().performPrefixedCommand(source, processedCommand);
+                
+                CobblePass.LOGGER.info("Executed command '{}' from GUI ingredient for player {}",
+                        processedCommand, player.getName().getString());
+            }
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to execute command '{}' for player {}: {}",
+                    processedCommand, player.getName().getString(), e.getMessage());
+            player.sendSystemMessage(Component.literal("§cFailed to execute command!"));
         }
     }
 }

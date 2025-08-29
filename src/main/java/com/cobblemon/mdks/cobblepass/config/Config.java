@@ -1,6 +1,8 @@
 package com.cobblemon.mdks.cobblepass.config;
 
 import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.cobblemon.mdks.cobblepass.premium.PremiumMode;
+import com.cobblemon.mdks.cobblepass.season.SeasonResetConfig;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.LangManager;
 import com.cobblemon.mdks.cobblepass.util.Utils;
@@ -15,7 +17,13 @@ public class Config {
     private int evolveXP;
     private int hatchXP;
     private int tradeXP;
-    private long premiumCost;
+    private int fishXP;
+    private int catchLegendaryXP;
+    private int catchShinyXP;
+    private int catchUltraBeastXP;
+    private int catchMythicalXP;
+    private int catchParadoxXP;
+    private int releaseXP;
     private int seasonDurationDays;
     private int currentSeason;
     private long seasonStartTime;
@@ -23,8 +31,8 @@ public class Config {
     private boolean enablePermissionNodes;
     private XpProgression xpProgression;
     private GuiConfig guiConfig;
-
-    private boolean premiumMode;
+    private PremiumConfig premiumConfig;
+    private SeasonResetConfig seasonResetConfig;
 
     public Config() {
         setDefaults();
@@ -41,7 +49,13 @@ public class Config {
         this.evolveXP = Constants.DEFAULT_EVOLVE_XP;
         this.hatchXP = Constants.DEFAULT_HATCH_XP;
         this.tradeXP = Constants.DEFAULT_TRADE_XP;
-        this.premiumCost = Constants.DEFAULT_PREMIUM_COST;
+        this.fishXP = Constants.DEFAULT_FISH_XP;
+        this.catchLegendaryXP = Constants.DEFAULT_CATCH_LEGENDARY_XP;
+        this.catchShinyXP = Constants.DEFAULT_CATCH_SHINY_XP;
+        this.catchUltraBeastXP = Constants.DEFAULT_CATCH_ULTRABEAST_XP;
+        this.catchMythicalXP = Constants.DEFAULT_CATCH_MYTHICAL_XP;
+        this.catchParadoxXP = Constants.DEFAULT_CATCH_PARADOX_XP;
+        this.releaseXP = Constants.DEFAULT_RELEASE_XP;
         this.seasonDurationDays = 60;
         this.currentSeason = 0;
         this.seasonStartTime = 0;
@@ -49,7 +63,8 @@ public class Config {
         this.enablePermissionNodes = Constants.DEFAULT_ENABLE_PERMISSION_NODES;
         this.xpProgression = new XpProgression();
         this.guiConfig = new GuiConfig();
-        this.premiumMode = false;
+        this.premiumConfig = new PremiumConfig();
+        this.seasonResetConfig = new SeasonResetConfig();
     }
 
     public void load() {
@@ -62,7 +77,8 @@ public class Config {
         
         String content = Utils.readFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE);
         if (content == null || content.isEmpty()) {
-            CobblePass.LOGGER.info("No main config file found, using defaults");
+            CobblePass.LOGGER.info("No main config file found, generating default configuration");
+            save();
             return;
         }
 
@@ -103,19 +119,54 @@ public class Config {
         evolveXP = getOrDefault(json, "evolveXP", Constants.DEFAULT_EVOLVE_XP);
         hatchXP = getOrDefault(json, "hatchXP", Constants.DEFAULT_HATCH_XP);
         tradeXP = getOrDefault(json, "tradeXP", Constants.DEFAULT_TRADE_XP);
-        premiumCost = getOrDefault(json, "premiumCost", Constants.DEFAULT_PREMIUM_COST);
+        fishXP = getOrDefault(json, "fishXP", Constants.DEFAULT_FISH_XP);
+        catchLegendaryXP = getOrDefault(json, "catchLegendaryXP", Constants.DEFAULT_CATCH_LEGENDARY_XP);
+        catchShinyXP = getOrDefault(json, "catchShinyXP", Constants.DEFAULT_CATCH_SHINY_XP);
+        catchUltraBeastXP = getOrDefault(json, "catchUltraBeastXP", Constants.DEFAULT_CATCH_ULTRABEAST_XP);
+        catchMythicalXP = getOrDefault(json, "catchMythicalXP", Constants.DEFAULT_CATCH_MYTHICAL_XP);
+        catchParadoxXP = getOrDefault(json, "catchParadoxXP", Constants.DEFAULT_CATCH_PARADOX_XP);
+        releaseXP = getOrDefault(json, "releaseXP", Constants.DEFAULT_RELEASE_XP);
         seasonDurationDays = getOrDefault(json, "seasonDurationDays", 60);
         currentSeason = getOrDefault(json, "currentSeason", 0);
         seasonStartTime = getOrDefault(json, "seasonStartTime", 0L);
         seasonEndTime = getOrDefault(json, "seasonEndTime", 0L);
         enablePermissionNodes = getOrDefault(json, "enablePermissionNodes", Constants.DEFAULT_ENABLE_PERMISSION_NODES);
-        premiumMode = getOrDefault(json, "premiumMode", false);
 
         if (json.has("xpProgression") && json.get("xpProgression").isJsonObject()) {
             this.xpProgression = new XpProgression();
             this.xpProgression.fromJson(json.getAsJsonObject("xpProgression"));
         } else {
             this.xpProgression = new XpProgression();
+        }
+
+        // Load premium configuration with backward compatibility
+        if (json.has("premiumConfig") && json.get("premiumConfig").isJsonObject()) {
+            this.premiumConfig = new PremiumConfig();
+            this.premiumConfig.fromJson(json.getAsJsonObject("premiumConfig"));
+        } else {
+            // Handle backward compatibility with old config format
+            this.premiumConfig = new PremiumConfig();
+            if (json.has("premiumCost")) {
+                this.premiumConfig.setPremiumCost(json.get("premiumCost").getAsLong());
+            }
+            if (json.has("premiumMode")) {
+                // Convert old boolean premiumMode to new enum system
+                boolean oldPremiumMode = json.get("premiumMode").getAsBoolean();
+                this.premiumConfig.setMode(oldPremiumMode ? PremiumMode.ECONOMY : PremiumMode.DISABLED);
+            }
+        }
+
+        // Load season reset configuration
+        if (json.has("seasonResetConfig") && json.get("seasonResetConfig").isJsonObject()) {
+            this.seasonResetConfig = new SeasonResetConfig();
+            this.seasonResetConfig.fromJson(json.getAsJsonObject("seasonResetConfig"));
+        } else {
+            this.seasonResetConfig = new SeasonResetConfig();
+        }
+
+        // Validate season reset configuration
+        if (!this.seasonResetConfig.validate()) {
+            CobblePass.LOGGER.warn("Season reset configuration had invalid values that were corrected");
         }
     }
 
@@ -146,14 +197,21 @@ public class Config {
         json.addProperty("evolveXP", evolveXP);
         json.addProperty("hatchXP", hatchXP);
         json.addProperty("tradeXP", tradeXP);
-        json.addProperty("premiumCost", premiumCost);
+        json.addProperty("fishXP", fishXP);
+        json.addProperty("catchLegendaryXP", catchLegendaryXP);
+        json.addProperty("catchShinyXP", catchShinyXP);
+        json.addProperty("catchUltraBeastXP", catchUltraBeastXP);
+        json.addProperty("catchMythicalXP", catchMythicalXP);
+        json.addProperty("catchParadoxXP", catchParadoxXP);
+        json.addProperty("releaseXP", releaseXP);
         json.addProperty("seasonDurationDays", seasonDurationDays);
         json.addProperty("currentSeason", currentSeason);
         json.addProperty("seasonStartTime", seasonStartTime);
         json.addProperty("seasonEndTime", seasonEndTime);
         json.addProperty("enablePermissionNodes", enablePermissionNodes);
         json.add("xpProgression", xpProgression.toJson());
-        json.addProperty("premiumMode", premiumMode);
+        json.add("premiumConfig", premiumConfig.toJson());
+        json.add("seasonResetConfig", seasonResetConfig.toJson());
 
         Utils.writeFileSync(Constants.CONFIG_PATH, Constants.CONFIG_FILE,
                 Utils.newGson().toJson(json));
@@ -166,18 +224,33 @@ public class Config {
     public int getEvolveXP() { return evolveXP; }
     public int getHatchXP() { return hatchXP; }
     public int getTradeXP() { return tradeXP; }
-    public long getPremiumCost() { return premiumCost; }
+    public int getFishXP() { return fishXP; }
+    public int getCatchLegendaryXP() { return catchLegendaryXP; }
+    public int getCatchShinyXP() { return catchShinyXP; }
+    public int getCatchUltraBeastXP() { return catchUltraBeastXP; }
+    public int getCatchMythicalXP() { return catchMythicalXP; }
+    public int getCatchParadoxXP() { return catchParadoxXP; }
+    public int getReleaseXP() { return releaseXP; }
     public int getCurrentSeason() { return currentSeason; }
     public boolean isEnablePermissionNodes() { return enablePermissionNodes; }
     public XpProgression getXpProgression() { return xpProgression; }
     public GuiConfig getGuiConfig() { return guiConfig; }
-    public boolean isPremiumMode() { return premiumMode; }
+    public PremiumConfig getPremiumConfig() { return premiumConfig; }
+    public SeasonResetConfig getSeasonResetConfig() { return seasonResetConfig; }
+    
+    // Backward compatibility getters
+    @Deprecated
+    public long getPremiumCost() { return premiumConfig.getPremiumCost(); }
+    
+    @Deprecated
+    public boolean isPremiumMode() { return premiumConfig.getMode() != PremiumMode.DISABLED; }
     
     public void createNewSeason(int duration, int maxLevel, boolean premium) {
         currentSeason++;
         seasonDurationDays = duration;
         this.maxLevel = maxLevel;
-        this.premiumMode = premium;
+        // Convert boolean premium to new premium mode system
+        this.premiumConfig.setMode(premium ? PremiumMode.ECONOMY : PremiumMode.DISABLED);
         seasonStartTime = 0;
         seasonEndTime = 0;
         save();
@@ -205,5 +278,21 @@ public class Config {
 
     public long getSeasonStartTime() {
         return seasonStartTime;
+    }
+    public java.util.Map<String, Integer> getXpSources() {
+        java.util.Map<String, Integer> xpSources = new java.util.HashMap<>();
+        xpSources.put("catch", catchXP);
+        xpSources.put("defeat", defeatXP);
+        xpSources.put("evolve", evolveXP);
+        xpSources.put("hatch", hatchXP);
+        xpSources.put("trade", tradeXP);
+        xpSources.put("fish", fishXP);
+        xpSources.put("catch_legendary", catchLegendaryXP);
+        xpSources.put("catch_shiny", catchShinyXP);
+        xpSources.put("catch_ultrabeast", catchUltraBeastXP);
+        xpSources.put("catch_mythical", catchMythicalXP);
+        xpSources.put("catch_paradox", catchParadoxXP);
+        xpSources.put("release", releaseXP);
+        return xpSources;
     }
 }

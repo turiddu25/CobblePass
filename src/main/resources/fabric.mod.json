@@ -20,5 +20,8 @@
     "fabricloader": ">=0.14.21",
     "fabric-api": "*",
     "cobblemon": ">=1.6.0"
+  },
+  "suggests": {
+    "impactor": "*"
   }
 }

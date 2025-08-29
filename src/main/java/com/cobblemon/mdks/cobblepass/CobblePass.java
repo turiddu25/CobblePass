@@ -8,14 +8,18 @@ import com.cobblemon.mdks.cobblepass.config.Config;
 import com.cobblemon.mdks.cobblepass.listeners.CatchPokemonListener;
 import com.cobblemon.mdks.cobblepass.listeners.DefeatPokemonListener;
 import com.cobblemon.mdks.cobblepass.listeners.EvolvePokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.FishPokemonListener;
 import com.cobblemon.mdks.cobblepass.listeners.HatchPokemonListener;
+import com.cobblemon.mdks.cobblepass.listeners.ReleasePokemonListener;
 import com.cobblemon.mdks.cobblepass.listeners.TradePokemonListener;
+import com.cobblemon.mdks.cobblepass.premium.PremiumManager;
 import com.cobblemon.mdks.cobblepass.util.CommandsRegistry;
 import com.cobblemon.mdks.cobblepass.util.Permissions;
 
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.networking.v1.ServerPlayConnectionEvents;
+import net.kyori.adventure.platform.fabric.FabricServerAudiences;
 import net.minecraft.server.MinecraftServer;
 
 public class CobblePass implements ModInitializer {
@@ -24,16 +28,28 @@ public class CobblePass implements ModInitializer {
     public static Permissions permissions;
     public static BattlePass battlePass;
     public static MinecraftServer server;
+    private static FabricServerAudiences adventure;
 
     @Override
     public void onInitialize() {
-        config = new Config();
-        config.load();
+        // Register server starting event to load configs after all mods are loaded
+        ServerLifecycleEvents.SERVER_STARTING.register(server -> {
+            CobblePass.server = server;
+            CobblePass.adventure = FabricServerAudiences.of(server);
 
-        permissions = new Permissions();
+            config = new Config();
+            config.load();
 
-        battlePass = new BattlePass();
-        battlePass.init();
+            permissions = new Permissions();
+
+            // Initialize premium manager after config is loaded
+            PremiumManager.getInstance().reload();
+
+            battlePass = new BattlePass();
+            battlePass.init();
+
+            LOGGER.info("CobblePass configuration loaded.");
+        });
 
         // Add commands to registry
         CommandsRegistry.addCommand(new BattlePassCommand());
@@ -47,12 +63,13 @@ public class CobblePass implements ModInitializer {
 
         // Register event listeners
         ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            CobblePass.server = server;
             CatchPokemonListener.register();
             DefeatPokemonListener.register();
             EvolvePokemonListener.register();
             HatchPokemonListener.register();
             TradePokemonListener.register();
+            FishPokemonListener.register();
+            ReleasePokemonListener.register();
         });
 
         // Register player join event
@@ -73,19 +90,39 @@ public class CobblePass implements ModInitializer {
 
         // Register server stopping event to save all data
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
-            CobblePass.battlePass.save();
-            CobblePass.LOGGER.info("Saved all battle pass data");
+            try {
+                CobblePass.battlePass.save();
+                // Force save configuration data as well
+                if (CobblePass.config != null) {
+                    CobblePass.config.save();
+                }
+                CobblePass.LOGGER.info("Saved all battle pass data and configuration");
+            } catch (Exception e) {
+                CobblePass.LOGGER.error("Failed to save battle pass data during server shutdown", e);
+            }
+        });
+
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            if (CobblePass.adventure != null) {
+                CobblePass.adventure.close();
+                CobblePass.adventure = null;
+            }
         });
     }
 
     public static void reload() {
         config.load();
         permissions = new Permissions();
+        
+        // Reload premium manager with updated configuration
+        PremiumManager.getInstance().reload();
+        
         if (battlePass == null) {
             battlePass = new BattlePass();
             battlePass.init();
         } else {
             battlePass.reloadTiers(); // Only reload tier configuration without affecting player data
+            battlePass.reloadOnlinePlayers();
         }
         LOGGER.info("CobblePass reloaded - GUI and language configurations updated");
     }
@@ -102,5 +139,20 @@ public class CobblePass implements ModInitializer {
         }
         
         LOGGER.info("CobblePass has been reset. Please create a new Battle Pass to continue.");
+    }
+
+    /**
+     * Gets the current Minecraft server instance.
+     * @return The server instance, or null if not initialized
+     */
+    public static MinecraftServer getServer() {
+        return server;
+    }
+
+    public static FabricServerAudiences getAdventure() {
+        if (adventure == null) {
+            throw new IllegalStateException("Tried to access Adventure without a running server!");
+        }
+        return adventure;
     }
 }

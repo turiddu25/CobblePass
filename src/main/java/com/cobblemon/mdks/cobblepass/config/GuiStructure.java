@@ -1,12 +1,12 @@
 package com.cobblemon.mdks.cobblepass.config;
 
-import com.google.gson.JsonArray;
-import com.google.gson.JsonObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.google.gson.JsonArray;
+import com.google.gson.JsonObject;
 
 public class GuiStructure {
     private static final int GUI_ROWS = 6;
@@ -24,26 +24,37 @@ public class GuiStructure {
     public static GuiStructure fromJson(JsonObject json) {
         GuiStructure guiStructure = new GuiStructure();
         
-        // Load structure
+        // Load structure using the new parser
         if (json.has("structure") && json.get("structure").isJsonArray()) {
             JsonArray structureArray = json.getAsJsonArray("structure");
-            guiStructure.structure = new ArrayList<>();
+            List<String> rawStructure = new ArrayList<>();
             
-            for (int i = 0; i < structureArray.size() && i < GUI_ROWS; i++) {
-                String row = structureArray.get(i).getAsString();
-                // Ensure row is exactly 9 characters, pad or truncate as needed
-                if (row.length() < GUI_COLS) {
-                    row = String.format("%-" + GUI_COLS + "s", row).replace(' ', '-');
-                } else if (row.length() > GUI_COLS) {
-                    row = row.substring(0, GUI_COLS);
+            // Convert JsonArray to List<String>
+            for (int i = 0; i < structureArray.size(); i++) {
+                rawStructure.add(structureArray.get(i).getAsString());
+            }
+            
+            // Parse and normalize using GuiStructureParser
+            guiStructure.structure = GuiStructureParser.parse(rawStructure);
+            
+            // Validate the parsed structure
+            GuiStructureParser.ValidationResult validation = GuiStructureParser.validateStructure(guiStructure.structure);
+            if (!validation.isValid()) {
+                com.cobblemon.mdks.cobblepass.CobblePass.LOGGER.error("GUI structure validation failed:");
+                for (String error : validation.getErrors()) {
+                    com.cobblemon.mdks.cobblepass.CobblePass.LOGGER.error("  - " + error);
                 }
-                guiStructure.structure.add(row);
+                // Fall back to default structure
+                guiStructure.generateDefault();
+            } else if (validation.hasWarnings()) {
+                com.cobblemon.mdks.cobblepass.CobblePass.LOGGER.warn("GUI structure validation warnings:");
+                for (String warning : validation.getWarnings()) {
+                    com.cobblemon.mdks.cobblepass.CobblePass.LOGGER.warn("  - " + warning);
+                }
             }
-            
-            // Fill remaining rows if needed
-            while (guiStructure.structure.size() < GUI_ROWS) {
-                guiStructure.structure.add("---------");
-            }
+        } else {
+            // No structure provided, use default
+            guiStructure.generateDefault();
         }
 
         // Load ingredients
@@ -85,14 +96,14 @@ public class GuiStructure {
     }
 
     private void generateDefault() {
-        // Create default 6x9 structure with integrated status (no separate status row)
+        // Create default 6x9 structure in compact format
         structure = List.of(
-            "# i # # B # # P #",  // Row 0: Border, XP Info, Border, Border, Progress, Border, Border, Premium Status, Border
-            "# # # # # # # # #",  // Row 1: All border
-            "# L f f f f f L #",  // Row 2: Border, Free Label, Free Rewards (with status in lore), Free Label, Border
-            "# M r r r r r M #",  // Row 3: Border, Premium Label, Premium Rewards (with status in lore), Premium Label, Border
-            "# # # # # # # # #",  // Row 4: All border
-            "< # # # # # # # >"   // Row 5: Previous, Border, Border, Border, Border, Border, Border, Border, Next
+            "#i #B# P#",
+            "         ",
+            "#L fffff #",
+            "#M rrrrr #",
+            "         ",
+            "<   #   >"
         );
 
         // Create default ingredients
@@ -106,13 +117,8 @@ public class GuiStructure {
         border.setHideTooltip(true);
         ingredients.put('#', border);
 
-        // Empty space
-        GuiIngredient empty = new GuiIngredient();
-        empty.setType(GuiIngredient.IngredientType.STATIC_ITEM);
-        empty.setMaterial("minecraft:air");
-        empty.setName("");
-        empty.setHideTooltip(true);
-        ingredients.put('-', empty);
+        // Empty space is now just a space character ' ' in the structure string
+        // and doesn't need a dedicated ingredient definition.
 
         // Special placeholders with proper materials
         GuiIngredient xpInfo = new GuiIngredient();
@@ -152,15 +158,15 @@ public class GuiStructure {
 
         GuiIngredient freeReward = new GuiIngredient();
         freeReward.setType(GuiIngredient.IngredientType.FREE_REWARD_PLACEHOLDER);
-        freeReward.setMaterial("");
-        freeReward.setName("");
+        freeReward.setMaterial("minecraft:chest"); // Default fallback for free rewards
+        freeReward.setName("lang.gui.reward.free_placeholder");
         freeReward.setHideTooltip(false);
         ingredients.put('f', freeReward);
 
         GuiIngredient premiumReward = new GuiIngredient();
         premiumReward.setType(GuiIngredient.IngredientType.PREMIUM_REWARD_PLACEHOLDER);
-        premiumReward.setMaterial("");
-        premiumReward.setName("");
+        premiumReward.setMaterial("minecraft:ender_chest"); // Default fallback for premium rewards
+        premiumReward.setName("lang.gui.reward.premium_placeholder");
         premiumReward.setHideTooltip(false);
         ingredients.put('r', premiumReward);
 
@@ -183,12 +189,12 @@ public class GuiStructure {
 
     public char getCharAt(int row, int col) {
         if (row < 0 || row >= structure.size() || col < 0 || col >= GUI_COLS) {
-            return '-'; // Default empty
+            return ' '; // Default empty
         }
         
         String rowString = structure.get(row);
         if (col >= rowString.length()) {
-            return '-';
+            return ' ';
         }
         
         return rowString.charAt(col);

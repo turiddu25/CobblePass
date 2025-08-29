@@ -5,7 +5,7 @@ plugins {
 }
 
 group = "org.example"
-version = "2.0.5-SNAPSHOT"
+version = "2.0.9-custom"
 
 java {
     toolchain {
@@ -24,6 +24,7 @@ repositories {
     maven(url = "https://dl.cloudsmith.io/public/geckolib3/geckolib/maven/")
     maven("https://maven.impactdev.net/repository/development/")
     maven("https://oss.sonatype.org/content/repositories/snapshots")
+    maven("https://repo.sonatype.org/repository/maven-public/")
 }
 
 dependencies {
@@ -41,7 +42,11 @@ dependencies {
     modImplementation("com.cobblemon:fabric:1.6.0+1.21.1")
 
     // Impactor Economy API
-    modImplementation("net.impactdev.impactor.api:economy:5.3.0")
+    modImplementation("net.impactdev.impactor.api:economy:5.3.4")
+    
+    // ADD THIS LINE
+    implementation("net.kyori:adventure-text-minimessage:4.17.0")
+    modImplementation("net.kyori:adventure-platform-fabric:5.14.0")
 
     // GooeyLibs
     modImplementation("ca.landonjw.gooeylibs:api:3.1.0-1.21.1-SNAPSHOT")

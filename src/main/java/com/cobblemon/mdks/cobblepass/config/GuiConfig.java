@@ -1,5 +1,7 @@
 package com.cobblemon.mdks.cobblepass.config;
 
+import java.util.Arrays;
+
 import com.cobblemon.mdks.cobblepass.CobblePass;
 import com.cobblemon.mdks.cobblepass.util.Constants;
 import com.cobblemon.mdks.cobblepass.util.Utils;
@@ -33,6 +35,7 @@ public class GuiConfig {
             JsonObject json = JsonParser.parseString(content).getAsJsonObject();
             loadFromJson(json);
             validateConfiguration();
+            migrateGuiIfNeeded();
             CobblePass.LOGGER.info("Loaded GUI configuration from gui.json");
         } catch (Exception e) {
             CobblePass.LOGGER.error("Failed to load gui.json, using default configuration", e);
@@ -63,6 +66,51 @@ public class GuiConfig {
         this.structure = new GuiStructure();
         this.title = "lang.gui.title";
         this.enableCustomGui = true;
+        
+        // Create XP Info ingredient with proper type for dynamic XP values
+        GuiIngredient infoIngredient = new GuiIngredient();
+        infoIngredient.setType(GuiIngredient.IngredientType.XP_INFO_PLACEHOLDER);
+        infoIngredient.setMaterial("minecraft:experience_bottle");
+        infoIngredient.setName("lang.gui.info.title");
+        infoIngredient.setLore(Arrays.asList(
+                "lang.gui.info.lore.catch",
+                "lang.gui.info.lore.defeat",
+                "lang.gui.info.lore.evolve",
+                "lang.gui.info.lore.hatch",
+                "lang.gui.info.lore.trade",
+                "lang.gui.info.lore.fish",
+                "lang.gui.info.lore.release",
+                "lang.gui.info.lore.catch_legendary",
+                "lang.gui.info.lore.catch_shiny",
+                "lang.gui.info.lore.catch_ultrabeast",
+                "lang.gui.info.lore.catch_mythical",
+                "lang.gui.info.lore.catch_paradox"
+        ));
+        this.structure.getIngredients().put('i', infoIngredient);
+    }
+
+    private void migrateGuiIfNeeded() {
+        GuiIngredient xpInfo = this.structure.getIngredients().get('i');
+        if (xpInfo != null && (xpInfo.getLore() == null || xpInfo.getLore().isEmpty())) {
+            xpInfo.setName("lang.gui.info.title");
+            xpInfo.setLore(Arrays.asList(
+                    "lang.gui.info.lore.catch",
+                    "lang.gui.info.lore.defeat",
+                    "lang.gui.info.lore.evolve",
+                    "lang.gui.info.lore.hatch",
+                    "lang.gui.info.lore.trade",
+                    "lang.gui.info.lore.fish",
+                    "lang.gui.info.lore.release",
+                    "lang.gui.info.lore.catch_legendary",
+                    "lang.gui.info.lore.catch_shiny",
+                    "lang.gui.info.lore.catch_ultrabeast",
+                    "lang.gui.info.lore.catch_mythical",
+                    "lang.gui.info.lore.catch_paradox"
+            ));
+            this.structure.getIngredients().put('i', xpInfo);
+            save();
+            CobblePass.LOGGER.info("Migrated GUI configuration to include new XP sources.");
+        }
     }
 
     private void validateConfiguration() {
@@ -73,12 +121,33 @@ public class GuiConfig {
             return;
         }
 
-        // Check for essential placeholder types
-        boolean hasRewardSlots = !structure.findPlaceholderSlots(GuiIngredient.IngredientType.FREE_REWARD_PLACEHOLDER).isEmpty() ||
-                                !structure.findPlaceholderSlots(GuiIngredient.IngredientType.PREMIUM_REWARD_PLACEHOLDER).isEmpty();
+        // Use comprehensive validation
+        GuiValidator.ValidationResult validation = GuiValidator.validateComplete(
+            structure.getStructure(), 
+            structure.getIngredients()
+        );
         
-        if (!hasRewardSlots) {
-            CobblePass.LOGGER.warn("GUI configuration has no reward slots, this may cause issues");
+        // Log validation results
+        if (!validation.isValid()) {
+            CobblePass.LOGGER.error("GUI configuration validation failed:");
+            for (String error : validation.getErrors()) {
+                CobblePass.LOGGER.error("  - " + error);
+            }
+            
+            // Generate recovery instructions
+            String recoveryInstructions = GuiValidator.generateRecoveryInstructions(validation);
+            CobblePass.LOGGER.error("Recovery instructions:\n" + recoveryInstructions);
+            
+            // Fall back to default structure
+            CobblePass.LOGGER.warn("Falling back to default GUI structure due to validation errors");
+            structure = new GuiStructure();
+        } else if (validation.hasWarnings()) {
+            CobblePass.LOGGER.warn("GUI configuration validation warnings:");
+            for (String warning : validation.getWarnings()) {
+                CobblePass.LOGGER.warn("  - " + warning);
+            }
+        } else {
+            CobblePass.LOGGER.info("GUI configuration validation passed successfully");
         }
 
         // Validate title

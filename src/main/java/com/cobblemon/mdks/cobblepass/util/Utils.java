@@ -1,11 +1,5 @@
 package com.cobblemon.mdks.cobblepass.util;
 
-import com.cobblemon.mdks.cobblepass.CobblePass;
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import net.minecraft.network.chat.Component;
-import net.minecraft.server.level.ServerPlayer;
-
 import java.io.File;
 import java.io.FileWriter;
 import java.nio.charset.StandardCharsets;
@@ -17,16 +11,26 @@ import java.util.List;
 import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 
+import com.cobblemon.mdks.cobblepass.CobblePass;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+
+import net.minecraft.network.chat.Component;
+import net.minecraft.server.level.ServerPlayer;
+
 /**
  * Utility methods for common operations
  */
 public class Utils {
 
     /**
-     * Create a new Gson instance with pretty printing
+     * Create a new Gson instance with pretty printing and proper character handling
      */
     public static Gson newGson() {
-        return new GsonBuilder().setPrettyPrinting().create();
+        return new GsonBuilder()
+                .setPrettyPrinting()
+                .disableHtmlEscaping()
+                .create();
     }
 
     /**
@@ -249,6 +253,33 @@ public class Utils {
             };
         } catch (Exception e) {
             return -1;
+        }
+    }
+    /**
+     * Backup a file by renaming it with a .bak extension
+     */
+    public static void backupFile(String directory, String filename) {
+        try {
+            File dir = checkForDirectory(directory);
+            Path sourcePath = Paths.get(dir.getAbsolutePath(), filename);
+            File sourceFile = sourcePath.toFile();
+
+            if (!sourceFile.exists()) {
+                return;
+            }
+
+            String backupFilename = filename + ".bak";
+            Path backupPath = Paths.get(dir.getAbsolutePath(), backupFilename);
+            File backupFile = backupPath.toFile();
+
+            if (backupFile.exists()) {
+                backupFile.delete();
+            }
+
+            Files.copy(sourcePath, backupPath);
+            CobblePass.LOGGER.info("Backed up " + filename + " to " + backupFilename);
+        } catch (Exception e) {
+            CobblePass.LOGGER.error("Failed to back up file: " + filename, e);
         }
     }
 }

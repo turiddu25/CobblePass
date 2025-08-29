@@ -31,7 +31,7 @@ public class ReloadCommand extends Subcommand {
             CobblePass.reload();
 
             context.getSource().sendSystemMessage(
-                LangManager.getComponent("lang.command.config_reloaded")
+                LangManager.get("lang.command.config_reloaded")
             );
 
             // Log reload event

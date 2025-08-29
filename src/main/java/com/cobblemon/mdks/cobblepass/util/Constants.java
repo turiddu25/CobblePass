@@ -46,6 +46,15 @@ public class Constants {
     public static final int DEFAULT_EVOLVE_XP = 75;
     public static final int DEFAULT_HATCH_XP = 50;
     public static final int DEFAULT_TRADE_XP = 25;
+    public static final int DEFAULT_FISH_XP = 20;
+    public static final int DEFAULT_CATCH_LEGENDARY_XP = 500;
+    public static final int DEFAULT_CATCH_SHINY_XP = 250;
+    public static final int DEFAULT_CATCH_ULTRABEAST_XP = 300;
+    public static final int DEFAULT_CATCH_MYTHICAL_XP = 400;
+    public static final int DEFAULT_CATCH_PARADOX_XP = 200;
+    public static final int DEFAULT_RELEASE_XP = 10;
+    public static final int DEFAULT_CRAFT_VANILLA_XP = 5;
+    public static final int DEFAULT_CRAFT_MODDED_XP = 10;
     public static final long DEFAULT_PREMIUM_COST = 1000;
     public static final boolean DEFAULT_ENABLE_PERMISSION_NODES = true;
     
@@ -72,4 +81,16 @@ public class Constants {
     public static final String MSG_SEASON_ALREADY_ACTIVE = "lang.season.already_active";
     public static final String MSG_NO_ACTIVE_SEASON = "lang.season.no_active";
     public static final String MSG_SEASON_TIME_REMAINING = "lang.season.time_remaining";
+    
+    // Season Reset Messages
+    public static final String MSG_SEASON_RESET_CONFIRM = "lang.season.reset.confirm.message";
+    public static final String MSG_SEASON_RESET_PROGRESS = "lang.season.reset.progress.operation";
+    public static final String MSG_SEASON_RESET_COMPLETE = "lang.season.reset.complete.summary";
+    public static final String MSG_SEASON_END_BROADCAST = "lang.season.end.broadcast";
+    public static final String MSG_SEASON_START_BROADCAST = "lang.season.start.broadcast";
+    
+    // Premium Preservation Messages
+    public static final String MSG_PREMIUM_PRESERVED = "lang.season.premium.preserved";
+    public static final String MSG_PREMIUM_RESTORED = "lang.season.premium.restored";
+    public static final String MSG_PREMIUM_SYNC_COMPLETE = "lang.season.premium.sync.complete";
 }

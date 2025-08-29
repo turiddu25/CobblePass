@@ -50,8 +50,9 @@ public class CreateCommand extends Subcommand {
         java.io.File configFile = new java.io.File(com.cobblemon.mdks.cobblepass.util.Constants.CONFIG_DIR, com.cobblemon.mdks.cobblepass.util.Constants.CONFIG_FILE);
         java.io.File tiersFile = new java.io.File(com.cobblemon.mdks.cobblepass.util.Constants.CONFIG_DIR, com.cobblemon.mdks.cobblepass.util.Constants.TIERS_FILE);
 
-        if (configFile.exists() || tiersFile.exists()) {
-            context.getSource().sendFailure(Component.literal("A battle pass already exists. Please use /battlepass delete to remove it first."));
+        // Check if a battle pass has ever been created. This is safer than checking for active seasons.
+        if (CobblePass.config.getCurrentSeason() > 0) {
+            context.getSource().sendFailure(Component.literal("A battle pass configuration already exists. Please use /battlepass delete to remove it first."));
             return 0;
         }
 
@@ -107,11 +108,19 @@ public class CreateCommand extends Subcommand {
                     if (CobblePass.battlePass == null) {
                         CobblePass.battlePass = new com.cobblemon.mdks.cobblepass.battlepass.BattlePass();
                     }
+                    
+                    // Create the new season configuration
                     CobblePass.config.createNewSeason(duration, maxLevel, premium);
-                    CobblePass.battlePass.generateNewTiers(maxLevel);
+                    
+                    // Force reload configuration to ensure GUI and lang files are generated
+                    CobblePass.config.load();
+                    
+                    // Reload tiers
+                    CobblePass.battlePass.reloadTiers();
+                    
                     player.closeContainer();
                     player.sendSystemMessage(Component.literal("§aBattle Pass created successfully!"));
-                    player.sendSystemMessage(Component.literal("§eA new tiers.json has been generated with placeholder rewards."));
+                    player.sendSystemMessage(Component.literal("§eConfiguration files (gui.json, lang.json, tiers.json) have been generated."));
                     player.sendSystemMessage(Component.literal("§eUse /battlepass season start to begin the season."));
                 })
                 .build();

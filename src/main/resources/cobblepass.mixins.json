@@ -1,0 +1,12 @@
+{
+  "required": true,
+  "minVersion": "0.8",
+  "package": "com.cobblemon.mdks.cobblepass.mixin",
+  "compatibilityLevel": "JAVA_17",
+  "mixins": [
+    "CraftingScreenHandlerMixin"
+  ],
+  "injectors": {
+    "defaultRequire": 1
+  }
+}

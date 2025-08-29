@@ -46,33 +46,41 @@ public class AddLevelsCommand extends Subcommand {
             }
 
             int levelsToAdd = IntegerArgumentType.getInteger(context, "levels");
-            int currentLevel = CobblePass.battlePass.getPlayerPass(target).getLevel();
-            
-            // Ensure we don't exceed max level
-            if (currentLevel + levelsToAdd > 100) {
-                levelsToAdd = 100 - currentLevel;
-                if (levelsToAdd <= 0) {
-                    context.getSource().sendSystemMessage(Component.literal("§cError: Player is already at max level"));
-                    return 0;
-                }
+            com.cobblemon.mdks.cobblepass.battlepass.PlayerBattlePass playerPass = CobblePass.battlePass.getPlayerPass(target);
+            int currentLevel = playerPass.getLevel();
+            int currentXp = playerPass.getXP();
+            int maxLevel = CobblePass.config.getMaxLevel();
+
+            if (currentLevel >= maxLevel) {
+                context.getSource().sendSystemMessage(Component.literal("§cError: Player is already at max level"));
+                return 0;
             }
 
-            // Calculate total XP needed for target level
-            int totalXpNeeded = 0;
+            if (currentLevel + levelsToAdd > maxLevel) {
+                levelsToAdd = maxLevel - currentLevel;
+            }
+
             XpProgression xpProgression = CobblePass.config.getXpProgression();
-            if (xpProgression.getMode().equalsIgnoreCase("FORMULA")) {
-                double baseXp = xpProgression.getXpPerLevel();
-                double multiplier = xpProgression.getXpMultiplier();
-                for (int i = 0; i < levelsToAdd; i++) {
-                    totalXpNeeded += (int)(baseXp * Math.pow(multiplier, currentLevel + i - 1));
+
+            // This helper function gets the XP required to complete a given level, based on the player's current level.
+            java.util.function.Function<Integer, Integer> getXpForLevelCompletion = (level) -> {
+                if (xpProgression.getMode().equalsIgnoreCase("MANUAL")) {
+                    return xpProgression.getManualXpForLevel(level + 1);
+                } else {
+                    return (int) (xpProgression.getXpPerLevel() * Math.pow(xpProgression.getXpMultiplier(), level - 1));
                 }
-            } else { // MANUAL
-                for (int i = 0; i < levelsToAdd; i++) {
-                    totalXpNeeded += xpProgression.getManualXpForLevel(currentLevel + i + 1);
-                }
+            };
+
+            // 1. Calculate XP needed to complete the player's current level.
+            int xpToCompleteCurrentLevel = getXpForLevelCompletion.apply(currentLevel) - currentXp;
+            int totalXpToAdd = xpToCompleteCurrentLevel;
+
+            // 2. Add the full XP cost for the remaining levels to add.
+            for (int i = 1; i < levelsToAdd; i++) {
+                totalXpToAdd += getXpForLevelCompletion.apply(currentLevel + i);
             }
 
-            CobblePass.battlePass.addXP(target, totalXpNeeded);
+            CobblePass.battlePass.addXP(target, totalXpToAdd);
 
             // Notify both command sender and target
             String message = String.format("§aAdded %d levels to %s's battle pass", 

@@ -7,6 +7,10 @@ gooeylibs-wiki.md
 cline_docs/
 .idea
 /cobblemon-api-helper
+logs/*
+.kiro/*
+config/cobblepass/error_logs
+config/cobblepass/season_data
 
 ### IntelliJ IDEA ###
 .idea/modules.xml

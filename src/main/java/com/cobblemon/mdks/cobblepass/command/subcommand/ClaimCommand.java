@@ -33,74 +33,68 @@ public class ClaimCommand extends Subcommand {
 
     private int run(CommandContext<CommandSourceStack> context, boolean hasPremiumArg) {
         if (!context.getSource().isPlayer()) {
-            context.getSource().sendSystemMessage(
-                LangManager.getComponent("lang.command.must_be_player")
-            );
+            context.getSource().sendSystemMessage(LangManager.get("lang.command.must_be_player"));
             return 1;
         }
 
         ServerPlayer player = context.getSource().getPlayer();
         int level = IntegerArgumentType.getInteger(context, "level");
-        boolean premium = hasPremiumArg && BoolArgumentType.getBool(context, "premium");
 
         PlayerBattlePass pass = CobblePass.battlePass.getPlayerPass(player);
         BattlePassTier tier = CobblePass.battlePass.getTier(level);
 
-        // Check if tier exists
         if (tier == null) {
             player.sendSystemMessage(Component.literal(Constants.ERROR_PREFIX + "Invalid level!"));
             return 1;
         }
 
-        // Handle premium rewards
-        if (premium) {
-            // Check if player has reached this level
-            if (level > pass.getLevel()) {
-                player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
-                return 1;
-            }
+        if (level > pass.getLevel()) {
+            player.sendSystemMessage(LangManager.get("lang.command.level_not_reached", level));
+            return 1;
+        }
 
+        boolean premium;
+        if (hasPremiumArg) {
+            premium = BoolArgumentType.getBool(context, "premium");
+        } else {
+            premium = pass.isPremium() && tier.hasPremiumReward() && !pass.hasClaimedPremiumReward(level);
+        }
+
+        if (premium) {
             if (!pass.isPremium()) {
-                player.sendSystemMessage(LangManager.getComponent("lang.command.not_premium"));
+                player.sendSystemMessage(LangManager.get("lang.command.not_premium"));
                 return 1;
             }
 
             if (pass.hasClaimedPremiumReward(level)) {
-                player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed"));
+                player.sendSystemMessage(LangManager.get("lang.command.already_claimed"));
                 return 1;
             }
 
             if (!tier.hasPremiumReward()) {
-                player.sendSystemMessage(LangManager.getComponent("lang.command.no_reward", level));
+                player.sendSystemMessage(LangManager.get("lang.command.no_reward", level));
                 return 1;
             }
 
             tier.grantPremiumReward(player);
             pass.claimPremiumReward(level);
-            player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
-            return 1;
-        }
-
-        // Handle free rewards
-        // Check if player has reached this level
-        if (level > pass.getLevel()) {
-            player.sendSystemMessage(LangManager.getComponent("lang.command.level_not_reached", level));
+            player.sendSystemMessage(LangManager.get("lang.command.reward_claim", level));
             return 1;
         }
 
         if (pass.hasClaimedFreeReward(level)) {
-            player.sendSystemMessage(LangManager.getComponent("lang.command.already_claimed"));
+            player.sendSystemMessage(LangManager.get("lang.command.already_claimed"));
             return 1;
         }
 
         if (!tier.hasFreeReward()) {
-            player.sendSystemMessage(LangManager.getComponent("lang.command.no_reward", level));
+            player.sendSystemMessage(LangManager.get("lang.command.no_reward", level));
             return 1;
         }
 
         tier.grantFreeReward(player);
         pass.claimFreeReward(level);
-        player.sendSystemMessage(LangManager.getComponent("lang.command.reward_claim", level));
+        player.sendSystemMessage(LangManager.get("lang.command.reward_claim", level));
         return 1;
     }
 

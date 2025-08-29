@@ -1,0 +1,167 @@
+{
+  "templates": {
+    "pokeballs_10": {
+      "type": "ITEM",
+      "data": {
+        "id": "cobblemon:poke_ball",
+        "Count": 10
+      },
+      "lockedDisplay": {
+        "id": "minecraft:gray_stained_glass_pane",
+        "display_name": "§7Locked Poke Balls"
+      },
+      "claimedDisplay": {
+        "id": "minecraft:green_stained_glass_pane",
+        "display_name": "§aReward Claimed"
+      },
+      "claimableDisplay": {
+        "id": "cobblemon:poke_ball",
+        "display_name": "§e✓ Click to Claim!"
+      }
+    },
+    "rare_candy": {
+      "type": "ITEM",
+      "data": {
+        "id": "cobblemon:rare_candy",
+        "Count": 1
+      },
+      "lockedDisplay": {
+        "id": "minecraft:red_stained_glass_pane",
+        "display_name": "§cLocked Rare Candy"
+      },
+      "claimedDisplay": {
+        "id": "minecraft:lime_stained_glass_pane",
+        "display_name": "§aRare Candy Claimed"
+      }
+    },
+    "shiny_eevee": {
+      "type": "POKEMON",
+      "data": {
+        "species": "eevee",
+        "shiny": true
+      },
+      "lockedDisplay": {
+        "id": "minecraft:orange_stained_glass_pane",
+        "display_name": "§6Locked Shiny Eevee"
+      },
+      "claimedDisplay": {
+        "id": "minecraft:purple_stained_glass_pane",
+        "display_name": "§dShiny Eevee Claimed"
+      }
+    }
+  },
+  "tiers": [
+    {
+      "level": 1,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "cobblemon:poke_ball",
+          "Count": 5
+        },
+        "lockedDisplay": {
+          "id": "minecraft:gray_stained_glass_pane",
+          "display_name": "§7Locked: 5 Poke Balls"
+        },
+        "claimedDisplay": {
+          "id": "minecraft:green_wool",
+          "display_name": "§a✓ Poke Balls Claimed"
+        },
+        "claimableDisplay": {
+          "id": "cobblemon:poke_ball",
+          "display_name": "§e⭐ 5 Poke Balls - Click to Claim!"
+        }
+      }
+    },
+    {
+      "level": 2,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "minecraft:iron_ingot",
+          "Count": 10
+        }
+      }
+    },
+    {
+      "level": 3,
+      "freeReward": {
+        "$template": "rare_candy"
+      }
+    },
+    {
+      "level": 4,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "minecraft:golden_carrot",
+          "Count": 3
+        }
+      }
+    },
+    {
+      "level": 5,
+      "premiumReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "cobblemon:evolution_stone",
+          "Count": 1
+        },
+        "lockedDisplay": {
+          "id": "minecraft:barrier",
+          "display_name": "§c🔒 Premium Required"
+        },
+        "claimedDisplay": {
+          "id": "minecraft:emerald_block",
+          "display_name": "§a✓ Evolution Stone Claimed"
+        }
+      }
+    },
+    {
+      "level": 6,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "minecraft:redstone",
+          "Count": 8
+        }
+      }
+    },
+    {
+      "level": 7,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "cobblemon:great_ball",
+          "Count": 2
+        }
+      }
+    },
+    {
+      "level": 8,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "cobblemon:exp_share",
+          "Count": 1
+        }
+      }
+    },
+    {
+      "level": 9,
+      "freeReward": {
+        "type": "ITEM",
+        "data": {
+          "id": "minecraft:gold_ingot",
+          "Count": 8
+        }
+      }
+    },
+    {
+      "level": 10,
+      "premiumReward": {
+        "$template": "shiny_eevee"
+      }
+    }
+  ]
+}
